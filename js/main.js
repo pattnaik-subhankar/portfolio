@@ -1,152 +1,193 @@
 /* ==========================================================================
-   Portfolio JS — scroll reveal, nav, project expanders, back-to-top
+   Subhankar Pattnaik — Portfolio
+   JavaScript: Scroll Spy, Animations, Counters, Mobile Nav
    ========================================================================== */
+
 (function () {
   'use strict';
 
-  /* ----------------------------------------------------------------------
-     Nav scroll behavior (hide on scroll down, show on scroll up)
-     ---------------------------------------------------------------------- */
-  const nav = document.querySelector('.nav');
-  const backToTop = document.querySelector('.back-to-top');
-  let lastScrollY = 0;
-  let navHidden = false;
+  // ---- DOM References ----
+  const nav = document.getElementById('nav');
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  const allNavLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('section[id]');
+  const reveals = document.querySelectorAll('.reveal');
+  const skillBars = document.querySelectorAll('.skill-bar');
+  const statNumbers = document.querySelectorAll('.stat-number[data-target]');
 
-  function onScroll() {
-    const y = window.scrollY;
+  // ---- Mobile Nav Toggle ----
+  navToggle.addEventListener('click', function () {
+    const isOpen = navLinks.classList.toggle('open');
+    navToggle.classList.toggle('open', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
 
-    // nav hide/show
-    if (y > 80) {
-      if (y > lastScrollY + 6 && !navHidden) {
-        nav.classList.add('nav--hidden');
-        navHidden = true;
-      } else if (y < lastScrollY - 6 && navHidden) {
-        nav.classList.remove('nav--hidden');
-        navHidden = false;
-      }
-    } else {
-      nav.classList.remove('nav--hidden');
-      navHidden = false;
-    }
-    lastScrollY = y;
-
-    // back to top
-    if (y > 600) {
-      backToTop.classList.add('back-to-top--visible');
-    } else {
-      backToTop.classList.remove('back-to-top--visible');
-    }
-
-    // active nav link
-    updateActiveLink(y);
-  }
-
-  /* ----------------------------------------------------------------------
-     Active nav link based on scroll position
-     ---------------------------------------------------------------------- */
-  function updateActiveLink(y) {
-    const links = document.querySelectorAll('.nav__links a');
-    const sections = [];
-    links.forEach(function (link) {
-      const href = link.getAttribute('href');
-      if (href && href.startsWith('#')) {
-        const el = document.querySelector(href);
-        if (el) sections.push({ id: href, top: el.offsetTop - 120, link: link });
-      }
-    });
-    sections.sort(function (a, b) { return a.top - b.top; });
-
-    let active = null;
-    for (var i = 0; i < sections.length; i++) {
-      if (y >= sections[i].top) active = sections[i];
-    }
-    links.forEach(function (l) { l.classList.remove('active'); });
-    if (active) active.link.classList.add('active');
-  }
-
-  /* ----------------------------------------------------------------------
-     Mobile nav toggle
-     ---------------------------------------------------------------------- */
-  const navToggle = document.querySelector('.nav__toggle');
-  const navLinks = document.querySelector('.nav__links');
-  if (navToggle) {
-    navToggle.addEventListener('click', function () {
-      navLinks.classList.toggle('nav__links--open');
-    });
-  }
-  // close mobile nav on link click
-  navLinks.querySelectorAll('a').forEach(function (link) {
+  // Close mobile nav when a link is clicked
+  allNavLinks.forEach(function (link) {
     link.addEventListener('click', function () {
-      navLinks.classList.remove('nav__links--open');
+      navLinks.classList.remove('open');
+      navToggle.classList.remove('open');
+      document.body.style.overflow = '';
     });
   });
 
-  /* ----------------------------------------------------------------------
-     Back to top
-     ---------------------------------------------------------------------- */
-  backToTop.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  // ---- Scroll Spy ----
+  function updateActiveNav() {
+    var scrollY = window.scrollY + nav.offsetHeight + 16;
+    var current = '';
 
-  /* ----------------------------------------------------------------------
-     Project card expand/collapse
-     ---------------------------------------------------------------------- */
-  document.querySelectorAll('.project-card__header').forEach(function (header) {
-    header.addEventListener('click', function () {
-      const card = header.closest('.project-card');
-      // close others
-      document.querySelectorAll('.project-card--open').forEach(function (open) {
-        if (open !== card) open.classList.remove('project-card--open');
+    sections.forEach(function (section) {
+      var sectionTop = section.offsetTop;
+      var sectionHeight = section.offsetHeight;
+
+      if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    allNavLinks.forEach(function (link) {
+      link.classList.remove('active');
+      if (link.getAttribute('data-section') === current) {
+        link.classList.add('active');
+      }
+    });
+  }
+
+  // ---- IntersectionObserver for Reveal Animations ----
+  var revealObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
       });
-      card.classList.toggle('project-card--open');
-    });
+    },
+    {
+      threshold: 0.15,
+      rootMargin: '0px 0px -40px 0px',
+    }
+  );
+
+  reveals.forEach(function (el) {
+    revealObserver.observe(el);
   });
 
-  /* ----------------------------------------------------------------------
-     Scroll reveal
-     ---------------------------------------------------------------------- */
-  const revealEls = document.querySelectorAll('.reveal');
-  function revealOnScroll() {
-    const windowH = window.innerHeight;
-    revealEls.forEach(function (el) {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < windowH * 0.88) {
-        el.classList.add('reveal--visible');
+  // ---- IntersectionObserver for Skill Bar Animations ----
+  var skillObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var fill = entry.target.querySelector('.skill-fill');
+          var level = entry.target.getAttribute('data-level');
+          if (fill && level) {
+            fill.style.width = level + '%';
+          }
+          skillObserver.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.3,
+    }
+  );
+
+  skillBars.forEach(function (bar) {
+    skillObserver.observe(bar);
+  });
+
+  // ---- Counter Animation ----
+  function animateCounter(el) {
+    var target = parseInt(el.getAttribute('data-target'), 10);
+    var duration = 1600;
+    var startTime = null;
+    var currentDisplay = '0';
+
+    function easeOutCubic(t) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var elapsed = timestamp - startTime;
+      var progress = Math.min(elapsed / duration, 1);
+      var easedProgress = easeOutCubic(progress);
+      var current = Math.floor(easedProgress * target);
+
+      if (current.toString() !== currentDisplay) {
+        currentDisplay = current.toString();
+        el.textContent = currentDisplay;
       }
-    });
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        el.textContent = target.toString();
+      }
+    }
+
+    requestAnimationFrame(step);
   }
 
-  /* ----------------------------------------------------------------------
-     Skill bar animation
-     ---------------------------------------------------------------------- */
-  function animateSkillBars() {
-    document.querySelectorAll('.skill-bar__fill').forEach(function (bar) {
-      const rect = bar.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.9 && bar.style.width === '') {
-        bar.style.width = bar.getAttribute('data-width') || '0%';
-      }
-    });
-  }
+  var counterObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.5,
+    }
+  );
 
-  /* ----------------------------------------------------------------------
-     Combined scroll handler
-     ---------------------------------------------------------------------- */
-  let ticking = false;
+  statNumbers.forEach(function (num) {
+    counterObserver.observe(num);
+  });
+
+  // ---- Scroll Event (throttled) ----
+  var ticking = false;
+
   window.addEventListener('scroll', function () {
     if (!ticking) {
       requestAnimationFrame(function () {
-        onScroll();
-        revealOnScroll();
-        animateSkillBars();
+        updateActiveNav();
         ticking = false;
       });
       ticking = true;
     }
   });
 
-  // initial calls
-  revealOnScroll();
-  animateSkillBars();
-  updateActiveLink(window.scrollY);
+  // Initial call
+  updateActiveNav();
 
+  // ---- Close mobile nav on resize (if it was open) ----
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 768 && navLinks.classList.contains('open')) {
+      navLinks.classList.remove('open');
+      navToggle.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // ---- Smooth scroll for anchor links (fallback for Safari) ----
+  document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+    anchor.addEventListener('click', function (e) {
+      var targetId = this.getAttribute('href');
+      if (targetId === '#') return;
+      var target = document.querySelector(targetId);
+      if (target) {
+        e.preventDefault();
+        var offset = nav.offsetHeight + 8;
+        var targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth',
+        });
+      }
+    });
+  });
 })();
