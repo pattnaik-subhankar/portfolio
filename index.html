@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Subhankar Pattnaik — Azure Solution Architect candidate. 6+ years building resilient, secure, and cost-optimized cloud architectures on Microsoft Azure.">
+  <meta name="keywords" content="Azure, Solution Architect, Cloud Engineer, APIM, Terraform, Bicep, Azure DevOps, AKS, Portfolio">
+  <meta name="author" content="Subhankar Pattnaik">
+  <meta property="og:title" content="Subhankar Pattnaik — Azure Solution Architect Portfolio">
+  <meta property="og:description" content="Senior Azure PaaS Engineer @ LTIMindtree. From escalation engineering to enterprise architecture.">
+  <meta property="og:type" content="website">
+  <title>Subhankar Pattnaik — Azure Solution Architect Portfolio</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁</text></svg>">
+</head>
+<body>
+
+  <!-- ======================================================================
+       NAVIGATION
+       ====================================================================== -->
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="#hero" class="nav__logo">Subhankar<span>.cloud</span></a>
+      <button class="nav__toggle" aria-label="Toggle navigation">
+        <svg width="22" height="16" viewBox="0 0 22 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="1" y1="1" x2="21" y2="1"/>
+          <line x1="1" y1="8" x2="21" y2="8"/>
+          <line x1="1" y1="15" x2="21" y2="15"/>
+        </svg>
+      </button>
+      <ul class="nav__links">
+        <li><a href="#hero" class="active">Home</a></li>
+        <li><a href="#about">Story</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#philosophy">Philosophy</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ======================================================================
+       HERO
+       ====================================================================== -->
+  <section class="hero" id="hero">
+    <div class="hero__glow"></div>
+    <div class="hero__glow hero__glow--alt"></div>
+    <div class="hero__content">
+      <div class="hero__text">
+        <div class="hero__badge">
+          <span class="hero__badge-dot"></span>
+          Azure Solution Architect Candidate
+        </div>
+        <h1 class="hero__name">
+          Subhankar<br><span class="highlight">Pattnaik</span>
+        </h1>
+        <p class="hero__title">
+          Senior Azure PaaS Engineer @ LTIMindtree &ensp;·&ensp; 6+ Years
+        </p>
+        <p class="hero__tagline">
+          I spent <strong>2.5 years in Sev-A/B escalation engineering</strong> for global
+          Microsoft clients — debugging Azure at its breaking point. Now I build architectures
+          that <strong>don't break</strong>. From zero-trust networking to multi-region disaster
+          recovery, every decision is anchored in the Well-Architected Framework.
+        </p>
+        <div class="hero__cta">
+          <a href="#projects" class="btn btn--primary">View Portfolio &darr;</a>
+          <a href="https://linkedin.com/in/subhankarpattnaik007" target="_blank" rel="noopener" class="btn btn--ghost">LinkedIn ↗</a>
+          <a href="https://github.com/pattnaik-subhankar/azure-portfolio" target="_blank" rel="noopener" class="btn btn--gold">GitHub ↗</a>
+        </div>
+      </div>
+
+      <!-- Architecture visual -->
+      <div class="hero__visual">
+        <svg class="arch-svg" viewBox="0 0 480 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- hub -->
+          <rect x="195" y="130" width="90" height="60" rx="6" fill="rgba(0,212,255,0.08)" stroke="rgba(0,212,255,0.25)" stroke-width="1.5"/>
+          <text x="240" y="157" text-anchor="middle" fill="#00d4ff" font-size="9" font-family="system-ui" font-weight="600">Hub VNet</text>
+          <text x="240" y="172" text-anchor="middle" fill="#9494a8" font-size="7" font-family="system-ui">Azure Firewall</text>
+
+          <!-- spokes -->
+          <rect x="45" y="50" width="70" height="45" rx="5" fill="rgba(0,224,160,0.06)" stroke="rgba(0,224,160,0.2)" stroke-width="1"/>
+          <text x="80" y="69" text-anchor="middle" fill="#00e0a0" font-size="7" font-family="system-ui" font-weight="600">Spoke</text>
+          <text x="80" y="83" text-anchor="middle" fill="#9494a8" font-size="6" font-family="system-ui">APIM + Functions</text>
+
+          <rect x="45" y="130" width="70" height="45" rx="5" fill="rgba(240,178,50,0.06)" stroke="rgba(240,178,50,0.2)" stroke-width="1"/>
+          <text x="80" y="149" text-anchor="middle" fill="#f0b232" font-size="7" font-family="system-ui" font-weight="600">Spoke</text>
+          <text x="80" y="163" text-anchor="middle" fill="#9494a8" font-size="6" font-family="system-ui">AKS + Private EP</text>
+
+          <rect x="45" y="210" width="70" height="45" rx="5" fill="rgba(160,120,255,0.06)" stroke="rgba(160,120,255,0.2)" stroke-width="1"/>
+          <text x="80" y="229" text-anchor="middle" fill="#b794ff" font-size="7" font-family="system-ui" font-weight="600">Spoke</text>
+          <text x="80" y="243" text-anchor="middle" fill="#9494a8" font-size="6" font-family="system-ui">Cosmos + EventHubs</text>
+
+          <!-- connections hub→spokes -->
+          <line x1="115" y1="72" x2="195" y2="145" stroke="rgba(0,212,255,0.15)" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="115" y1="152" x2="195" y2="160" stroke="rgba(0,212,255,0.15)" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="115" y1="232" x2="195" y2="175" stroke="rgba(0,212,255,0.15)" stroke-width="1" stroke-dasharray="4 3"/>
+
+          <!-- gateway -->
+          <rect x="340" y="50" width="100" height="45" rx="5" fill="rgba(0,212,255,0.05)" stroke="rgba(0,212,255,0.15)" stroke-width="1"/>
+          <text x="390" y="69" text-anchor="middle" fill="#9494a8" font-size="7" font-family="system-ui">App Gateway</text>
+          <text x="390" y="83" text-anchor="middle" fill="rgba(0,212,255,0.5)" font-size="6" font-family="system-ui">WAF v2</text>
+
+          <!-- hub→gateway -->
+          <line x1="285" y1="145" x2="340" y2="72" stroke="rgba(0,212,255,0.12)" stroke-width="1" stroke-dasharray="4 3"/>
+
+          <!-- Entra ID -->
+          <rect x="340" y="210" width="100" height="45" rx="5" fill="rgba(240,178,50,0.05)" stroke="rgba(240,178,50,0.15)" stroke-width="1"/>
+          <text x="390" y="229" text-anchor="middle" fill="#9494a8" font-size="7" font-family="system-ui">Entra ID</text>
+          <text x="390" y="243" text-anchor="middle" fill="rgba(240,178,50,0.5)" font-size="6" font-family="system-ui">RBAC + Managed ID</text>
+
+          <!-- labels -->
+          <text x="240" y="258" text-anchor="middle" fill="#5c5c78" font-size="6" font-family="system-ui" letter-spacing="1">HUB-SPOKE ARCHITECTURE</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       ABOUT / ARCHITECT ARC
+       ====================================================================== -->
+  <section class="section" id="about">
+    <div class="section__inner">
+      <p class="section__label reveal">The Architect Arc</p>
+      <h2 class="section__heading reveal reveal-delay-1">Escalation Engineer &rarr; Solution Architect</h2>
+      <p class="section__subtitle reveal reveal-delay-1">
+        Every great architect has battle scars. Mine came from 2.5 years on the front lines
+        of Azure support, debugging production failures for Fortune 500 enterprises. Here's
+        how that experience shapes every architecture I design.
+      </p>
+      <div class="divider reveal reveal-delay-1"></div>
+
+      <div class="story-cards">
+        <div class="story-card reveal reveal-delay-1">
+          <div class="story-card__num">01</div>
+          <div class="story-card__icon">⚡</div>
+          <h3 class="story-card__title">PaaS Mastery</h3>
+          <p class="story-card__desc">
+            Built hundreds of serverless solutions on APIM, Functions, and Logic Apps.
+            Know exactly where they break under load — and how to make them scale.
+          </p>
+        </div>
+        <div class="story-card reveal reveal-delay-2">
+          <div class="story-card__num">02</div>
+          <div class="story-card__icon">🔐</div>
+          <h3 class="story-card__title">Zero-Trust Security</h3>
+          <p class="story-card__desc">
+            Private endpoints, managed identity, network isolation at every layer.
+            Designed architectures where nothing talks to the internet without intention.
+          </p>
+        </div>
+        <div class="story-card reveal reveal-delay-3">
+          <div class="story-card__num">03</div>
+          <div class="story-card__icon">📊</div>
+          <h3 class="story-card__title">Data & Eventing + DR</h3>
+          <p class="story-card__desc">
+            Event Hubs, Cosmos DB, FHIR ingestion, multi-region failover.
+            RTO under 1 hour, RPO under 5 minutes, immutable audit trails.
+          </p>
+        </div>
+        <div class="story-card reveal reveal-delay-4">
+          <div class="story-card__num">04</div>
+          <div class="story-card__icon">🏗️</div>
+          <h3 class="story-card__title">Enterprise Governance</h3>
+          <p class="story-card__desc">
+            CAF landing zones, management groups, policy-as-code, FinOps controls.
+            Architectures that scale across subscriptions, regions, and teams.
+          </p>
+        </div>
+      </div>
+
+      <div class="extended-story reveal">
+        <h3>💡 The Escalation Engineer Advantage</h3>
+        <p>
+          Most architects design from documentation. I design from experience.
+          When you've spent years on Sev-A bridge calls at 3 AM debugging why an APIM
+          instance is returning 429s across 40 regions, or why a private endpoint DNS
+          resolution is silently failing in a hub-spoke topology — you develop an intuition
+          that no certification exam can teach.
+        </p>
+        <p>
+          That's my edge. Every architecture I build anticipates the failures I've already
+          seen in production. Rate limiting, retry storms, noisy neighbor problems in
+          multi-tenant PaaS, private DNS zone propagation delays, throttling at the
+          management plane — these aren't theoretical risks to me. They're memories.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       PROJECTS
+       ====================================================================== -->
+  <section class="section" id="projects">
+    <div class="section__inner">
+      <p class="section__label reveal">Portfolio</p>
+      <h2 class="section__heading reveal reveal-delay-1">Architecture Projects</h2>
+      <p class="section__subtitle reveal reveal-delay-1">
+        Four production-grade architectures spanning retail, finance, healthcare, and
+        manufacturing — each built to showcase a different pillar of the Well-Architected
+        Framework in depth.
+      </p>
+      <div class="divider reveal reveal-delay-1"></div>
+
+      <div class="projects-grid">
+
+        <!-- Project 1: ShopFlow -->
+        <div class="project-card reveal reveal-delay-1">
+          <div class="project-card__header">
+            <div class="project-card__icon project-card__icon--shop">🛒</div>
+            <div class="project-card__main">
+              <p class="project-card__industry">Retail · E-Commerce</p>
+              <h3 class="project-card__name">ShopFlow</h3>
+              <p class="project-card__tagline">E-commerce API Platform with queue-based load leveling</p>
+              <div class="stars">
+                <span class="star">★</span><span class="star">★</span>
+                <span class="star star--empty">★</span><span class="star star--empty">★</span><span class="star star--empty">★</span>
+              </div>
+            </div>
+            <button class="project-card__expand" aria-label="Toggle details">▼</button>
+          </div>
+          <div class="project-card__detail">
+            <div class="project-card__detail-inner">
+              <div class="detail-block">
+                <h4>Azure Services</h4>
+                <div class="tag-list">
+                  <span class="tag">API Management</span>
+                  <span class="tag">Functions</span>
+                  <span class="tag">Service Bus</span>
+                  <span class="tag">Logic Apps</span>
+                  <span class="tag">Azure SQL</span>
+                  <span class="tag">Bicep</span>
+                </div>
+              </div>
+              <div class="detail-block">
+                <h4>Architecture Highlights</h4>
+                <div class="tag-list">
+                  <span class="tag--gold">40x Burst Handling</span>
+                  <span class="tag--gold">Queue-based Load Leveling</span>
+                  <span class="tag--gold">100% Bicep IaC</span>
+                  <span class="tag--teal">WAF: Reliability</span>
+                </div>
+                <div class="project-card__links">
+                  <a href="https://github.com/pattnaik-subhankar/azure-portfolio/tree/main/projects/project-1-shopflow" target="_blank" rel="noopener" class="btn btn--ghost" style="font-size:0.72rem;padding:0.3rem 0.8rem;">GitHub ↗</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 2: PaySecure -->
+        <div class="project-card reveal reveal-delay-2">
+          <div class="project-card__header">
+            <div class="project-card__icon project-card__icon--pay">💳</div>
+            <div class="project-card__main">
+              <p class="project-card__industry">Finance · Open Banking</p>
+              <h3 class="project-card__name">PaySecure</h3>
+              <p class="project-card__tagline">Zero-Trust Open Banking API Platform</p>
+              <div class="stars">
+                <span class="star">★</span><span class="star">★</span><span class="star">★</span>
+                <span class="star star--empty">★</span><span class="star star--empty">★</span>
+              </div>
+            </div>
+            <button class="project-card__expand" aria-label="Toggle details">▼</button>
+          </div>
+          <div class="project-card__detail">
+            <div class="project-card__detail-inner">
+              <div class="detail-block">
+                <h4>Azure Services</h4>
+                <div class="tag-list">
+                  <span class="tag">Hub-Spoke VNet</span>
+                  <span class="tag">APIM (internal)</span>
+                  <span class="tag">App Gateway WAF</span>
+                  <span class="tag">Private Endpoints</span>
+                  <span class="tag">Azure Policy</span>
+                  <span class="tag">Terraform</span>
+                </div>
+              </div>
+              <div class="detail-block">
+                <h4>Architecture Highlights</h4>
+                <div class="tag-list">
+                  <span class="tag--gold">Private Endpoints Everywhere</span>
+                  <span class="tag--gold">APIM Internal Mode</span>
+                  <span class="tag--gold">Terraform + OIDC</span>
+                  <span class="tag--teal">WAF: Security</span>
+                </div>
+                <div class="project-card__links">
+                  <a href="https://github.com/pattnaik-subhankar/azure-portfolio/tree/main/projects/project-2-paysecure" target="_blank" rel="noopener" class="btn btn--ghost" style="font-size:0.72rem;padding:0.3rem 0.8rem;">GitHub ↗</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 3: MediSync -->
+        <div class="project-card reveal reveal-delay-3">
+          <div class="project-card__header">
+            <div class="project-card__icon project-card__icon--med">🏥</div>
+            <div class="project-card__main">
+              <p class="project-card__industry">Healthcare · Interoperability</p>
+              <h3 class="project-card__name">MediSync</h3>
+              <p class="project-card__tagline">Event-Driven Patient Data Interoperability Hub</p>
+              <div class="stars">
+                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+                <span class="star star--empty">★</span>
+              </div>
+            </div>
+            <button class="project-card__expand" aria-label="Toggle details">▼</button>
+          </div>
+          <div class="project-card__detail">
+            <div class="project-card__detail-inner">
+              <div class="detail-block">
+                <h4>Azure Services</h4>
+                <div class="tag-list">
+                  <span class="tag">Event Hubs</span>
+                  <span class="tag">Service Bus</span>
+                  <span class="tag">Cosmos DB</span>
+                  <span class="tag">FHIR/HL7</span>
+                  <span class="tag">CMK Encryption</span>
+                  <span class="tag">Multi-Region DR</span>
+                </div>
+              </div>
+              <div class="detail-block">
+                <h4>Architecture Highlights</h4>
+                <div class="tag-list">
+                  <span class="tag--gold">RTO 1h / RPO 5m</span>
+                  <span class="tag--gold">CMK Encryption</span>
+                  <span class="tag--gold">Immutable Audit</span>
+                  <span class="tag--teal">WAF: Data + Compliance</span>
+                </div>
+                <div class="project-card__links">
+                  <a href="https://github.com/pattnaik-subhankar/azure-portfolio/tree/main/projects/project-3-medisync" target="_blank" rel="noopener" class="btn btn--ghost" style="font-size:0.72rem;padding:0.3rem 0.8rem;">GitHub ↗</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 4: EdgeForge -->
+        <div class="project-card reveal reveal-delay-4">
+          <div class="project-card__header">
+            <div class="project-card__icon project-card__icon--edge">🏭</div>
+            <div class="project-card__main">
+              <p class="project-card__industry">Manufacturing · IoT</p>
+              <h3 class="project-card__name">EdgeForge</h3>
+              <p class="project-card__tagline">Global IoT Telemetry Platform on CAF Landing Zone</p>
+              <div class="stars">
+                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+              </div>
+            </div>
+            <button class="project-card__expand" aria-label="Toggle details">▼</button>
+          </div>
+          <div class="project-card__detail">
+            <div class="project-card__detail-inner">
+              <div class="detail-block">
+                <h4>Azure Services</h4>
+                <div class="tag-list">
+                  <span class="tag">Management Groups</span>
+                  <span class="tag">Policy-as-Code</span>
+                  <span class="tag">Private AKS + KEDA</span>
+                  <span class="tag">Event Hubs</span>
+                  <span class="tag">ADLS Gen2</span>
+                  <span class="tag">3-Region Hub-Spoke</span>
+                </div>
+              </div>
+              <div class="detail-block">
+                <h4>Architecture Highlights</h4>
+                <div class="tag-list">
+                  <span class="tag--gold">CAF Enterprise-Scale</span>
+                  <span class="tag--gold">Bronze/Silver/Gold Lake</span>
+                  <span class="tag--gold">FinOps Controls</span>
+                  <span class="tag--teal">WAF: All 5 Pillars</span>
+                </div>
+                <div class="project-card__links">
+                  <a href="https://github.com/pattnaik-subhankar/azure-portfolio/tree/main/projects/project-4-edgeforge" target="_blank" rel="noopener" class="btn btn--ghost" style="font-size:0.72rem;padding:0.3rem 0.8rem;">GitHub ↗</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       SKILLS
+       ====================================================================== -->
+  <section class="section" id="skills">
+    <div class="section__inner">
+      <p class="section__label reveal">Capabilities</p>
+      <h2 class="section__heading reveal reveal-delay-1">Skills Matrix</h2>
+      <p class="section__subtitle reveal reveal-delay-1">
+        Deep expertise across the Azure platform, from infrastructure-as-code to
+        application-layer architecture — validated through production deployments,
+        not just certifications.
+      </p>
+      <div class="divider reveal reveal-delay-1"></div>
+
+      <div class="skills-grid">
+        <!-- Integration -->
+        <div class="skill-category reveal reveal-delay-1">
+          <div class="skill-category__header">
+            <span class="skill-category__icon">🔌</span>
+            <span class="skill-category__name">Integration</span>
+          </div>
+          <div class="skill-bars">
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">API Management</span><span class="skill-bar__level">Expert</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="95%"></div></div>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">Azure Functions</span><span class="skill-bar__level">Expert</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="92%"></div></div>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">Logic Apps</span><span class="skill-bar__level">Advanced</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="88%"></div></div>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">Service Bus / Event Hubs</span><span class="skill-bar__level">Advanced</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="85%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Infrastructure as Code -->
+        <div class="skill-category reveal reveal-delay-2">
+          <div class="skill-category__header">
+            <span class="skill-category__icon">⚙️</span>
+            <span class="skill-category__name">Infrastructure as Code</span>
+          </div>
+          <div class="skill-bars">
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">Bicep</span><span class="skill-bar__level">Expert</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="93%"></div></div>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">Terraform</span><span class="skill-bar__level">Advanced</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="82%"></div></div>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">Azure Policy / DINE</span><span class="skill-bar__level">Advanced</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="80%"></div></div>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">Azure DevOps / CI/CD</span><span class="skill-bar__level">Advanced</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="85%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Networking -->
+        <div class="skill-category reveal reveal-delay-3">
+          <div class="skill-category__header">
+            <span class="skill-category__icon">🌐</span>
+            <span class="skill-category__name">Networking & Security</span>
+          </div>
+          <div class="skill-bars">
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">VNet / Hub-Spoke</span><span class="skill-bar__level">Expert</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="90%"></div></div>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">Private Endpoints</span><span class="skill-bar__level">Expert</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="88%"></div></div>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">NSG / Firewall</span><span class="skill-bar__level">Advanced</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="85%"></div></div>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">Entra ID / RBAC</span><span class="skill-bar__level">Advanced</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="82%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Containers & Compute -->
+        <div class="skill-category reveal reveal-delay-4">
+          <div class="skill-category__header">
+            <span class="skill-category__icon">☸️</span>
+            <span class="skill-category__name">Containers & Compute</span>
+          </div>
+          <div class="skill-bars">
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">AKS Troubleshooting</span><span class="skill-bar__level">Advanced</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="80%"></div></div>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">App Service</span><span class="skill-bar__level">Expert</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="90%"></div></div>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">Container Apps</span><span class="skill-bar__level">Proficient</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="72%"></div></div>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-bar__label"><span class="skill-bar__name">KEDA (Event Scaling)</span><span class="skill-bar__level">Proficient</span></div>
+              <div class="skill-bar__track"><div class="skill-bar__fill" data-width="70%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WAF Pillars -->
+      <div class="waf-pillars reveal">
+        <h3>🧭 Well-Architected Framework Alignment</h3>
+        <div class="waf-grid">
+          <div class="waf-card">
+            <div class="waf-card__icon">🛡️</div>
+            <div class="waf-card__name">Reliability</div>
+            <div class="waf-card__desc">Multi-region DR, retry with backoff, circuit breakers, health probes</div>
+          </div>
+          <div class="waf-card">
+            <div class="waf-card__icon">🔒</div>
+            <div class="waf-card__name">Security</div>
+            <div class="waf-card__desc">Zero-trust, private endpoints, managed identity, Azure Policy guardrails</div>
+          </div>
+          <div class="waf-card">
+            <div class="waf-card__icon">💰</div>
+            <div class="waf-card__name">Cost Optimization</div>
+            <div class="waf-card__desc">Right-sized SKUs, auto-scale, FinOps tagging, reserved instances</div>
+          </div>
+          <div class="waf-card">
+            <div class="waf-card__icon">📋</div>
+            <div class="waf-card__name">Operational Excellence</div>
+            <div class="waf-card__desc">100% IaC, CI/CD with OIDC, policy-as-code, immutable audit logs</div>
+          </div>
+          <div class="waf-card">
+            <div class="waf-card__icon">⚡</div>
+            <div class="waf-card__name">Performance Efficiency</div>
+            <div class="waf-card__desc">Queue-based load leveling, KEDA auto-scaling, partitioned Cosmos DB</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       ARCHITECTURE PHILOSOPHY
+       ====================================================================== -->
+  <section class="section" id="philosophy">
+    <div class="section__inner">
+      <p class="section__label reveal">My Approach</p>
+      <h2 class="section__heading reveal reveal-delay-1">Architecture Philosophy</h2>
+      <p class="section__subtitle reveal reveal-delay-1">
+        Principles that guide every decision — forged in production incidents and
+        validated across industries.
+      </p>
+      <div class="divider reveal reveal-delay-1"></div>
+
+      <div class="philosophy-block reveal">
+        <h3>🏛️ The Principles</h3>
+        <div class="philosophy-points">
+          <div class="philosophy-point">
+            <span class="philosophy-point__marker"></span>
+            <span><strong>Design for failure, not perfection.</strong> Every service degrades. The question is whether your architecture degrades gracefully or catastrophically. I design for the latter by default — circuit breakers, retry storms, queue backpressure — because I've seen what happens when you don't.</span>
+          </div>
+          <div class="philosophy-point">
+            <span class="philosophy-point__marker"></span>
+            <span><strong>Private by default.</strong> If it doesn't need internet access, it shouldn't have it. Private endpoints, VNet integration, internal-mode APIM — not as an afterthought, but as the starting point of every architecture diagram.</span>
+          </div>
+          <div class="philosophy-point">
+            <span class="philosophy-point__marker"></span>
+            <span><strong>Infrastructure is code, or it's a liability.</strong> Every resource in every environment must be repeatable. Bicep for Azure-native, Terraform for multi-cloud — both with policy-as-code guardrails that prevent drift before it happens.</span>
+          </div>
+          <div class="philosophy-point">
+            <span class="philosophy-point__marker"></span>
+            <span><strong>Observability isn't optional.</strong> If you can't see it, you can't fix it. Distributed tracing, structured logging, alerting on SLOs rather than symptoms — built in from day one, not bolted on after the first outage.</span>
+          </div>
+          <div class="philosophy-point">
+            <span class="philosophy-point__marker"></span>
+            <span><strong>Cost is an architecture concern.</strong> A solution that costs $50K/month but could cost $15K/month is a design failure. Every architecture decision includes a cost model — because nobody thanks you for a beautiful design that bankrupts the project.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       CONTACT
+       ====================================================================== -->
+  <section class="section contact" id="contact">
+    <div class="section__inner">
+      <p class="section__label reveal">Get In Touch</p>
+      <h2 class="section__heading reveal reveal-delay-1">Let's Build Something</h2>
+      <p class="section__subtitle reveal reveal-delay-1">
+        I'm actively seeking Azure Solution Architect, Cloud Architect, and Technical
+        Lead opportunities. If you need someone who understands Azure from the metal up —
+        and from the outage down — let's talk.
+      </p>
+      <div class="divider reveal reveal-delay-1"></div>
+
+      <div class="contact-grid reveal reveal-delay-2">
+        <div>
+          <p class="contact-intro">
+            Currently based in India (Central India region), open to remote and hybrid
+            roles globally.
+          </p>
+          <div class="contact-links">
+            <a href="https://linkedin.com/in/subhankarpattnaik007" target="_blank" rel="noopener" class="contact-link">
+              <span class="contact-link__icon">💼</span>
+              <span>LinkedIn: linkedin.com/in/subhankarpattnaik007</span>
+            </a>
+            <a href="https://github.com/pattnaik-subhankar" target="_blank" rel="noopener" class="contact-link">
+              <span class="contact-link__icon">📦</span>
+              <span>GitHub: github.com/pattnaik-subhankar</span>
+            </a>
+            <a href="https://github.com/pattnaik-subhankar/azure-portfolio" target="_blank" rel="noopener" class="contact-link">
+              <span class="contact-link__icon">⚡</span>
+              <span>Portfolio Repo: azure-portfolio</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="contact-highlight">
+          <h3>🎯 What I'm Looking For</h3>
+          <p>
+            A role where architecture decisions matter — where reliability, security, and
+            cost aren't competing priorities but aligned outcomes. I thrive in teams that
+            treat infrastructure as a product and value production-hardened design over
+            PowerPoint architecture. If your organization runs on Azure and cares about
+            doing it right, I want to hear from you.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       FOOTER
+       ====================================================================== -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <span>&copy; 2026 Subhankar Pattnaik. Built with vanilla HTML/CSS/JS.</span>
+      <span class="footer__tech">Deployed on GitHub Pages &ensp;·&ensp; AZ-900 Certified</span>
+    </div>
+  </footer>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" aria-label="Back to top">↑</button>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
