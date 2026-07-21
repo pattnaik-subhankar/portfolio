@@ -91,7 +91,7 @@ python3 -m http.server 8080
 
 ## 🔗 Links
 
-- **Live Portfolio:** [subhankar.cloud](https://subhankar.cloud) (once deployed)
+- **Live Portfolio:** [subhankarcloud.in](https://subhankarcloud.in) (once deployed)
 - **GitHub:** [@pattnaik-subhankar](https://github.com/pattnaik-subhankar)
 - **LinkedIn:** [subhankarpattnaik007](https://linkedin.com/in/subhankarpattnaik007)
 - **Azure Portfolio Repo:** [azure-portfolio](https://github.com/pattnaik-subhankar/azure-portfolio)
