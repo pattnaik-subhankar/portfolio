@@ -1,5 +1,5 @@
-/* ==========================================================================
-   Subhankar Pattnaik — Portfolio
+﻿/* ==========================================================================
+   Subhankar Pattnaik â€” Portfolio
    JavaScript: Scroll Spy, Animations, Counters, Mobile Nav
    ========================================================================== */
 
@@ -191,3 +191,21 @@
     });
   });
 })();
+
+// ── AI Maturity Dashboard: Animate layer bars on scroll
+const maturitySection = document.getElementById("ai-maturity");
+if (maturitySection) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const fills = document.querySelectorAll(".layer-bar-fill");
+        fills.forEach(fill => {
+          fill.style.width = fill.style.width || fill.style.width;
+          fill.style.transition = "width 1.2s cubic-bezier(0.4,0,0.2,1)";
+        });
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  observer.observe(maturitySection);
+}
