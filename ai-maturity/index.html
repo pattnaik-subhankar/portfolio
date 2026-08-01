@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Subhankar Pattnaik — Agentic AI Maturity Dashboard. 29 production agents across 5 frameworks, scored against aifolks.org framework.">
+  <meta property="og:title" content="AI Maturity Dashboard — Subhankar Pattnaik">
+  <meta property="og:description" content="78% overall maturity — 29 agents, 5 frameworks, 6/6 gaps closed">
+  <title>AI Maturity · Subhankar Pattnaik</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* Page-specific overrides that extend the main design system */
+    .dashboard-hero {
+      min-height: 40vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: var(--nav-height);
+      padding-bottom: 40px;
+    }
+
+    .sticky-nav {
+      position: sticky;
+      top: var(--nav-height);
+      z-index: 50;
+      background: rgba(6, 6, 15, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 clamp(16px, 4vw, 40px);
+    }
+
+    .sticky-nav-inner {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      display: flex;
+      gap: 32px;
+      align-items: center;
+      height: 48px;
+    }
+
+    .sticky-nav a {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      transition: color var(--transition);
+      position: relative;
+    }
+
+    .sticky-nav a:hover,
+    .sticky-nav a.active {
+      color: var(--green);
+    }
+
+    .sticky-nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--green);
+    }
+
+    /* Live indicator */
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--green);
+      margin-left: auto;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* Charts row */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .chart-card {
+      padding: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+      position: relative;
+    }
+
+    .chart-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--green);
+    }
+
+    .chart-card h3 {
+      font-family: var(--font-syne);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .chart-card canvas {
+      max-height: 300px;
+    }
+
+    /* Score history table */
+    .history-table-wrap {
+      overflow-x: auto;
+      margin-bottom: 48px;
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+
+    .history-table th {
+      text-align: left;
+      padding: 12px 16px;
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .history-table td {
+      padding: 12px 16px;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .history-table tr:hover td {
+      background: rgba(0, 255, 157, 0.03);
+    }
+
+    .delta-pos { color: var(--green); }
+    .delta-neg { color: var(--orange); }
+    .delta-zero { color: var(--muted); }
+
+    /* Timeline */
+    .timeline-mini {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 40px;
+    }
+
+    .timeline-mini-point {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+
+    .timeline-mini-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--green);
+      margin-bottom: 8px;
+    }
+
+    .timeline-mini-dot.future {
+      background: transparent;
+      border: 2px solid var(--border);
+    }
+
+    .timeline-mini-date {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .timeline-mini-label {
+      font-family: var(--font-syne);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .timeline-mini-line {
+      flex: 1;
+      height: 2px;
+      background: var(--green);
+      margin-bottom: 68px;
+      opacity: 0.3;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .charts-row {
+        grid-template-columns: 1fr;
+      }
+
+      .sticky-nav-inner {
+        gap: 16px;
+        overflow-x: auto;
+      }
+
+      .history-table {
+        font-size: 11px;
+      }
+
+      .history-table th,
+      .history-table td {
+        padding: 8px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-grid"></div>
+<div class="bg-scanlines"></div>
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<!-- Main Nav -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">subhankarcloud<span class="brand-dot">.</span>in</a>
+    <div class="nav-links">
+      <a href="/#about" class="nav-link">About</a>
+      <a href="/#projects" class="nav-link">Projects</a>
+      <a href="/#skills" class="nav-link">Skills</a>
+      <a href="/ai-maturity/" class="nav-link active">AI Maturity</a>
+      <a href="/#contact" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-status">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span class="status-text">AVAILABLE FOR WORK</span>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="dashboard-hero">
+  <div class="container">
+    <p class="section-label">/* ai-maturity */</p>
+    <h1 class="section-title">Agentic AI Maturity<br><span class="gradient-text">Dashboard</span></h1>
+    <p class="section-desc">Real-time tracking across 4 layers — 29 production agents scored against the aifolks.org Agentic AI Concepts framework. Auto-refreshed every Monday.</p>
+    <div class="hero-cta">
+      <a href="https://github.com/pattnaik-subhankar/Project-Agents" class="btn btn-primary" target="_blank" rel="noopener">
+        <span>View Agent Repo</span>
+        <span class="btn-arrow">→</span>
+      </a>
+      <a href="/" class="btn btn-secondary">
+        <span>Back to Portfolio</span>
+        <span class="btn-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Sticky Sub-nav -->
+<nav class="sticky-nav" id="dashboardNav">
+  <div class="sticky-nav-inner">
+    <a href="#overview" class="active">Overview</a>
+    <a href="#concepts">Concepts</a>
+    <a href="#history">History</a>
+    <a href="#inventory">Inventory</a>
+    <div class="live-indicator">
+      <span class="live-dot"></span>
+      <span>Auto-refreshed weekly</span>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main" style="max-width:var(--container-max);margin:0 auto;padding:0 clamp(16px,4vw,40px) 80px;">
+
+  <!-- Overview Section -->
+  <section id="overview" class="section" style="padding-top:40px;">
+    <div class="maturity-overview reveal">
+      <div class="maturity-ring-wrapper">
+        <svg class="maturity-ring" viewBox="0 0 220 220" width="280" height="280">
+          <defs>
+            <linearGradient id="grad-ring-llm" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#8b5cf6"/>
+            </linearGradient>
+          </defs>
+          <circle cx="110" cy="110" r="95" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12"/>
+          <circle cx="110" cy="110" r="78" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12"/>
+          <circle cx="110" cy="110" r="61" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12"/>
+          <circle cx="110" cy="110" r="44" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12"/>
+          <circle cx="110" cy="110" r="95" fill="none" stroke="#fbbf24" stroke-width="10" stroke-linecap="round"
+            stroke-dasharray="597" stroke-dashoffset="149" transform="rotate(-90 110 110)" opacity="0.9"/>
+          <circle cx="110" cy="110" r="78" fill="none" stroke="#00ff9d" stroke-width="10" stroke-linecap="round"
+            stroke-dasharray="490" stroke-dashoffset="157" transform="rotate(-90 110 110)" opacity="0.9"/>
+          <circle cx="110" cy="110" r="61" fill="none" stroke="#8b5cf6" stroke-width="10" stroke-linecap="round"
+            stroke-dasharray="383" stroke-dashoffset="92" transform="rotate(-90 110 110)" opacity="0.9"/>
+          <circle cx="110" cy="110" r="44" fill="none" stroke="#38bdf8" stroke-width="10" stroke-linecap="round"
+            stroke-dasharray="276" stroke-dashoffset="61" transform="rotate(-90 110 110)" opacity="0.9"/>
+          <text x="110" y="104" text-anchor="middle" fill="#e8e8f8" font-family="'Syne',sans-serif" font-size="36" font-weight="800">78%</text>
+          <text x="110" y="125" text-anchor="middle" fill="#5a5a7a" font-family="'JetBrains Mono',monospace" font-size="11">overall</text>
+        </svg>
+      </div>
+      <div class="maturity-details">
+        <p class="maturity-subtitle">Measured against the <a href="https://aifolks.org" target="_blank" rel="noopener">aifolks.org</a> Agentic AI Concepts framework</p>
+        <p class="maturity-context">29 production agents across LangGraph, LangChain, LlamaIndex, CrewAI, and custom DAG engines. Dual-compatible with GPT-4o and Claude. All 6 maturity gaps closed — July 31, 2026.</p>
+        <div style="display:flex;gap:12px;margin-top:4px;">
+          <span style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:var(--blue);display:inline-block;"></span>LLMs 78%</span>
+          <span style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:var(--purple);display:inline-block;"></span>Agents 76%</span>
+          <span style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:var(--green);display:inline-block;"></span>Systems 68%</span>
+          <span style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:var(--gold);display:inline-block;"></span>Infra 75%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Strip -->
+    <div class="agent-stats-grid reveal">
+      <div class="agent-stat">
+        <span class="agent-stat-num">29</span>
+        <span class="agent-stat-label">Production Agents</span>
+      </div>
+      <div class="agent-stat">
+        <span class="agent-stat-num">5</span>
+        <span class="agent-stat-label">Frameworks</span>
+      </div>
+      <div class="agent-stat">
+        <span class="agent-stat-num">102</span>
+        <span class="agent-stat-label">Source Files</span>
+      </div>
+      <div class="agent-stat">
+        <span class="agent-stat-num">5.2K+</span>
+        <span class="agent-stat-label">Lines of Code</span>
+      </div>
+    </div>
+
+    <!-- Score Cards -->
+    <div class="maturity-layers reveal">
+      <div class="maturity-layer" data-layer="llms">
+        <div class="layer-header">
+          <span class="layer-icon">🧠</span>
+          <span class="layer-name">LLMs</span>
+          <span class="layer-score">78%</span>
+        </div>
+        <div class="layer-bar-track"><div class="layer-bar-fill" style="width:78%;background:var(--blue);"></div></div>
+        <div class="layer-sub-metrics">
+          <span>Prompt Eng. 95</span><span>Context Eng. 85</span><span>RAG 55</span><span>Fine-tuning 60</span>
+        </div>
+      </div>
+      <div class="maturity-layer" data-layer="agents">
+        <div class="layer-header">
+          <span class="layer-icon">🤖</span>
+          <span class="layer-name">AI Agents</span>
+          <span class="layer-score">76%</span>
+        </div>
+        <div class="layer-bar-track"><div class="layer-bar-fill" style="width:76%;background:var(--purple);"></div></div>
+        <div class="layer-sub-metrics">
+          <span>Tool Chaining 95</span><span>Task Planning 90</span><span>Memory 65</span><span>Reasoning 50</span>
+        </div>
+      </div>
+      <div class="maturity-layer" data-layer="systems">
+        <div class="layer-header">
+          <span class="layer-icon">⚙️</span>
+          <span class="layer-name">Agentic Systems</span>
+          <span class="layer-score">68%</span>
+        </div>
+        <div class="layer-bar-track"><div class="layer-bar-fill" style="width:68%;background:var(--green);"></div></div>
+        <div class="layer-sub-metrics">
+          <span>Planning 58</span><span>Error Handling 45</span><span>Multi-Agent RAG 25</span><span>Comm 55</span>
+        </div>
+      </div>
+      <div class="maturity-layer" data-layer="infra">
+        <div class="layer-header">
+          <span class="layer-icon">🏗️</span>
+          <span class="layer-name">Agentic Infra</span>
+          <span class="layer-score">75%</span>
+        </div>
+        <div class="layer-bar-track"><div class="layer-bar-fill" style="width:75%;background:var(--gold);"></div></div>
+        <div class="layer-sub-metrics">
+          <span>Scheduling 48</span><span>Observability 45</span><span>Resource 70</span><span>Compliance 40</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Charts Row -->
+  <section id="concepts" class="section">
+    <p class="section-label">/* charts */</p>
+    <h2 class="section-title">Concept Breakdown</h2>
+    <div class="charts-row">
+      <div class="chart-card reveal">
+        <h3>Radar: Layer Distribution</h3>
+        <canvas id="radarChart"></canvas>
+      </div>
+      <div class="chart-card reveal">
+        <h3>Score Progression</h3>
+        <canvas id="progressChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- Concept Grids -->
+  <div class="matrix-section" style="margin-bottom:48px;">
+    <h3 class="subsection-title reveal">LLMs — 78%</h3>
+    <div class="gaps-grid reveal">
+      <div class="gap-card" data-severity="done"><span class="gap-check">✅</span><div class="gap-content"><strong>Prompt Engineering</strong> — 95% — System prompt design across 29 agents, platform-specific rules</div></div>
+      <div class="gap-card" data-severity="done"><span class="gap-check">✅</span><div class="gap-content"><strong>Context Engineering</strong> — 85% — Multi-node LangGraph state machines, cross-agent context</div></div>
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>RAG</strong> — 55% — PDF QA (LlamaIndex), Customer Support KB</div></div>
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>Tokenization & Inference</strong> — 40% — Model switching, temperature tuning</div></div>
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>Fine-tuning</strong> — 60% — LoRA Playground with QLoRA + eval</div></div>
+    </div>
+
+    <h3 class="subsection-title reveal">AI Agents — 76%</h3>
+    <div class="gaps-grid reveal">
+      <div class="gap-card" data-severity="done"><span class="gap-check">✅</span><div class="gap-content"><strong>Tool Chaining</strong> — 95% — 22 agents with 2-4 node pipelines</div></div>
+      <div class="gap-card" data-severity="done"><span class="gap-check">✅</span><div class="gap-content"><strong>Task Planning</strong> — 90% — CrewAI multi-agent task decomposition</div></div>
+      <div class="gap-card" data-severity="done"><span class="gap-check">✅</span><div class="gap-content"><strong>Safe Interruptibility</strong> — 82% — Git rebase recovery, approval workflows</div></div>
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>Long-term Memory</strong> — 65% — Persistent store with semantic retrieval</div></div>
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>State Management</strong> — 60% — TypedDict across 22+ agents</div></div>
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>Agent Reasoning</strong> — 50% — ReAct, CoT, multi-agent debate</div></div>
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>Fail-Safe Design</strong> — 35% — Retry, timeout, error handling patterns</div></div>
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>Emergent Behavior</strong> — 5% — Emergence tracker with pattern analysis</div></div>
+    </div>
+
+    <h3 class="subsection-title reveal">Agentic Systems — 68%</h3>
+    <div class="gaps-grid reveal">
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>Hierarchical Planning</strong> — 58% — DAG engine, CrewAI agent hierarchy</div></div>
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>Error Handling</strong> — 45% — Retry logic, graceful degradation, fallback</div></div>
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>Multi-Agent RAG</strong> — 25% — Shared context across CrewAI systems</div></div>
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>Inter-Agent Communication</strong> — 55% — Message bus pub/sub, delegation</div></div>
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>Messaging Protocols</strong> — 5% — Pub/sub with wildcard routing</div></div>
+    </div>
+
+    <h3 class="subsection-title reveal">Agentic Infrastructure — 75%</h3>
+    <div class="gaps-grid reveal">
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>Routing & Scheduling</strong> — 48% — Cron jobs, Queue dispatch, DAG routing</div></div>
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>Observability</strong> — 45% — Health reports, latency tracking, audit logs</div></div>
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>Security & Access Control</strong> — 35% — SSH, GitHub auth, permission checks</div></div>
+      <div class="gap-card" data-severity="done"><span class="gap-check">✅</span><div class="gap-content"><strong>Resource Scaling</strong> — 70% — Auto-scaling worker pool</div></div>
+      <div class="gap-card" data-severity="active"><span class="gap-check">🟡</span><div class="gap-content"><strong>Compliance & Governance</strong> — 40% — GDPR, ISO, EU AI Act mapping</div></div>
+      <div class="gap-card" data-severity="done"><span class="gap-check">✅</span><div class="gap-content"><strong>Fairness & Ethics</strong> — 75% — 7-dimension bias detection</div></div>
+    </div>
+  </div>
+
+  <!-- History Section -->
+  <section id="history" class="section">
+    <p class="section-label">/* history */</p>
+    <h2 class="section-title">Score Progression</h2>
+
+    <!-- Timeline -->
+    <div class="timeline-mini reveal">
+      <div class="timeline-mini-point">
+        <div class="timeline-mini-dot"></div>
+        <span class="timeline-mini-date">Jul 25</span>
+        <span class="timeline-mini-label">Baseline<br>~48%</span>
+      </div>
+      <div class="timeline-mini-line"></div>
+      <div class="timeline-mini-point">
+        <div class="timeline-mini-dot"></div>
+        <span class="timeline-mini-date">Jul 31</span>
+        <span class="timeline-mini-label">29 Agents<br>~78%</span>
+      </div>
+      <div class="timeline-mini-line" style="opacity:0.1;"></div>
+      <div class="timeline-mini-point">
+        <div class="timeline-mini-dot future"></div>
+        <span class="timeline-mini-date">Aug 3</span>
+        <span class="timeline-mini-label">Auto Review<br>Pending</span>
+      </div>
+    </div>
+
+    <div class="history-table-wrap reveal">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>LLMs</th>
+            <th>AI Agents</th>
+            <th>Systems</th>
+            <th>Infra</th>
+            <th>Overall</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2026-07-25</td>
+            <td>58%</td><td>62%</td><td>38%</td><td>35%</td>
+            <td style="font-weight:700;">48%</td>
+            <td>Baseline — 2 agents, dashboard created</td>
+          </tr>
+          <tr>
+            <td>2026-07-31</td>
+            <td><span class="delta-pos">78% (+20)</span></td>
+            <td><span class="delta-pos">76% (+14)</span></td>
+            <td><span class="delta-pos">68% (+30)</span></td>
+            <td><span class="delta-pos">75% (+40)</span></td>
+            <td style="font-weight:700;color:var(--green);">78% (+30)</td>
+            <td>29 agents built. 6/6 gaps closed</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Agent Inventory -->
+  <section id="inventory" class="section">
+    <p class="section-label">/* inventory */</p>
+    <h2 class="section-title">Agent Inventory — 29 Agents</h2>
+
+    <div class="agent-categories reveal">
+      <div class="agent-category">
+        <span class="cat-icon">🔍</span>
+        <span class="cat-label">Research & Knowledge</span>
+        <span class="cat-agents">Web Research, PDF QA, News Digest, Stock Research</span>
+      </div>
+      <div class="agent-category">
+        <span class="cat-icon">💻</span>
+        <span class="cat-label">Dev & Engineering</span>
+        <span class="cat-agents">Code Review, SQL Query, Unit Test Gen, Documentation, GitHub Triage</span>
+      </div>
+      <div class="agent-category">
+        <span class="cat-icon">📊</span>
+        <span class="cat-label">Business & Analysis</span>
+        <span class="cat-agents">Email Drafting, Data Analysis, Resume Parser, Job Application</span>
+      </div>
+      <div class="agent-category">
+        <span class="cat-icon">👥</span>
+        <span class="cat-label">Multi-Agent Systems</span>
+        <span class="cat-agents">Travel Planner, Competitive Analysis, Multi-Agent Debate (CrewAI)</span>
+      </div>
+      <div class="agent-category">
+        <span class="cat-icon">⚡</span>
+        <span class="cat-label">Infra & Operations</span>
+        <span class="cat-agents">Pipeline Orchestrator, Resource Scaler, Infra Monitor, Fairness Guard</span>
+      </div>
+      <div class="agent-category">
+        <span class="cat-icon">🛠️</span>
+        <span class="cat-label">Productivity</span>
+        <span class="cat-agents">Meeting Notes, Social Media, Recipe Gen, Customer Support, Memory Context</span>
+      </div>
+    </div>
+
+    <!-- Weekly Tracker -->
+    <div class="weekly-tracker reveal">
+      <div class="tracker-header">
+        <span class="tracker-dot"></span>
+        <h3>Weekly Auto-Review — Live</h3>
+      </div>
+      <p class="tracker-desc">Every Monday at 9:00 AM IST, this dashboard auto-refreshes from the latest scores. The system checks GitHub commits, reassesses every concept, and writes updated JSON data directly to this page. No manual updates needed.</p>
+      <div class="tracker-meta">
+        <span class="tracker-tag">Next: Monday Aug 3</span>
+        <span class="tracker-tag">Data: maturity-data.json</span>
+        <span class="tracker-tag">Auto-scoring</span>
+        <span class="tracker-tag">Trend tracking</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" style="text-align:center;padding:48px 0;border-top:1px solid var(--border);">
+    <p style="font-family:var(--font-mono);font-size:12px;color:var(--muted);">
+      &copy; 2026 Subhankar Pattnaik · Built by Hive Agent 001 🐝 · Auto-refreshed weekly
+    </p>
+    <p style="font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-top:8px;">
+      <a href="/" style="color:var(--green);text-decoration:none;">Portfolio</a> ·
+      <a href="https://github.com/pattnaik-subhankar/Project-Agents" style="color:var(--green);text-decoration:none;">Agent Repo</a> ·
+      <a href="https://linkedin.com/in/subhankarpattnaik007" style="color:var(--green);text-decoration:none;">LinkedIn</a>
+    </p>
+  </footer>
+</div>
+
+<script>
+// ── Radar Chart ──
+const radarCtx = document.getElementById('radarChart').getContext('2d');
+new Chart(radarCtx, {
+  type: 'radar',
+  data: {
+    labels: ['Prompt Eng.', 'Context Eng.', 'RAG', 'Fine-tuning', 'Tool Chaining', 'Task Planning', 'Agent Reasoning', 'Hierarchical Planning', 'Error Handling', 'Resource Scaling', 'Fairness & Ethics', 'Compliance'],
+    datasets: [{
+      label: 'Current Score',
+      data: [95, 85, 55, 60, 95, 90, 50, 58, 45, 70, 75, 40],
+      backgroundColor: 'rgba(0, 255, 157, 0.08)',
+      borderColor: '#00ff9d',
+      borderWidth: 2,
+      pointBackgroundColor: '#00ff9d',
+      pointBorderColor: '#06060f',
+      pointRadius: 4,
+    }, {
+      label: 'Baseline (Jul 25)',
+      data: [85, 70, 40, 0, 75, 70, 30, 25, 15, 0, 0, 0],
+      backgroundColor: 'rgba(139, 92, 246, 0.05)',
+      borderColor: '#8b5cf6',
+      borderWidth: 1.5,
+      borderDash: [5, 5],
+      pointBackgroundColor: '#8b5cf6',
+      pointBorderColor: '#06060f',
+      pointRadius: 3,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        labels: { color: '#5a5a7a', font: { family: "'JetBrains Mono', monospace", size: 11 } }
+      }
+    },
+    scales: {
+      r: {
+        beginAtZero: true,
+        max: 100,
+        ticks: { display: false },
+        grid: { color: 'rgba(255,255,255,0.06)' },
+        angleLines: { color: 'rgba(255,255,255,0.06)' },
+        pointLabels: { color: '#5a5a7a', font: { family: "'JetBrains Mono', monospace", size: 9 } }
+      }
+    }
+  }
+});
+
+// ── Progress Chart ──
+const progCtx = document.getElementById('progressChart').getContext('2d');
+new Chart(progCtx, {
+  type: 'bar',
+  data: {
+    labels: ['LLMs', 'AI Agents', 'Agentic Systems', 'Agentic Infra'],
+    datasets: [{
+      label: 'Jul 25 Baseline',
+      data: [58, 62, 38, 35],
+      backgroundColor: ['rgba(56,189,248,0.15)', 'rgba(139,92,246,0.15)', 'rgba(0,255,157,0.15)', 'rgba(251,191,36,0.15)'],
+      borderColor: ['#38bdf8', '#8b5cf6', '#00ff9d', '#fbbf24'],
+      borderWidth: 1,
+      borderDash: [4, 4],
+    }, {
+      label: 'Jul 31 Current',
+      data: [78, 76, 68, 75],
+      backgroundColor: ['rgba(56,189,248,0.5)', 'rgba(139,92,246,0.5)', 'rgba(0,255,157,0.5)', 'rgba(251,191,36,0.5)'],
+      borderColor: ['#38bdf8', '#8b5cf6', '#00ff9d', '#fbbf24'],
+      borderWidth: 2,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        labels: { color: '#5a5a7a', font: { family: "'JetBrains Mono', monospace", size: 11 } }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { color: '#5a5a7a', font: { family: "'Syne', sans-serif", size: 12, weight: '700' } },
+        grid: { display: false }
+      },
+      y: {
+        beginAtZero: true,
+        max: 100,
+        ticks: { color: '#5a5a7a', font: { family: "'JetBrains Mono', monospace", size: 10 }, callback: v => v + '%' },
+        grid: { color: 'rgba(255,255,255,0.04)' }
+      }
+    }
+  }
+});
+
+// ── Sticky nav highlight ──
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.sticky-nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 150) current = s.getAttribute('id');
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+</script>
+
+<script src="../js/main.js"></script>
+</body>
+</html>

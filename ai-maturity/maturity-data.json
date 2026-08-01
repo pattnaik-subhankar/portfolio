@@ -1,0 +1,75 @@
+{
+  "last_updated": "2026-08-01T18:50:00+05:30",
+  "overall_score": 78,
+  "layers": {
+    "llms": {
+      "score": 78,
+      "color": "#38bdf8",
+      "concepts": {
+        "Prompt Engineering": 95,
+        "Context Engineering": 85,
+        "RAG": 55,
+        "Tokenization & Inference": 40,
+        "Fine-tuning & Adaptation": 60
+      }
+    },
+    "agents": {
+      "score": 76,
+      "color": "#8b5cf6",
+      "concepts": {
+        "Multi-Step Tool Chaining": 95,
+        "Task Planning & Decomposition": 90,
+        "Safe Interruptibility": 82,
+        "Long-term Memory": 65,
+        "State Management": 60,
+        "Agent Reasoning": 50,
+        "Fail-Safe Design": 35,
+        "Emergent Behavior Analysis": 5
+      }
+    },
+    "systems": {
+      "score": 68,
+      "color": "#00ff9d",
+      "concepts": {
+        "Hierarchical Planning": 58,
+        "Error Handling & Resilience": 45,
+        "Multi-Agent RAG": 25,
+        "Inter-Agent Communication": 55,
+        "Messaging Protocols": 5
+      }
+    },
+    "infra": {
+      "score": 75,
+      "color": "#fbbf24",
+      "concepts": {
+        "Routing & Scheduling": 48,
+        "Observability & Monitoring": 45,
+        "Security & Access Control": 35,
+        "Resource Scaling": 70,
+        "Compliance & Governance": 40,
+        "Fairness, Bias & Ethics": 75
+      }
+    }
+  },
+  "history": [
+    {"date": "2026-07-25", "llms": 58, "agents": 62, "systems": 38, "infra": 35},
+    {"date": "2026-07-31", "llms": 78, "agents": 76, "systems": 68, "infra": 75}
+  ],
+  "agent_count": 29,
+  "frameworks": ["LangGraph", "LangChain", "LlamaIndex", "CrewAI", "Custom DAG Engine"],
+  "gaps_closed": 6,
+  "total_gaps": 6,
+  "categories": [
+    {"name": "Research & Knowledge", "agents": ["Web Research", "PDF QA", "News Digest", "Stock Research"], "icon": "🔍"},
+    {"name": "Dev & Engineering", "agents": ["Code Review", "SQL Query", "Unit Test Gen", "Documentation", "GitHub Triage"], "icon": "💻"},
+    {"name": "Business & Analysis", "agents": ["Email Drafting", "Data Analysis", "Resume Parser", "Job Application"], "icon": "📊"},
+    {"name": "Multi-Agent Systems", "agents": ["Travel Planner", "Competitive Analysis", "Multi-Agent Debate"], "icon": "👥"},
+    {"name": "Infra & Ops", "agents": ["Pipeline Orchestrator", "Resource Scaler", "Infra Monitor", "Fairness Guard"], "icon": "⚡"},
+    {"name": "Productivity", "agents": ["Meeting Notes", "Social Media", "Recipe Gen", "Customer Support", "Memory Context"], "icon": "🛠️"}
+  ],
+  "weekly_cron": {
+    "active": true,
+    "schedule": "Every Monday 9:00 AM IST",
+    "next_run": "2026-08-03T09:00:00+05:30"
+  }
+}
