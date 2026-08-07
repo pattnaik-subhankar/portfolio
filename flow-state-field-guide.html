@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flow State Field Guide — CerebralSubhankar — CerebralSubhankar</title>
+<meta name="description" content="{meta_desc}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{{--bg:#07070e;--surface:rgba(255,255,255,0.04);--surface-2:rgba(255,255,255,0.07);--border:rgba(255,255,255,0.09);--border-strong:rgba(255,255,255,0.16);--text:#ececf4;--muted:#9a9ab2;--dim:#6a6a85;--emerald:#34d399;--violet:#a78bfa;--gold:#fcd34d;--accent:#34d399;--grad-brand:linear-gradient(120deg,#34d399 0%,#a78bfa 55%,#fcd34d 110%);--font-display:'Syne',sans-serif;--font-body:'Space Grotesk',sans-serif;--radius:22px;--radius-sm:14px;--ease:cubic-bezier(0.22,1,0.36,1)}}
+*,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
+html{{scroll-behavior:smooth}}
+body{{background:var(--bg);color:var(--text);font-family:var(--font-body);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}}
+::selection{{background:rgba(52,211,153,0.3)}}
+.aurora{{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden}}
+.aurora::before{{content:'';position:absolute;width:60vw;height:60vw;top:-25vw;left:-15vw;border-radius:50%;filter:blur(120px);background:radial-gradient(circle,rgba(52,211,153,0.16),transparent 65%);animation:drift 26s ease-in-out infinite alternate}}
+.aurora::after{{content:'';position:absolute;width:55vw;height:55vw;bottom:-22vw;right:-12vw;border-radius:50%;filter:blur(120px);background:radial-gradient(circle,rgba(167,139,250,0.18),transparent 65%);animation:drift 32s ease-in-out infinite alternate-reverse}}
+@keyframes drift{{0%{{transform:translate(0,0) scale(1)}}100%{{transform:translate(6vw,4vw) scale(1.15)}}}}
+.grain{{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0.05;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}}
+.progress{{position:fixed;top:0;left:0;height:2px;width:0%;background:var(--grad-brand);z-index:200;transition:width 0.1s linear}}
+.wrap{{max-width:1060px;margin:0 auto;padding:0 clamp(20px,5vw,40px)}}
+nav{{position:sticky;top:0;z-index:150;backdrop-filter:blur(18px);background:rgba(7,7,14,0.72);border-bottom:1px solid var(--border)}}
+.nav-inner{{max-width:1060px;margin:0 auto;padding:0 clamp(20px,5vw,40px);height:60px;display:flex;align-items:center;justify-content:space-between}}
+.brand{{font-family:var(--font-display);font-weight:800;font-size:1rem;text-decoration:none;color:var(--text)}}
+.brand em{{font-style:normal;background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}}
+.nav-cta{{padding:8px 18px;border-radius:100px;background:var(--grad-brand);color:#08120d;font-weight:600;font-size:0.8rem;text-decoration:none;transition:transform 0.25s var(--ease),box-shadow 0.25s}}
+.nav-cta:hover{{transform:translateY(-2px);box-shadow:0 8px 28px rgba(52,211,153,0.4)}}
+.hero{{padding:clamp(80px,11vh,130px) 0 60px;text-align:center}}
+.hero-pill{{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:100px;background:var(--surface);border:1px solid var(--border);font-size:0.76rem;color:var(--muted);margin-bottom:26px}}
+.hero-pill .dot{{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);animation:pulse 2.4s ease-in-out infinite}}
+@keyframes pulse{{0%,100%{{opacity:1}}50%{{opacity:0.35}}}}
+.hero h1{{font-family:var(--font-display);font-weight:800;font-size:clamp(2.4rem,6.4vw,4.2rem);line-height:1.06;letter-spacing:-0.03em;margin-bottom:20px}}
+.hero h1 .grad{{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}}
+.hero-sub{{max-width:620px;margin:0 auto 28px;font-size:clamp(1rem,2.1vw,1.18rem);color:var(--muted);font-weight:300}}
+.hero-ctas{{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}}
+.btn{{padding:14px 28px;border-radius:100px;font-weight:600;font-size:0.88rem;text-decoration:none;display:inline-flex;align-items:center;gap:9px;transition:transform 0.25s var(--ease),box-shadow 0.25s;border:none;cursor:pointer;font-family:var(--font-body)}}
+.btn-primary{{background:var(--grad-brand);color:#08120d;box-shadow:0 6px 26px rgba(52,211,153,0.3)}}
+.btn-primary:hover{{transform:translateY(-3px);box-shadow:0 12px 36px rgba(52,211,153,0.45)}}
+.btn-ghost{{background:var(--surface);border:1px solid var(--border-strong);color:var(--text)}}
+.btn-ghost:hover{{transform:translateY(-3px);background:var(--surface-2)}}
+.hero-meta{{margin-top:24px;font-size:0.8rem;color:var(--dim)}}
+.hero-meta b{{color:var(--muted)}}
+section{{padding:clamp(64px,8vw,96px) 0}}
+.sec-tag{{display:inline-block;font-size:0.74rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}}
+.sec-title{{font-family:var(--font-display);font-weight:800;font-size:clamp(1.6rem,3.8vw,2.4rem);letter-spacing:-0.02em;line-height:1.15;margin-bottom:16px}}
+.sec-sub{{color:var(--muted);font-weight:300;font-size:1rem;max-width:620px}}
+.sec-head{{max-width:640px;margin-bottom:44px}}
+.sec-head.center{{margin-left:auto;margin-right:auto;text-align:center}}
+.sec-head.center .sec-sub{{margin-left:auto;margin-right:auto}}
+.grid-cards{{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}}
+@media(max-width:900px){{.grid-cards{{grid-template-columns:repeat(2,1fr)}}}}
+@media(max-width:560px){{.grid-cards{{grid-template-columns:1fr}}}}
+.card{{padding:26px 22px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--border);transition:transform 0.35s var(--ease),border-color 0.35s}}
+.card:hover{{transform:translateY(-4px);border-color:rgba(255,255,255,0.25)}}
+.card .n{{font-family:var(--font-display);font-weight:800;font-size:1.3rem;background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:block;margin-bottom:8px}}
+.card h4{{font-family:var(--font-display);font-weight:700;font-size:0.94rem;margin-bottom:7px}}
+.card p{{font-size:0.82rem;color:var(--muted);font-weight:300;line-height:1.55}}
+.preview{{border-radius:calc(var(--radius) + 8px);padding:clamp(32px,5vw,52px);border:1px solid rgba(167,139,250,0.3);background:linear-gradient(140deg,rgba(167,139,250,0.08),rgba(7,7,14,0.6) 55%);position:relative;overflow:hidden}}
+.preview .grid{{display:grid;grid-template-columns:1.2fr 0.8fr;gap:36px;align-items:center;position:relative;z-index:1}}
+@media(max-width:820px){{.preview .grid{{grid-template-columns:1fr}}}}
+.preview h2{{font-family:var(--font-display);font-weight:800;font-size:clamp(1.4rem,3.2vw,2rem);letter-spacing:-0.02em;margin-bottom:12px;line-height:1.15}}
+.preview p{{color:var(--muted);font-weight:300;font-size:0.95rem;margin-bottom:10px}}
+.preview .frame{{display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 22px;border-radius:var(--radius);background:rgba(255,255,255,0.04);border:1px solid var(--border-strong);text-align:center}}
+.preview .file{{width:56px;height:68px;border-radius:8px;background:var(--grad-brand);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:0.78rem;color:#08120d;box-shadow:0 8px 24px rgba(167,139,250,0.35)}}
+.preview .name{{font-family:var(--font-display);font-weight:700;font-size:0.98rem}}
+.preview .size{{font-size:0.76rem;color:var(--dim)}}
+.pricing-card{{max-width:540px;margin:0 auto;padding:clamp(30px,4.6vw,44px);border-radius:calc(var(--radius) + 6px);background:linear-gradient(160deg,rgba(167,139,250,0.08),rgba(255,255,255,0.03) 45%);border:1px solid rgba(167,139,250,0.35);text-align:center;position:relative;overflow:hidden}}
+.pricing-card::before{{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:60%;height:1px;background:linear-gradient(90deg,transparent,var(--violet),transparent)}}
+.price-name{{font-family:var(--font-display);font-weight:800;font-size:1.25rem;margin-bottom:18px}}
+.price-row{{display:flex;align-items:baseline;justify-content:center;gap:14px;margin-bottom:6px}}
+.price-now{{font-family:var(--font-display);font-weight:800;font-size:3.2rem;letter-spacing:-0.03em;background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}}
+.price-old{{font-family:var(--font-display);font-weight:600;font-size:1.25rem;color:var(--dim);text-decoration:line-through}}
+.price-note{{font-size:0.78rem;color:var(--dim);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:24px}}
+.pricing-card ul{{list-style:none;text-align:left;margin:0 auto 28px;max-width:420px;display:grid;gap:11px}}
+.pricing-card li{{display:flex;gap:11px;font-size:0.9rem;color:var(--muted);font-weight:300;align-items:flex-start}}
+.pricing-card li::before{{content:'✓';color:var(--violet);font-weight:700;flex-shrink:0}}
+.guarantee{{margin-top:14px;font-size:0.78rem;color:var(--dim)}}
+.bundle{{margin-top:22px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);padding:24px;text-align:center}}
+.bundle p{{font-size:0.9rem;color:var(--muted);font-weight:300;margin-bottom:12px}}
+.bundle a{{font-family:var(--font-display);font-weight:700;color:var(--emerald);text-decoration:none;font-size:0.95rem}}
+.bundle a:hover{{text-decoration:underline}}
+.final{{text-align:center}}
+.final h2{{font-family:var(--font-display);font-weight:800;font-size:clamp(1.7rem,4.2vw,2.6rem);letter-spacing:-0.02em;line-height:1.12;margin-bottom:16px}}
+.final h2 .grad{{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}}
+.final p{{color:var(--muted);font-weight:300;max-width:500px;margin:0 auto 28px}}
+footer{{border-top:1px solid var(--border);padding:48px 0 38px;text-align:center}}
+.footer-brand{{font-family:var(--font-display);font-weight:800;font-size:1.05rem;margin-bottom:14px}}
+.footer-brand em{{font-style:normal;background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}}
+.footer-links{{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}}
+.footer-links a{{font-size:0.84rem;color:var(--muted);text-decoration:none;transition:color 0.25s}}
+.footer-links a:hover{{color:var(--emerald)}}
+.footer-built{{font-size:0.76rem;color:var(--dim)}}
+.reveal{{opacity:0;transform:translateY(28px);transition:opacity 0.7s var(--ease),transform 0.7s var(--ease)}}
+.reveal.visible{{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion: reduce){{.reveal{{opacity:1;transform:none;transition:none}}.aurora{{animation:none}}}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="aurora"></div>
+<div class="grain"></div>
+<nav>
+<div class="nav-inner">
+<a class="brand" href="/mental-performance-os.html">Cerebral<em>Subhankar</em></a>
+<a class="nav-cta" href="#" id="gumroad-link-nav">Get the Flow Field Guide</a>
+</div>
+</nav>
+<header class="hero">
+<div class="wrap">
+<span class="hero-pill"><span class="dot"></span> Spin-off #3 · Performance Series</span>
+<h1>Flow State <span class="grad">Field Guide</span></h1>
+<p class="hero-sub">Flow is engineered, not found. A practical field guide to entering deep absorption on demand.</p>
+<div class="hero-ctas">
+<a href="#" class="btn btn-primary" id="gumroad-link-hero">Get the Flow Field Guide <span>→</span></a>
+<a href="/flow-state-field-guide.pdf" class="btn btn-ghost" download>Preview the PDF <span>↓</span></a>
+</div>
+<p class="hero-meta"><b>$14</b> · 6 conditions · 10-min ritual · Instant download · Science-backed</p>
+</div>
+</header>
+<section id="core">
+<div class="wrap">
+<div class="sec-head center reveal">
+<span class="sec-tag">The Method</span>
+<h2 class="sec-title">The six conditions</h2>
+<p class="sec-sub">Flow appears when challenge and skill are both high and balanced. The field guide engineers all six conditions so the state stops being luck.</p>
+</div>
+<div class="grid-cards reveal">
+<div class="card"><span class="n">01</span><h4>Clear Single Goal</h4><p>Ambiguity is the enemy of flow. One goal, one outcome, one sentence.</p></div><div class="card"><span class="n">02</span><h4>Challenge +4%</h4><p>Too easy: boredom. Too hard: anxiety. The flow channel sits at 4% above skill.</p></div><div class="card"><span class="n">03</span><h4>Zero Interruptions</h4><p>Phone in another room. One tab. Each interruption costs up to 23 minutes.</p></div><div class="card"><span class="n">04</span><h4>Activation Ritual</h4><p>Same music, same drink, same lighting. Train the cue.</p></div><div class="card"><span class="n">05</span><h4>90-Minute Blocks</h4><p>Enter once, stay until the block ends. Flow happens in blocks, not sprints.</p></div><div class="card"><span class="n">06</span><h4>Recovery</h4><p>Flow depletes. 10-15 minutes of deliberate rest after each block.</p></div><div class="card"><span class="n">07</span><h4>Pre-Flow Ritual</h4><p>The 10-minute setup: clear desk, one tab, written goal, timer, mantra.</p></div><div class="card"><span class="n">08</span><h4>Flow Breakers</h4><p>Phone checks, multitasking, perfectionism, skipped recovery. Each with a fix.</p></div>
+</div>
+</div>
+</section>
+<section id="preview">
+<div class="wrap">
+<div class="preview reveal">
+<div class="grid">
+<div>
+<span class="sec-tag" style="color:var(--gold)">What's Inside</span>
+<h2>Six conditions. One ritual. Zero luck.</h2>
+<p>The complete pre-flow ritual (10 minutes), the six conditions of deep absorption, and the four flow breakers with their fixes.</p>
+<p>Built on primary research: Csikszentmihalyi (1990) and Dietrich (2004). The same module that powers Day 5 of the 30-day challenge.</p>
+<a href="/flow-state-field-guide.pdf" class="btn btn-primary" download>Preview the Full PDF <span>↓</span></a>
+</div>
+<div class="frame">
+<div class="file">PDF</div>
+<div class="name">Flow State Field Guide</div>
+<div class="size">4 pages · 25 KB · Instant download</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="pricing">
+<div class="wrap">
+<div class="pricing-card reveal">
+<h3 class="price-name">Flow State Field Guide</h3>
+<div class="price-row"><span class="price-now">$14</span><span class="price-old">$19</span></div>
+<div class="price-note">Launch pricing</div>
+<ul>
+<li>The six conditions of flow, engineered</li><li>The 10-minute pre-flow ritual, step by step</li><li>The 4 flow breakers and their fixes</li><li>Block design: length, breaks, recovery</li><li>Science citations: Csikszentmihalyi, Dietrich</li><li>Lifetime updates included</li>
+</ul>
+<a href="#" class="btn btn-primary" style="width:100%;justify-content:center" id="gumroad-link-bottom">Get the Flow Field Guide <span>→</span></a>
+<p class="guarantee">14-day full refund. No questions asked.</p>
+<div class="bundle">
+<p>Want the full system? The Flow Field Guide is one module inside the Mental Performance OS: 30-day challenge, 5 databases, 50 AI prompts.</p>
+<a href="/mental-performance-os.html">Mental Performance OS → $24 launch</a>
+</div>
+</div>
+</div>
+</section>
+<section class="final">
+<div class="wrap">
+<h2 class="reveal">Enter the <span class='grad'>state.</span></h2>
+<p class="reveal">The inner critic goes silent when the work is absorbing enough. That is not luck. It is design.</p>
+<div class="hero-ctas reveal">
+<a href="#" class="btn btn-primary" id="gumroad-link-final">Get the Flow Field Guide <span>→</span></a>
+<a href="/mental-performance-os.html" class="btn btn-ghost">Explore the Full OS <span>→</span></a>
+</div>
+</div>
+</section>
+<footer>
+<div class="wrap">
+<div class="footer-brand">Cerebral<em>Subhankar</em></div>
+<div class="footer-links">
+<a href="https://threads.net/@pattnaik_subhankar">Threads</a>
+<a href="https://subhankarcloud.in">Portfolio</a>
+<a href="https://github.com/pattnaik-subhankar/Project-Agents">150 Agents</a>
+</div>
+<p class="footer-built">Built by Hive Agent 001 · 150 AI agents · CerebralSubhankar product line. © 2026 Subhankar Pattnaik.</p>
+</div>
+</footer>
+<script>
+const bar=document.getElementById('progress');
+addEventListener('scroll',()=>{{const h=document.documentElement;bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'}},{{passive:true}});
+const obs=new IntersectionObserver(es=>{{es.forEach(e=>{{if(e.isIntersecting){{e.target.classList.add('visible');obs.unobserve(e.target)}}}})}},{{threshold:0.15}});
+document.querySelectorAll('.reveal').forEach(e=>obs.observe(e));
+</script>
+</body>
+</html>
