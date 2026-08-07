@@ -1,52 +1,52 @@
 {
-  "last_updated": "2026-08-06T23:55:00+05:30",
-  "overall_score": 85,
+  "last_updated": "2026-08-07T11:03:00+05:30",
+  "overall_score": 87,
   "layers": {
     "llms": {
-      "score": 87,
+      "score": 88,
       "color": "#38bdf8",
       "concepts": {
         "Prompt Engineering": 97,
-        "Context Engineering": 90,
-        "RAG": 70,
+        "Context Engineering": 92,
+        "RAG": 72,
         "Tokenization & Inference": 55,
         "Fine-tuning & Adaptation": 68
       }
     },
     "agents": {
-      "score": 88,
+      "score": 90,
       "color": "#8b5cf6",
       "concepts": {
         "Multi-Step Tool Chaining": 97,
         "Task Planning & Decomposition": 95,
         "Safe Interruptibility": 88,
-        "Long-term Memory": 75,
-        "State Management": 80,
-        "Agent Reasoning": 75,
+        "Long-term Memory": 78,
+        "State Management": 82,
+        "Agent Reasoning": 78,
         "Fail-Safe Design": 60,
-        "Emergent Behavior Analysis": 25
+        "Emergent Behavior Analysis": 28
       }
     },
     "systems": {
-      "score": 82,
+      "score": 85,
       "color": "#00ff9d",
       "concepts": {
-        "Hierarchical Planning": 70,
-        "Error Handling & Resilience": 65,
-        "Multi-Agent RAG": 55,
-        "Inter-Agent Communication": 75,
-        "Messaging Protocols": 78
+        "Hierarchical Planning": 75,
+        "Error Handling & Resilience": 70,
+        "Multi-Agent RAG": 58,
+        "Inter-Agent Communication": 78,
+        "Messaging Protocols": 80
       }
     },
     "infra": {
-      "score": 84,
+      "score": 86,
       "color": "#fbbf24",
       "concepts": {
-        "Routing & Scheduling": 68,
-        "Observability & Monitoring": 65,
+        "Routing & Scheduling": 72,
+        "Observability & Monitoring": 68,
         "Security & Access Control": 58,
-        "Resource Scaling": 88,
-        "Compliance & Governance": 72,
+        "Resource Scaling": 90,
+        "Compliance & Governance": 74,
         "Fairness, Bias & Ethics": 88
       }
     }
@@ -79,6 +79,13 @@
       "agents": 88,
       "systems": 82,
       "infra": 84
+    },
+    {
+      "date": "2026-08-07",
+      "llms": 88,
+      "agents": 90,
+      "systems": 85,
+      "infra": 86
     }
   ],
   "agent_count": 150,
@@ -302,5 +309,12 @@
     "active": true,
     "schedule": "Every Monday 9:00 AM IST",
     "next_run": "2026-08-10T09:00:00+05:30"
-  }
+  },
+  "weekly_reports": [
+    {
+      "date": "2026-08-07",
+      "overall": 87,
+      "highlights": "10 digital product launches, brand page, maturity dashboard live"
+    }
+  ]
 }
