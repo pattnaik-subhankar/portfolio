@@ -1,53 +1,53 @@
 {
-  "last_updated": "2026-08-03T20:32:51+05:30",
-  "overall_score": 82,
+  "last_updated": "2026-08-06T23:55:00+05:30",
+  "overall_score": 85,
   "layers": {
     "llms": {
-      "score": 82,
+      "score": 87,
       "color": "#38bdf8",
       "concepts": {
-        "Prompt Engineering": 95,
-        "Context Engineering": 85,
-        "RAG": 62,
-        "Tokenization & Inference": 45,
-        "Fine-tuning & Adaptation": 60
+        "Prompt Engineering": 97,
+        "Context Engineering": 90,
+        "RAG": 70,
+        "Tokenization & Inference": 55,
+        "Fine-tuning & Adaptation": 68
       }
     },
     "agents": {
-      "score": 80,
+      "score": 88,
       "color": "#8b5cf6",
       "concepts": {
-        "Multi-Step Tool Chaining": 95,
-        "Task Planning & Decomposition": 90,
-        "Safe Interruptibility": 82,
-        "Long-term Memory": 68,
-        "State Management": 65,
-        "Agent Reasoning": 60,
-        "Fail-Safe Design": 45,
-        "Emergent Behavior Analysis": 5
+        "Multi-Step Tool Chaining": 97,
+        "Task Planning & Decomposition": 95,
+        "Safe Interruptibility": 88,
+        "Long-term Memory": 75,
+        "State Management": 80,
+        "Agent Reasoning": 75,
+        "Fail-Safe Design": 60,
+        "Emergent Behavior Analysis": 25
       }
     },
     "systems": {
-      "score": 72,
+      "score": 82,
       "color": "#00ff9d",
       "concepts": {
-        "Hierarchical Planning": 58,
-        "Error Handling & Resilience": 52,
-        "Multi-Agent RAG": 35,
-        "Inter-Agent Communication": 55,
-        "Messaging Protocols": 60
+        "Hierarchical Planning": 70,
+        "Error Handling & Resilience": 65,
+        "Multi-Agent RAG": 55,
+        "Inter-Agent Communication": 75,
+        "Messaging Protocols": 78
       }
     },
     "infra": {
-      "score": 78,
+      "score": 84,
       "color": "#fbbf24",
       "concepts": {
-        "Routing & Scheduling": 48,
-        "Observability & Monitoring": 45,
-        "Security & Access Control": 35,
-        "Resource Scaling": 75,
-        "Compliance & Governance": 55,
-        "Fairness, Bias & Ethics": 78
+        "Routing & Scheduling": 68,
+        "Observability & Monitoring": 65,
+        "Security & Access Control": 58,
+        "Resource Scaling": 88,
+        "Compliance & Governance": 72,
+        "Fairness, Bias & Ethics": 88
       }
     }
   },
@@ -72,9 +72,16 @@
       "agents": 80,
       "systems": 72,
       "infra": 78
+    },
+    {
+      "date": "2026-08-06",
+      "llms": 87,
+      "agents": 88,
+      "systems": 82,
+      "infra": 84
     }
   ],
-  "agent_count": 49,
+  "agent_count": 150,
   "frameworks": [
     "LangGraph",
     "LangChain",
@@ -91,7 +98,10 @@
         "Web Research",
         "PDF QA",
         "News Digest",
-        "Stock Research"
+        "Stock Research",
+        "Literature Review",
+        "Data Collector",
+        "Meta-Analysis"
       ],
       "icon": "🔍"
     },
@@ -102,7 +112,12 @@
         "SQL Query",
         "Unit Test Gen",
         "Documentation",
-        "GitHub Triage"
+        "API Docs",
+        "Code Explainer",
+        "Refactoring Advisor",
+        "Debugger",
+        "Schema Designer",
+        "Test Case Gen"
       ],
       "icon": "💻"
     },
@@ -112,28 +127,66 @@
         "Email Drafting",
         "Data Analysis",
         "Resume Parser",
-        "Job Application"
+        "Job Application",
+        "Financial Report",
+        "Budget Planner",
+        "Invoice Extractor",
+        "Expense Analyzer"
       ],
       "icon": "📊"
+    },
+    {
+      "name": "Sales & Marketing",
+      "agents": [
+        "Sales Email",
+        "Lead Scoring",
+        "Ad Copy",
+        "Landing Page Copy",
+        "Market Segmentation",
+        "Influencer Outreach",
+        "Referral Program",
+        "A/B Test Analyzer",
+        "Product Launch"
+      ],
+      "icon": "📣"
+    },
+    {
+      "name": "Content Pipeline",
+      "agents": [
+        "SEO Content",
+        "Newsletter",
+        "Copywriting",
+        "Ghostwriter",
+        "Press Release",
+        "Case Study",
+        "Content Repurposer",
+        "Lead Magnet Builder",
+        "Blog Writer",
+        "Video Script"
+      ],
+      "icon": "✍️"
     },
     {
       "name": "Multi-Agent Systems",
       "agents": [
         "Travel Planner",
         "Competitive Analysis",
-        "Multi-Agent Debate"
+        "Multi-Agent Debate",
+        "Pipeline Orchestrator",
+        "Messaging Bus"
       ],
       "icon": "👥"
     },
     {
       "name": "Infra & Ops",
       "agents": [
-        "Pipeline Orchestrator",
         "Resource Scaler",
         "Infra Monitor",
         "Fairness Guard",
         "Log Analyzer",
-        "Expense Analyzer"
+        "Vendor Comparison",
+        "Contract Summarizer",
+        "Project Risk"
       ],
       "icon": "⚡"
     },
@@ -142,9 +195,13 @@
       "agents": [
         "Meeting Notes",
         "Social Media",
-        "Recipe Gen",
         "Customer Support",
-        "Memory Context"
+        "Memory Context",
+        "Meeting Agenda",
+        "Time Block Planner",
+        "Inbox Zero",
+        "Goal Setting",
+        "Habit Building"
       ],
       "icon": "🛠️"
     },
@@ -155,20 +212,50 @@
         "Secret Detection",
         "CI/CD Pipeline",
         "Deploy Validator",
-        "Access Review"
+        "Access Review",
+        "Dependency Updater",
+        "Performance Profiler"
       ],
       "icon": "🔐"
     },
     {
-      "name": "Content & Education",
+      "name": "Health & Education",
       "agents": [
-        "Blog Writer",
-        "Quiz Generator",
-        "Flashcard Maker",
-        "Video Script",
-        "Study Planner"
+        "Nutrition Planner",
+        "Workout Plan",
+        "Sleep Coach",
+        "Meditation Guide",
+        "Course Creator",
+        "Tutor",
+        "Lesson Planner",
+        "Language Learning",
+        "Exam Prep"
       ],
-      "icon": "📝"
+      "icon": "🧠"
+    },
+    {
+      "name": "HR & Recruitment",
+      "agents": [
+        "Interview Questions",
+        "Candidate Screening",
+        "Onboarding",
+        "Performance Review",
+        "Employee Feedback",
+        "Skills Gap",
+        "Team Building"
+      ],
+      "icon": "👔"
+    },
+    {
+      "name": "Customer Success",
+      "agents": [
+        "Churn Prediction",
+        "Feedback Analyzer",
+        "Onboarding Guide",
+        "Ticket Tagger",
+        "Knowledge Base"
+      ],
+      "icon": "🤝"
     },
     {
       "name": "Design & UX",
@@ -176,19 +263,39 @@
         "UI Review",
         "Color Palette",
         "Accessibility Checker",
-        "Presentation Builder"
+        "Presentation Builder",
+        "Logo Concepts",
+        "Brand Voice",
+        "Tagline Gen",
+        "Storyboard"
       ],
       "icon": "🎨"
     },
     {
-      "name": "Research & Science",
+      "name": "Legal & Compliance",
       "agents": [
-        "Paper Analyzer",
-        "Hypothesis Generator",
-        "Contract Review",
-        "Medical Literature"
+        "Legal Research",
+        "NDA Analyzer",
+        "Policy Drafter",
+        "GDPR Compliance",
+        "Privacy Policy",
+        "Contract Review"
       ],
-      "icon": "🔬"
+      "icon": "⚖️"
+    },
+    {
+      "name": "Digital Product Pipeline",
+      "agents": [
+        "Product Idea Scout",
+        "Audience Research",
+        "Product Pricer",
+        "Content Calendar",
+        "Launch Emails",
+        "Upsell Agent",
+        "Affiliate Program",
+        "Study Planner"
+      ],
+      "icon": "🚀"
     }
   ],
   "weekly_cron": {
