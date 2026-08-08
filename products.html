@@ -17,9 +17,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);line-he
 .aurora::after{content:'';position:absolute;width:55vw;height:55vw;bottom:-22vw;right:-12vw;border-radius:50%;filter:blur(120px);background:radial-gradient(circle,rgba(167,139,250,0.18),transparent 65%);animation:drift 32s ease-in-out infinite alternate-reverse}
 @keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(6vw,4vw) scale(1.15)}}
 .grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0.05;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(20px,5vw,40px)}
+.wrap{max-width:1160px;margin:0 auto;padding:0 clamp(20px,5vw,40px)}
 nav{position:sticky;top:0;z-index:150;backdrop-filter:blur(18px);background:rgba(7,7,14,0.72);border-bottom:1px solid var(--border)}
-.nav-inner{max-width:1060px;margin:0 auto;padding:0 clamp(20px,5vw,40px);height:60px;display:flex;align-items:center;justify-content:space-between}
+.nav-inner{max-width:1160px;margin:0 auto;padding:0 clamp(20px,5vw,40px);height:60px;display:flex;align-items:center;justify-content:space-between}
 .brand{font-family:var(--font-display);font-weight:800;font-size:1rem;text-decoration:none;color:var(--text)}
 .brand em{font-style:normal;background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .nav-cta{padding:8px 18px;border-radius:100px;background:var(--grad-brand);color:#08120d;font-weight:600;font-size:0.8rem;text-decoration:none}
@@ -32,21 +32,48 @@ header p{color:var(--muted);font-weight:300;max-width:580px;margin:0 auto}
 .filter:hover{color:var(--text);border-color:var(--border-strong)}
 .filter.active{background:var(--grad-brand);color:#08120d;border-color:transparent;font-weight:600}
 section{padding:0 0 80px}
-.products{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-@media(max-width:760px){.products{grid-template-columns:1fr}}
+/* BENTO GRID */
+.products{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;grid-auto-flow:dense}
 .product{display:flex;flex-direction:column;gap:14px;padding:30px 28px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);backdrop-filter:blur(12px);text-decoration:none;color:var(--text);transition:transform 0.35s var(--ease),border-color 0.35s,box-shadow 0.35s;position:relative;overflow:hidden}
 .product:hover{transform:translateY(-5px);border-color:var(--border-strong);box-shadow:0 24px 60px rgba(0,0,0,0.45)}
 .product .tag{font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim)}
 .product h3{font-family:var(--font-display);font-weight:800;font-size:1.3rem}
 .product p{font-size:0.9rem;color:var(--muted);font-weight:300;flex-grow:1}
-.product .meta{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:14px}
+.product .meta{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:14px;margin-top:auto}
 .product .price{font-family:var(--font-display);font-weight:800;font-size:1.3rem}
 .product .price s{color:var(--dim);font-size:0.95rem;font-weight:600;margin-left:8px}
 .product .arrow{font-size:1.1rem;color:var(--emerald);transition:transform 0.25s var(--ease)}
 .product:hover .arrow{transform:translateX(4px)}
 .product.featured{border-color:rgba(52,211,153,0.4);background:linear-gradient(160deg,rgba(52,211,153,0.07),rgba(255,255,255,0.03) 45%)}
 .product.featured::before{content:'FLAGSHIP';position:absolute;top:16px;right:-30px;transform:rotate(45deg);background:var(--grad-brand);color:#08120d;font-family:var(--font-display);font-weight:700;font-size:0.6rem;letter-spacing:0.1em;padding:4px 34px}
+/* bento spans */
+.sp4{grid-column:span 4}
+.sp3{grid-column:span 3}
+.sp2{grid-column:span 2}
+.tall{grid-row:span 2}
+/* bento accent surfaces */
+.t-violet{background:linear-gradient(160deg,rgba(167,139,250,0.11),rgba(255,255,255,0.03) 55%);border-color:rgba(167,139,250,0.3)}
+.t-emerald{background:linear-gradient(160deg,rgba(52,211,153,0.10),rgba(255,255,255,0.03) 55%);border-color:rgba(52,211,153,0.28)}
+.t-gold{background:linear-gradient(160deg,rgba(252,211,77,0.09),rgba(255,255,255,0.03) 55%);border-color:rgba(252,211,77,0.24)}
+.t-cta{background:linear-gradient(140deg,#7c3aed 0%,#0e9f6e 100%);border-color:transparent;justify-content:center}
+.t-cta:hover{border-color:transparent;box-shadow:0 24px 70px rgba(124,58,237,0.35)}
+.t-cta .tag{color:rgba(255,255,255,0.72)}
+.t-cta h3{font-size:1.6rem}
+.t-cta p{color:rgba(255,255,255,0.88)}
+.t-cta .meta{border-top-color:rgba(255,255,255,0.2)}
+.t-cta .price{color:#fff}
+.t-cta .arrow{color:#fff}
 .hidden{display:none}
+@media(max-width:900px){
+  .products{grid-template-columns:repeat(2,1fr)}
+  .sp4,.sp3{grid-column:span 2}
+  .sp2{grid-column:span 1}
+  .tall{grid-row:auto}
+}
+@media(max-width:560px){
+  .products{grid-template-columns:1fr}
+  .sp4,.sp3,.sp2{grid-column:span 1}
+}
 footer{border-top:1px solid var(--border);padding:44px 0 36px;text-align:center}
 .footer-links{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
 .footer-links a{font-size:0.84rem;color:var(--muted);text-decoration:none}
@@ -83,81 +110,88 @@ footer{border-top:1px solid var(--border);padding:44px 0 36px;text-align:center}
 <div class="wrap">
 <div class="products reveal">
 
-<a class="product featured" data-cat="system" href="/mental-performance-os.html">
+<a class="product featured sp4 tall" data-cat="system" href="/mental-performance-os.html">
 <span class="tag">Flagship · Complete System</span>
 <h3>Mental Performance OS</h3>
 <p>5 Notion databases, 30-day neuroscience challenge, 12 protocols, 50 AI prompts, reframing toolkit, weekly reviews. The full operating system for your mind.</p>
 <div class="meta"><span class="price">$24<s>$34</s></span><span class="arrow">→</span></div>
 </a>
 
-<a class="product" data-cat="growth" href="/reframing-journal.html">
+<a class="product t-violet sp2 tall" data-cat="growth" href="/reframing-journal.html">
 <span class="tag">Spin-off #1 · Reframe Toolkit</span>
 <h3>Cognitive Reframing Journal</h3>
 <p>The 5-step loop that turns distorted thoughts into balanced ones. 14 days of structured journaling, 10 distortion types, reframe-speed targets.</p>
 <div class="meta"><span class="price">$14<s>$19</s></span><span class="arrow">→</span></div>
 </a>
 
-<a class="product" data-cat="focus" href="/sleep-protocol-guide.html">
+<a class="product t-emerald sp3" data-cat="focus" href="/sleep-protocol-guide.html">
 <span class="tag">Spin-off #2 · Recovery</span>
 <h3>Sleep Protocol Guide</h3>
 <p>The 14-day protocol for deeper sleep, sharper cognition, and clean emotional processing. 9 protocols, 4 failure modes, science-backed.</p>
 <div class="meta"><span class="price">$19<s>$24</s></span><span class="arrow">→</span></div>
 </a>
 
-<a class="product" data-cat="focus" href="/flow-state-field-guide.html">
+<a class="product sp3" data-cat="focus" href="/flow-state-field-guide.html">
 <span class="tag">Spin-off #3 · Performance</span>
 <h3>Flow State Field Guide</h3>
 <p>Flow is engineered, not found. Six conditions, the 10-minute pre-flow ritual, and the four flow breakers with fixes.</p>
 <div class="meta"><span class="price">$14<s>$19</s></span><span class="arrow">→</span></div>
 </a>
 
-<a class="product" data-cat="ai" href="/focus-prompts-pack.html">
+<a class="product t-gold sp2" data-cat="ai" href="/focus-prompts-pack.html">
 <span class="tag">Spin-off #4 · AI Toolkit</span>
 <h3>Focus Prompts Pack</h3>
 <p>8 copy-paste AI prompts for deep work, procrastination, and distraction control. Works with ChatGPT, Claude, and Grok.</p>
 <div class="meta"><span class="price">$9<s>$12</s></span><span class="arrow">→</span></div>
 </a>
 
-<a class="product" data-cat="growth" href="/voice-hierarchy-course.html">
+<a class="product sp2" data-cat="growth" href="/voice-hierarchy-course.html">
 <span class="tag">Spin-off #5 · Self-Talk</span>
 <h3>Voice Hierarchy Course</h3>
 <p>Three voices live inside your head. The Critic speaks, the Analyst interprets, the Anchor commands. Train the voice that presides.</p>
 <div class="meta"><span class="price">$19<s>$24</s></span><span class="arrow">→</span></div>
 </a>
 
-<a class="product" data-cat="focus" href="/attention-budget-guide.html">
+<a class="product t-emerald sp2" data-cat="focus" href="/attention-budget-guide.html">
 <span class="tag">Spin-off #6 · Focus</span>
 <h3>Attention Budget Guide</h3>
 <p>Attention is currency. Dopamine prices it. Decisions spend it. A weekly planner for spending deliberately.</p>
 <div class="meta"><span class="price">$14<s>$19</s></span><span class="arrow">→</span></div>
 </a>
 
-<a class="product" data-cat="growth" href="/adaptation-curve-guide.html">
+<a class="product sp3" data-cat="growth" href="/adaptation-curve-guide.html">
 <span class="tag">Spin-off #7 · Growth</span>
 <h3>Adaptation Curve Guide</h3>
 <p>Progress is not linear. Fumble, Groove, Plateau. Most people quit in the second phase. Learn to read the curve and stay on it.</p>
 <div class="meta"><span class="price">$14<s>$19</s></span><span class="arrow">→</span></div>
 </a>
 
-<a class="product" data-cat="system" href="/30-day-challenge.html">
+<a class="product t-violet sp3" data-cat="system" href="/30-day-challenge.html">
 <span class="tag">Spin-off #8 · Complete Curriculum</span>
 <h3>30-Day Neuroscience Challenge</h3>
 <p>The complete curriculum as a standalone PDF: 30 days, 12 peer-reviewed protocols, one personal operating system.</p>
 <div class="meta"><span class="price">$19<s>$24</s></span><span class="arrow">→</span></div>
 </a>
 
-<a class="product" data-cat="meta" href="/agent-chronicles.html">
+<a class="product sp2" data-cat="meta" href="/agent-chronicles.html">
 <span class="tag">Spin-off #9 · Meta-Story</span>
 <h3>Agent Chronicles</h3>
 <p>The inside story of building 150 AI agents to build a product for human brains. Part meta-story, part operating manual, part proof.</p>
 <div class="meta"><span class="price">$9<s>$12</s></span><span class="arrow">→</span></div>
 </a>
 
-<a class="product" data-cat="focus" href="/monk-mode.html">
+<a class="product t-gold sp2" data-cat="focus" href="/monk-mode.html">
 <span class="tag">Spin-off #10 · Focus Series</span>
 <h3>1 Week Monk Mode</h3>
 <p>One goal. Seven days. Zero noise. A Notion template that turns a single week into a focused sprint, with daily blocks and non-negotiables.</p>
 <div class="meta"><span class="price">$14<s>$19</s></span><span class="arrow">→</span></div>
+</a>
+
+<a class="product t-cta sp2" data-cat="system" href="/mental-performance-os.html">
+<span class="tag">Start Here</span>
+<h3>Take the full OS</h3>
+<p>Every protocol, prompt, and review system in one place. Lifetime access, one payment.</p>
+<div class="meta"><span class="price">$24<s>$34</s></span><span class="arrow">→</span></div>
 </a>
 
 </div>
