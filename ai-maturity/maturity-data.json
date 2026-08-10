@@ -1,6 +1,6 @@
 {
-  "last_updated": "2026-08-07T11:03:00+05:30",
-  "overall_score": 87,
+  "last_updated": "2026-08-10T09:00:00+05:30",
+  "overall_score": 88,
   "layers": {
     "llms": {
       "score": 88,
@@ -14,37 +14,37 @@
       }
     },
     "agents": {
-      "score": 90,
+      "score": 91,
       "color": "#8b5cf6",
       "concepts": {
         "Multi-Step Tool Chaining": 97,
-        "Task Planning & Decomposition": 95,
+        "Task Planning & Decomposition": 96,
         "Safe Interruptibility": 88,
         "Long-term Memory": 78,
         "State Management": 82,
         "Agent Reasoning": 78,
         "Fail-Safe Design": 60,
-        "Emergent Behavior Analysis": 28
+        "Emergent Behavior Analysis": 32
       }
     },
     "systems": {
-      "score": 85,
+      "score": 86,
       "color": "#00ff9d",
       "concepts": {
-        "Hierarchical Planning": 75,
+        "Hierarchical Planning": 77,
         "Error Handling & Resilience": 70,
         "Multi-Agent RAG": 58,
-        "Inter-Agent Communication": 78,
+        "Inter-Agent Communication": 79,
         "Messaging Protocols": 80
       }
     },
     "infra": {
-      "score": 86,
+      "score": 87,
       "color": "#fbbf24",
       "concepts": {
         "Routing & Scheduling": 72,
-        "Observability & Monitoring": 68,
-        "Security & Access Control": 58,
+        "Observability & Monitoring": 69,
+        "Security & Access Control": 60,
         "Resource Scaling": 90,
         "Compliance & Governance": 74,
         "Fairness, Bias & Ethics": 88
@@ -86,6 +86,13 @@
       "agents": 90,
       "systems": 85,
       "infra": 86
+    },
+    {
+      "date": "2026-08-10",
+      "llms": 88,
+      "agents": 91,
+      "systems": 86,
+      "infra": 87
     }
   ],
   "agent_count": 150,
@@ -308,13 +315,18 @@
   "weekly_cron": {
     "active": true,
     "schedule": "Every Monday 9:00 AM IST",
-    "next_run": "2026-08-10T09:00:00+05:30"
+    "next_run": "2026-08-17T09:00:00+05:30"
   },
   "weekly_reports": [
     {
       "date": "2026-08-07",
       "overall": 87,
       "highlights": "10 digital product launches, brand page, maturity dashboard live"
+    },
+    {
+      "date": "2026-08-10",
+      "overall": 88,
+      "highlights": "Architecture flow diagrams (both repos), design reference board, products hub bento refresh"
     }
   ]
 }
