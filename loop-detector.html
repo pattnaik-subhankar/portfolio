@@ -69,6 +69,16 @@
   .traj.low { border-color: var(--green); color: var(--green); background: rgba(0,255,157,0.06); }
   .progress { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-bottom: 18px; }
   .progress b { color: var(--green); }
+  .ld3d-wrap { display: none; position: relative; background: radial-gradient(ellipse at 50% 35%, rgba(0,255,157,0.06), rgba(8,8,20,0.9) 65%); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 16px; }
+  .ld3d { width: 100%; height: 440px; cursor: grab; }
+  .ld3d:active { cursor: grabbing; }
+  .ld3d-hint { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 11px; color: var(--muted); background: rgba(8,8,20,0.72); border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px; white-space: nowrap; pointer-events: none; }
+  .ld3d-legend { position: absolute; bottom: 10px; left: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-family: var(--font-mono); font-size: 11px; color: var(--text); background: rgba(8,8,20,0.72); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; }
+  .ld3d-legend em { color: var(--muted); font-style: normal; margin-left: 3px; }
+  .ld3d-tip { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); font-family: var(--font-grotesk); font-size: 13px; color: var(--text); background: rgba(8,8,20,0.9); border: 1px solid var(--green); border-radius: 10px; padding: 8px 14px; pointer-events: none; }
+  .ld3d-tip b { color: var(--green); }
+  .day { transition: transform 0.25s ease, border-color 0.25s ease; }
+  .day:hover { transform: perspective(700px) rotateX(2.5deg) translateY(-2px); border-left-color: var(--purple); }
 </style>
 </head>
 <body class="ld">
@@ -109,6 +119,12 @@
     <h1 class="ld-title" style="font-size:clamp(24px,5vw,34px);margin-top:8px">Your loop report</h1>
     <p class="ld-sub" id="reportIntro"></p>
     <div id="trajBox"></div>
+    <div class="ld3d-wrap" id="ld3dWrap">
+      <div class="ld3d" id="ld3d"></div>
+      <div class="ld3d-hint">Drag to rotate · hover a ring to inspect</div>
+      <div class="ld3d-tip" id="ld3dTip" style="display:none"></div>
+      <div class="ld3d-legend" id="ld3dLegend"></div>
+    </div>
     <div id="patternCards"></div>
     <div class="ld-actions" style="margin-top:20px">
       <button class="btn btn-primary" onclick="showPlan()">Build my 7-day plan →</button>
@@ -261,6 +277,7 @@ function compute() {
   const order = ["validation", "reassurance", "dependence", "isolation", "glorification", "minimization", "risky", "escalation"];
   let cards = "";
   let count = 0;
+  const detected = [];
   for (const d of order) {
     const s = dimScores[d] || 0;
     if (s <= 0) continue;
@@ -268,6 +285,7 @@ function compute() {
     const p = PATTERNS[d];
     const sev = s >= 5 ? "high" : s >= 3 ? "med" : "low";
     p.sev = sev;
+    detected.push({ name: p.name, score: s, sev: sev });
     cards += `<div class="report-card ${sev}"><div class="rc-head"><span class="rc-name">${p.name}</span><span class="rc-sev">${sev}</span></div><div class="rc-desc">${p.desc}</div><div class="rc-evidence">loop score: ${s} / 15</div><div class="rc-fix"><b>Break it:</b> ${p.fix}</div></div>`;
   }
   if (count === 0) {
@@ -277,6 +295,7 @@ function compute() {
   document.getElementById("reportIntro").textContent = "Scored across the risk dimensions from the Nature Medicine audit. These are patterns in how you use AI, not a diagnosis.";
   document.getElementById("quiz").classList.add("hidden");
   document.getElementById("report").classList.remove("hidden");
+  if (window.buildLoopScene) { try { window.buildLoopScene(detected, trajClass); } catch (e) { var w3 = document.getElementById("ld3dWrap"); if (w3) w3.style.display = "none"; } }
   if (crisis) { renderCrisis(true); document.querySelector("#report .ld-actions").style.display = "none"; }
   window.scrollTo(0, 0);
 }
@@ -308,6 +327,154 @@ function renderCrisis(on) {
     <p><b>iCall (India):</b> <a href="tel:9152987821">+91-9152-987-821</a> · Mon-Sat, 10 AM to 8 PM</p>
     <p>If you are in immediate danger, call 112 (India emergency) or go to your nearest hospital. You do not have to carry this alone.</p></div>`;
 }
+</script>
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const SEV_COLORS = { high: 0xff6b35, med: 0xfbbf24, low: 0x38bdf8, base: 0x00ff9d };
+const TRAJ_COLORS = { escalating: 0xff6b35, steady: 0xfbbf24, low: 0x00ff9d };
+
+window.buildLoopScene = function (patternData, trajClass) {
+  const wrap = document.getElementById('ld3dWrap');
+  const canvas = document.getElementById('ld3d');
+  const legend = document.getElementById('ld3dLegend');
+  const tip = document.getElementById('ld3dTip');
+  if (!window.WebGLRenderingContext) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  canvas.innerHTML = '';
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(w, h);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  canvas.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+  const camStart = new THREE.Vector3(0, 4.5, 13);
+  const camEnd = new THREE.Vector3(0, 1.6, 8.5);
+  camera.position.copy(camStart);
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.06;
+  controls.minDistance = 3.5;
+  controls.maxDistance = 20;
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 1.1;
+  controls.enablePan = false;
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+  const pl = new THREE.PointLight(0x00ff9d, 1.5, 30); pl.position.set(3, 4, 4); scene.add(pl);
+  const pl2 = new THREE.PointLight(0x8b5cf6, 1.0, 30); pl2.position.set(-4, -2, 3); scene.add(pl2);
+  const pl3 = new THREE.PointLight(0x22d3ee, 0.6, 25); pl3.position.set(0, -3, -4); scene.add(pl3);
+
+  const group = new THREE.Group();
+  scene.add(group);
+
+  // trajectory tube: escalating = rising spiral, steady = wave, low = gentle line
+  const pts = [];
+  const n = 90;
+  if (trajClass === 'escalating') {
+    for (let i = 0; i <= n; i++) { const t = i / n; const a = t * Math.PI * 5; pts.push(new THREE.Vector3(Math.cos(a) * (0.35 + t * 1.05), t * 2.8 - 0.7, Math.sin(a) * (0.35 + t * 1.05))); }
+  } else if (trajClass === 'steady') {
+    for (let i = 0; i <= n; i++) { const t = i / n; pts.push(new THREE.Vector3((t - 0.5) * 5.2, Math.sin(t * Math.PI * 3) * 0.5, 0)); }
+  } else {
+    for (let i = 0; i <= n; i++) { const t = i / n; pts.push(new THREE.Vector3((t - 0.5) * 5.2, (t - 0.5) * 0.9 + 0.4, 0)); }
+  }
+  const curve = new THREE.CatmullRomCurve3(pts);
+  const trajColor = TRAJ_COLORS[trajClass] || TRAJ_COLORS.low;
+  const tube = new THREE.Mesh(
+    new THREE.TubeGeometry(curve, 120, 0.045, 8, false),
+    new THREE.MeshStandardMaterial({ color: trajColor, emissive: trajColor, emissiveIntensity: 0.55, roughness: 0.3, metalness: 0.1 })
+  );
+  group.add(tube);
+  const endMat = new THREE.MeshStandardMaterial({ color: trajColor, emissive: trajColor, emissiveIntensity: 0.85 });
+  const endDot = new THREE.Mesh(new THREE.SphereGeometry(0.17, 24, 24), endMat);
+  endDot.position.copy(pts[pts.length - 1]);
+  group.add(endDot);
+
+  // pattern rings: one torus per detected loop, color = severity, size = score
+  const rings = [];
+  const list = patternData.filter(p => p.score > 0);
+  list.forEach((p, i) => {
+    const col = SEV_COLORS[p.sev] || SEV_COLORS.base;
+    const r = 0.85 + Math.min(p.score, 12) * 0.13;
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(r, 0.05 + (p.score / 15) * 0.035, 16, 96),
+      new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: 0.5, roughness: 0.25, metalness: 0.2 })
+    );
+    const a = (i / Math.max(list.length, 1)) * Math.PI * 2;
+    ring.position.set(Math.cos(a) * 2.7, Math.sin(a * 2) * 1.15 + 0.4, Math.sin(a) * 1.7);
+    ring.rotation.set(a * 0.6, a, 0.15);
+    ring.userData = { name: p.name, score: p.score, sev: p.sev };
+    group.add(ring);
+    rings.push(ring);
+  });
+
+  // central core
+  const core = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(0.34, 1),
+    new THREE.MeshStandardMaterial({ color: 0x00ff9d, emissive: 0x00ff9d, emissiveIntensity: 0.35, roughness: 0.2, metalness: 0.4 })
+  );
+  group.add(core);
+
+  // legend
+  let lg = '';
+  list.forEach(p => { lg += `<span style="color:#${SEV_COLORS[p.sev].toString(16).padStart(6, '0')}">●</span> ${p.name} <em>${p.score}/15</em>`; });
+  legend.innerHTML = lg || 'No dominant loops';
+
+  // hover inspection
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+  let hovered = null;
+  function clearHover() {
+    if (hovered) { hovered.material.emissiveIntensity = 0.5; hovered.scale.setScalar(1); hovered = null; }
+    tip.style.display = 'none';
+  }
+  renderer.domElement.addEventListener('pointermove', (e) => {
+    const rect = renderer.domElement.getBoundingClientRect();
+    pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObjects(rings);
+    if (hovered && hovered !== (hits[0] && hits[0].object)) clearHover();
+    if (hits[0]) {
+      hovered = hits[0].object;
+      hovered.material.emissiveIntensity = 1.15;
+      hovered.scale.setScalar(1.08);
+      tip.style.display = 'block';
+      tip.innerHTML = `<b>${hovered.userData.name}</b> · loop score ${hovered.userData.score}/15 · ${hovered.userData.sev}`;
+    }
+  });
+  renderer.domElement.addEventListener('pointerleave', clearHover);
+
+  // intro camera fly-in + gentle rotation
+  let introT = 0;
+  const clock = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    const dt = clock.getDelta();
+    if (introT < 1) { introT = Math.min(1, introT + dt * 0.7); const e = 1 - Math.pow(1 - introT, 3); camera.position.lerpVectors(camStart, camEnd, e); }
+    group.rotation.y += dt * 0.16;
+    core.rotation.x += dt * 0.4;
+    core.rotation.y += dt * 0.5;
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', () => {
+    const w2 = canvas.clientWidth, h2 = canvas.clientHeight;
+    if (!w2 || !h2) return;
+    camera.aspect = w2 / h2;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w2, h2);
+  });
+};
 </script>
 </body>
 </html>
