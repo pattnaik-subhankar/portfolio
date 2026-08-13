@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CerebralSubhankar — Mental Performance OS</title>
-<meta name="description" content="Clarity in a noisy world. Mental Performance OS: a Notion dashboard engineered by 150 AI agents. 12 neuroscience protocols, 30 days, one operating system for your mind.">
+<meta name="description" content="Clarity in a noisy world. Mental Performance OS: a Notion dashboard built on 12 peer-reviewed neuroscience protocols. 30 days, one operating system for your mind.">
 <meta property="og:title" content="CerebralSubhankar · Mental Performance OS">
-<meta property="og:description" content="Your brain, optimized. By science. By AI. Launch pricing $24.">
+<meta property="og:description" content="Your brain, optimized. By science. 12 protocols, 30 days. Launch pricing $24.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -71,7 +71,7 @@ nav{position:sticky;top:0;z-index:150;backdrop-filter:blur(18px);-webkit-backdro
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
 .hero h1{font-family:var(--font-display);font-weight:800;font-size:clamp(2.6rem,7vw,4.6rem);line-height:1.06;letter-spacing:-0.03em;margin-bottom:22px}
 .hero h1 .grad{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.hero-sub{max-width:640px;margin:0 auto 30px;font-size:clamp(1.02rem,2.2vw,1.22rem);color:var(--muted);font-weight:300}
+.hero-sub{max-width:680px;margin:0 auto 30px;font-size:clamp(1.02rem,2.2vw,1.22rem);color:#b9b9ce;font-weight:300}
 .hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 .btn{padding:15px 30px;border-radius:100px;font-weight:600;font-size:0.9rem;text-decoration:none;display:inline-flex;align-items:center;gap:9px;transition:transform 0.25s var(--ease),box-shadow 0.25s var(--ease),background 0.25s;border:none;cursor:pointer;font-family:var(--font-body)}
 .btn-primary{background:var(--grad-brand);color:#08120d;box-shadow:0 6px 26px rgba(52,211,153,0.3)}
@@ -80,13 +80,39 @@ nav{position:sticky;top:0;z-index:150;backdrop-filter:blur(18px);-webkit-backdro
 .btn-ghost:hover{transform:translateY(-3px);background:var(--surface-2);border-color:rgba(255,255,255,0.28)}
 .btn .arr{transition:transform 0.25s var(--ease)}
 .btn:hover .arr{transform:translateX(4px)}
-.hero-meta{margin-top:26px;font-size:0.82rem;color:var(--dim);letter-spacing:0.03em}
-.hero-meta b{color:var(--muted);font-weight:600}
+.hero-meta{margin-top:28px;display:inline-flex;flex-wrap:wrap;justify-content:center;gap:4px 10px;padding:9px 20px;border-radius:100px;background:var(--surface);border:1px solid var(--border-strong);font-size:0.8rem;color:var(--muted);letter-spacing:0.03em;backdrop-filter:blur(8px)}
+.hero-meta b{color:var(--emerald);font-weight:700}
+.hero-meta .old{color:var(--dim);text-decoration:line-through;font-weight:600}
+
+/* Product preview */
+.os-preview{margin:34px auto 0;max-width:660px;border-radius:calc(var(--radius) + 4px);border:1px solid var(--border-strong);background:linear-gradient(160deg,rgba(52,211,153,0.07),rgba(255,255,255,0.03) 45%,rgba(167,139,250,0.06));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);overflow:hidden;text-align:left;box-shadow:0 30px 80px rgba(0,0,0,0.5)}
+.os-preview-bar{display:flex;align-items:center;gap:7px;padding:11px 16px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.025)}
+.os-dot{width:9px;height:9px;border-radius:50%}
+.os-dot.r{background:#ff5f57}.os-dot.y{background:#febc2e}.os-dot.g{background:#28c840}
+.os-preview-title{margin-left:10px;font-family:var(--font-display);font-size:0.72rem;color:var(--dim);letter-spacing:0.06em;text-transform:uppercase}
+.os-preview-body{display:grid;grid-template-columns:0.72fr 1.28fr;gap:0;min-height:190px}
+@media(max-width:600px){.os-preview-body{grid-template-columns:1fr}}
+.os-side{padding:16px;display:grid;gap:8px;align-content:start;border-right:1px solid var(--border);background:rgba(255,255,255,0.015)}
+.os-side-item{display:flex;align-items:center;gap:9px;font-size:0.78rem;color:var(--muted);padding:7px 10px;border-radius:9px;border:1px solid transparent;font-weight:500}
+.os-side-item:first-child{border-color:var(--border-strong);background:rgba(255,255,255,0.04);color:var(--text)}
+.os-square{width:11px;height:11px;border-radius:4px;flex-shrink:0}
+.os-square.g{background:var(--emerald)}.os-square.v{background:var(--violet)}.os-square.y{background:var(--gold)}.os-square.w{background:linear-gradient(120deg,var(--emerald),var(--violet))}
+.os-main{padding:18px 18px 14px;display:flex;flex-direction:column;gap:14px}
+.os-score-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.os-score{padding:10px 8px;border-radius:12px;background:rgba(255,255,255,0.035);border:1px solid var(--border);text-align:center}
+.os-score b{display:block;font-family:var(--font-display);font-size:1.25rem;font-weight:800;color:var(--text)}
+.os-score span{font-size:0.62rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em}
+.os-proto{display:flex;flex-direction:column;gap:8px}
+.os-proto-tag{font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--emerald)}
+.os-proto-line{height:6px;border-radius:6px;background:rgba(255,255,255,0.09)}
+.os-proto-line.short{width:62%}
+.os-bars{display:grid;gap:8px;margin-top:2px}
+.os-bar{height:7px;border-radius:7px;background:linear-gradient(90deg,var(--emerald),var(--violet));opacity:0.85}
 
 /* Marquee */
 .marquee{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:16px 0;background:rgba(255,255,255,0.015)}
 .marquee-track{display:flex;gap:0;width:max-content;animation:scroll 36s linear infinite}
-.marquee span{font-family:var(--font-display);font-weight:600;font-size:0.95rem;color:var(--dim);padding:0 26px;white-space:nowrap;letter-spacing:0.08em;text-transform:uppercase}
+.marquee span{font-family:var(--font-display);font-weight:600;font-size:0.95rem;color:var(--muted);padding:0 26px;white-space:nowrap;letter-spacing:0.08em;text-transform:uppercase}
 .marquee span b{color:var(--emerald);font-weight:700}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
@@ -270,12 +296,28 @@ footer{border-top:1px solid var(--border);padding:52px 0 40px;text-align:center}
 <div class="wrap">
 <span class="hero-pill"><span class="dot"></span> Mental Performance OS · Launch Week</span>
 <h1>Clarity in a <span class="grad">noisy world.</span></h1>
-<p class="hero-sub">One operating system for your mind. A Notion dashboard engineered by 150 AI agents, built on 12 peer-reviewed neuroscience protocols, delivered in a 30-day challenge.</p>
+<p class="hero-sub">One operating system for your mind. A Notion dashboard built on 12 peer-reviewed neuroscience protocols, delivered as a 30-day challenge. Every claim cites the science. The agents were just the assembly line.</p>
 <div class="hero-ctas">
 <a href="#" class="btn btn-primary" id="gumroad-link-hero">Get Mental Performance OS <span class="arr">→</span></a>
 <a href="/mental-performance-os-lead-magnet.pdf" class="btn btn-ghost" download>Free 50-Prompt Preview <span class="arr">↓</span></a>
 </div>
-<p class="hero-meta"><b>$24</b> launch · <b>$34</b> after launch week · 14-day refund · Lifetime updates</p>
+<p class="hero-meta"><b>$24</b> launch · <span class="old">$34</span> after launch week · 14-day refund · Lifetime updates</p>
+<div class="os-preview reveal" aria-hidden="true">
+<div class="os-preview-bar"><span class="os-dot r"></span><span class="os-dot y"></span><span class="os-dot g"></span><span class="os-preview-title">Mental Performance OS · Day 12 of 30</span></div>
+<div class="os-preview-body">
+<div class="os-side">
+<div class="os-side-item"><span class="os-square g"></span>Daily Log</div>
+<div class="os-side-item"><span class="os-square v"></span>Challenge</div>
+<div class="os-side-item"><span class="os-square y"></span>Protocols</div>
+<div class="os-side-item"><span class="os-square w"></span>Prompts</div>
+</div>
+<div class="os-main">
+<div class="os-score-row"><div class="os-score"><b>7.8</b><span>Clarity</span></div><div class="os-score"><b>8.2</b><span>Focus</span></div><div class="os-score"><b>6.9</b><span>Emotion</span></div><div class="os-score"><b>7.5</b><span>Sleep</span></div></div>
+<div class="os-proto"><span class="os-proto-tag">Today · Neuroplasticity Protocol</span><span class="os-proto-line"></span><span class="os-proto-line short"></span></div>
+<div class="os-bars"><span class="os-bar" style="width:78%"></span><span class="os-bar" style="width:62%"></span><span class="os-bar" style="width:85%"></span></div>
+</div>
+</div>
+</div>
 </div>
 </header>
 
