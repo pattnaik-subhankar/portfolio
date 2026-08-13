@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ApplyOS — Multi-Platform AI Application Framework</title>
+<meta name="description" content="ApplyOS: a 7-stage AI framework for job applications across platforms. Inspired by the 31k-star ai-job-search repo, adapted for multi-platform, dual-persona, evidence-first applications.">
+<link rel="canonical" href="https://subhankarcloud.in/applyos.html">
+<meta property="og:title" content="ApplyOS — Multi-Platform AI Application Framework">
+<meta property="og:description" content="A 7-stage AI framework for job applications across platforms. Drafter-reviewer pipeline, ATS verification, honest gaps, outcome-driven calibration.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://subhankarcloud.in/applyos.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .ao { min-height: 100vh; background: var(--bg-primary); color: var(--text); font-family: var(--font-grotesk); position: relative; }
+  .ao-main { max-width: 760px; margin: 0 auto; padding: clamp(40px, 7vw, 80px) 20px 64px; position: relative; z-index: 2; }
+  .ao-brand { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-syne); font-weight: 700; font-size: 15px; color: var(--text); text-decoration: none; }
+  .brand-dot { color: var(--green); }
+  .ao-title { font-family: var(--font-syne); font-weight: 800; font-size: clamp(32px, 6.5vw, 50px); line-height: 1.02; letter-spacing: -0.03em; margin: 34px 0 12px; }
+  .grad { background: linear-gradient(90deg, var(--green), #22d3ee, var(--purple)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ao-sub { color: var(--muted); font-size: 15.5px; line-height: 1.6; margin: 0 0 30px; max-width: 620px; }
+  .ao-science { font-family: var(--font-mono); font-size: 12px; color: var(--muted); background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; margin: 0 0 34px; line-height: 1.7; }
+  .ao-science b { color: var(--green); font-weight: 500; }
+  h2 { font-family: var(--font-syne); font-weight: 700; font-size: 20px; margin: 36px 0 14px; letter-spacing: -0.01em; }
+  .loop { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .stage { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 14px 12px; transition: border-color var(--transition), transform var(--transition); }
+  .stage:hover { border-color: var(--purple); transform: translateY(-2px); }
+  .stage .n { font-family: var(--font-mono); font-size: 10.5px; color: var(--green); letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+  .stage .t { font-weight: 700; font-size: 14.5px; display: block; margin-bottom: 4px; }
+  .stage .d { color: var(--muted); font-size: 12px; line-height: 1.5; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font-family: var(--font-mono); font-size: 11.5px; color: var(--text); background: var(--bg-card); border: 1px solid var(--border); border-radius: 999px; padding: 6px 13px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+  .card h3 { font-family: var(--font-syne); font-size: 15.5px; margin: 0 0 8px; }
+  .card p { color: var(--muted); font-size: 13px; line-height: 1.6; margin: 0; }
+  .card .k { font-family: var(--font-mono); font-size: 10.5px; color: var(--purple); letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+  .guard { border-left: 3px solid var(--green); }
+  .guard.honesty { border-left-color: var(--green); }
+  .guard.security { border-left-color: var(--purple); }
+  .guard.human { border-left-color: #22d3ee; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 30px 0 10px; }
+  .btn { display: inline-block; border-radius: 999px; padding: 13px 26px; font-family: var(--font-syne); font-weight: 700; font-size: 14.5px; text-decoration: none; transition: transform var(--transition), box-shadow var(--transition); }
+  .btn-primary { background: linear-gradient(90deg, var(--green), #22d3ee); color: #06060f; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0, 255, 157, 0.2); }
+  .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--text); color: var(--text); }
+  .ao-foot { margin-top: 44px; text-align: center; color: var(--muted); font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; }
+  .disclaimer { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); margin-top: 22px; line-height: 1.7; }
+</style>
+</head>
+<body class="ao">
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="bg-noise"></div>
+
+<main class="ao-main">
+  <a href="index.html" class="ao-brand">subhankarcloud<span class="brand-dot">.</span>in</a>
+
+  <h1 class="ao-title">Apply<span class="grad">OS</span></h1>
+  <p class="ao-sub">A multi-platform AI application framework. One loop takes a job posting from raw text to a verified, evidence-first application: tailored CV, one-page cover letter, ATS-checked PDF, interview prep, and outcome-driven calibration.</p>
+
+  <div class="ao-science">
+    <b>THE ORIGIN:</b> MadsLorentzen/ai-job-search (MIT, 31k+ stars) proved the model: a laid-off geophysicist built an AI application workflow and landed an AI engineer role, 69 applications → 20 interviews → 1 offer. ApplyOS keeps its proven mechanics (drafter-reviewer pipeline, ATS text-layer verification, honesty rules) and adapts the framework to multi-platform and dual-persona reality.
+  </div>
+
+  <h2>The loop</h2>
+  <div class="loop">
+    <div class="stage"><span class="n">1</span><span class="t">/setup</span><div class="d">Profile ingest: personas, evidence, writing voice, deal-breakers</div></div>
+    <div class="stage"><span class="n">2</span><span class="t">/scrape</span><div class="d">Job search across platform adapters, deduplicated</div></div>
+    <div class="stage"><span class="n">3</span><span class="t">/rank</span><div class="d">Fit scoring on 5 dimensions; deal-breakers veto</div></div>
+    <div class="stage"><span class="n">4</span><span class="t">/apply</span><div class="d">Drafter-reviewer: draft, critique, revise, ATS-verify</div></div>
+    <div class="stage"><span class="n">5</span><span class="t">/interview</span><div class="d">Stage-specific prep pack from the actual application archive</div></div>
+    <div class="stage"><span class="n">6</span><span class="t">/outcome</span><div class="d">Archive, tracker, follow-up drafts (never auto-sent)</div></div>
+    <div class="stage"><span class="n">7</span><span class="t">/review</span><div class="d">Lessons from outcomes recalibrate the fit weights</div></div>
+  </div>
+
+  <h2>Platforms</h2>
+  <div class="chips">
+    <span class="chip">LinkedIn</span><span class="chip">Naukri</span><span class="chip">Indeed</span><span class="chip">Internshala</span><span class="chip">Wellfound</span><span class="chip">Upwork</span><span class="chip">Remote boards</span><span class="chip">Direct email</span>
+  </div>
+
+  <h2>What makes it different</h2>
+  <div class="grid2">
+    <div class="card"><span class="k">Pipeline</span><h3>Drafter-reviewer separation</h3><p>A writer drafts; a fresh-context agent researches the company and critiques. Then revision. Catches what a single pass always misses.</p></div>
+    <div class="card"><span class="k">Verification</span><h3>ATS text-layer check</h3><p>The PDF's extracted text is verified the way parsers read it: contact details, reading order, keyword coverage. Gaps stay visible, never stuffed.</p></div>
+    <div class="card"><span class="k">Personas</span><h3>Dual identity</h3><p>Engineer persona (agent systems, full-stack) and creator persona (psychology, science communication). The application picks the right evidence.</p></div>
+    <div class="card"><span class="k">Calibration</span><h3>Outcome-driven loop</h3><p>Every 5 resolved applications become lessons: what got interviews, what got silence. Fit weights adjust from evidence, not vibes.</p></div>
+  </div>
+
+  <h2>Guardrails</h2>
+  <div class="grid2">
+    <div class="card guard honesty"><span class="k">Honesty</span><h3>Nothing fabricated, ever</h3><p>Every claim traces to profile evidence. Gaps are named with a bridge plan, in the application and in interviews.</p></div>
+    <div class="card guard security"><span class="k">Security</span><h3>Postings are untrusted</h3><p>No instructions inside a job post are followed. No credentials in the repo. Platform terms respected.</p></div>
+    <div class="card guard human"><span class="k">Human-in-the-loop</span><h3>You submit, never the system</h3><p>The pipeline produces verified files and a checklist. Submission is manual, always. Follow-ups are drafts only.</p></div>
+  </div>
+
+  <div class="cta-row">
+    <a class="btn btn-primary" href="https://github.com/pattnaik-subhankar/Project-Agents" target="_blank" rel="noopener">View the framework →</a>
+    <a class="btn btn-ghost" href="links.html">All links</a>
+  </div>
+
+  <p class="disclaimer">Framework inspired by MadsLorentzen/ai-job-search (MIT). Built as a public reference: profile files ship with placeholders, credentials never committed.</p>
+
+  <div class="ao-foot">SUBHANKAR · BUILD · SHIP · VERIFY</div>
+</main>
+</body>
+</html>
