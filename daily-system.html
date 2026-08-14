@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily System Builder · Make It Inevitable</title>
+<meta name="description" content="Turn any outcome into daily non-negotiables. If-then cues, a 66-day tracker, and a compounding curve. Built on Gollwitzer 1999, Lally 2010, Clear 2018.">
+<link rel="canonical" href="https://subhankarcloud.in/daily-system.html">
+<meta property="og:title" content="Daily System Builder · Make It Inevitable">
+<meta property="og:description" content="Don't chase the life you desire; build the daily systems that make it inevitable. Outcome → if-then non-negotiables → 66-day tracker → compounding curve.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://subhankarcloud.in/daily-system.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .ds { min-height: 100vh; background: var(--bg-primary); color: var(--text); font-family: var(--font-grotesk); position: relative; }
+  .ds-main { max-width: 700px; margin: 0 auto; padding: clamp(40px, 7vw, 80px) 20px 64px; position: relative; z-index: 2; }
+  .ds-brand { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-syne); font-weight: 700; font-size: 15px; color: var(--text); text-decoration: none; }
+  .brand-dot { color: var(--green); }
+  .ds-title { font-family: var(--font-syne); font-weight: 800; font-size: clamp(32px, 6.5vw, 50px); line-height: 1.02; letter-spacing: -0.03em; margin: 34px 0 12px; }
+  .grad { background: linear-gradient(90deg, var(--green), #22d3ee, var(--purple)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ds-sub { color: var(--muted); font-size: 15.5px; line-height: 1.6; margin: 0 0 26px; max-width: 620px; }
+  .ds-science { font-family: var(--font-mono); font-size: 12px; color: var(--muted); background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; margin: 0 0 30px; line-height: 1.7; }
+  .ds-science b { color: var(--green); font-weight: 500; }
+  .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+  .panel h2 { font-family: var(--font-syne); font-size: 17px; margin: 0 0 4px; }
+  .panel .hint { color: var(--muted); font-size: 12.5px; margin: 0 0 14px; }
+  label { font-family: var(--font-mono); font-size: 11px; color: var(--purple); letter-spacing: 0.08em; text-transform: uppercase; display: block; margin: 12px 0 6px; }
+  input[type=text] { width: 100%; box-sizing: border-box; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: var(--font-grotesk); font-size: 14.5px; }
+  input[type=text]:focus { outline: none; border-color: var(--green); }
+  .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .preset { font-family: var(--font-mono); font-size: 12px; color: var(--text); background: var(--bg-primary); border: 1px solid var(--border); border-radius: 999px; padding: 7px 14px; cursor: pointer; transition: border-color var(--transition), color var(--transition); }
+  .preset:hover { border-color: var(--green); color: var(--green); }
+  .preset.on { border-color: var(--green); color: var(--green); }
+  .btn { display: inline-block; border: none; border-radius: 999px; padding: 13px 26px; font-family: var(--font-syne); font-weight: 700; font-size: 14.5px; cursor: pointer; transition: transform var(--transition), box-shadow var(--transition); }
+  .btn-primary { background: linear-gradient(90deg, var(--green), #22d3ee); color: #06060f; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0, 255, 157, 0.2); }
+  .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--text); color: var(--text); }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; align-items: center; }
+  .item { display: grid; grid-template-columns: 1fr 110px 130px 34px; gap: 8px; margin-bottom: 8px; }
+  .item input { padding: 9px 11px; font-size: 13px; }
+  .item .rm { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 9px; cursor: pointer; font-size: 14px; }
+  .item .rm:hover { color: #ff6b6b; border-color: #ff6b6b; }
+  .ifthen { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); background: var(--bg-primary); border-radius: 8px; padding: 8px 11px; margin-top: 4px; }
+  .ifthen b { color: var(--green); font-weight: 500; }
+  .hidden { display: none; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 14px; }
+  .stat { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; }
+  .stat .v { font-family: var(--font-syne); font-weight: 800; font-size: 22px; }
+  .stat .k { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 3px; }
+  .stat .v.g { color: var(--green); } .stat .v.p { color: var(--purple); } .stat .v.c { color: #22d3ee; }
+  .check { display: flex; align-items: center; gap: 11px; padding: 11px 13px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 11px; margin-bottom: 8px; cursor: pointer; }
+  .check input { accent-color: var(--green); width: 17px; height: 17px; flex-shrink: 0; }
+  .check .tt { font-size: 13.5px; line-height: 1.4; }
+  .check .tc { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+  .check.done .tt { color: var(--muted); text-decoration: line-through; }
+  .prog { height: 8px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; margin: 14px 0 6px; }
+  .prog > div { height: 100%; width: 0; background: linear-gradient(90deg, var(--green), #22d3ee); border-radius: 999px; transition: width 0.6s cubic-bezier(0.22,1,0.36,1); }
+  .chart-wrap { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-top: 10px; }
+  .chart-wrap svg { width: 100%; height: auto; display: block; }
+  .upsell { border: 1px solid rgba(0,255,157,0.35); background: linear-gradient(140deg, rgba(0,255,157,0.08), rgba(8,8,20,0.6) 60%); border-radius: 14px; padding: 20px; margin-top: 18px; }
+  .upsell h3 { font-family: var(--font-syne); font-size: 17px; margin: 0 0 6px; }
+  .upsell p { color: var(--muted); font-size: 13.5px; line-height: 1.6; margin: 0 0 14px; }
+  .note { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); line-height: 1.7; margin-top: 16px; }
+  .ds-foot { margin-top: 40px; text-align: center; color: var(--muted); font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; }
+  .err { color: #ff8f8f; font-size: 13px; margin-top: 10px; }
+</style>
+</head>
+<body class="ds">
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="bg-noise"></div>
+
+<main class="ds-main">
+
+  <a href="index.html" class="ds-brand">subhankarcloud<span class="brand-dot">.</span>in</a>
+  <h1 class="ds-title">Daily System<br><span class="grad">Builder</span></h1>
+  <p class="ds-sub">Don't chase the life you desire. Build the daily systems that make it inevitable. Type an outcome, get daily non-negotiables with if-then cues, and track the 66 days it takes for the behavior to become automatic.</p>
+  <div class="ds-science">
+    <b>THE SCIENCE:</b> Implementation intentions roughly double follow-through (Gollwitzer, 1999). Automaticity takes 66 days on average (Lally et al., 2010). Context cues drive execution (Wood &amp; Neal, 2007). Every action is a vote for the person you are becoming (Clear, 2018). Goals are one-shot; systems compound.
+  </div>
+
+  <!-- STEP 1: OUTCOME -->
+  <section id="v1">
+    <div class="panel">
+      <h2>What do you want to become inevitable?</h2>
+      <p class="hint">One outcome. The system does the rest.</p>
+      <label>Outcome</label>
+      <input type="text" id="outcome" placeholder="e.g. I want to write a book / get fit / land a job / think clearly">
+      <div class="presets" id="presetRow"></div>
+      <div class="row">
+        <button class="btn btn-primary" id="buildBtn">Build my system →</button>
+      </div>
+      <div class="err hidden" id="v1err"></div>
+    </div>
+  </section>
+
+  <!-- STEP 2: SYSTEM -->
+  <section id="v2" class="hidden">
+    <div class="panel">
+      <h2>Your daily non-negotiables</h2>
+      <p class="hint">Each one is an if-then: cue, action, place. Edit freely. 3-5 is the sweet spot; more and the system breaks.</p>
+      <div id="items"></div>
+      <div class="row">
+        <button class="btn btn-ghost" id="addBtn">+ Add one</button>
+        <button class="btn btn-primary" id="startBtn">Start the 66 days →</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Identity line</h2>
+      <p class="hint">Every done day is a vote for this sentence.</p>
+      <label>I am someone who</label>
+      <input type="text" id="identity" placeholder="writes every day">
+    </div>
+  </section>
+
+  <!-- STEP 3: TRACKER -->
+  <section id="v3" class="hidden">
+    <div class="panel">
+      <h2 id="todayTitle">Day 1 of 66</h2>
+      <p class="hint" id="todayHint"></p>
+      <div class="stats">
+        <div class="stat"><div class="v g" id="stStreak">0</div><div class="k">streak</div></div>
+        <div class="stat"><div class="v c" id="stDays">0</div><div class="k">days in</div></div>
+        <div class="stat"><div class="v p" id="stVotes">0</div><div class="k">identity votes</div></div>
+        <div class="stat"><div class="v" id="stToday">0%</div><div class="k">today</div></div>
+      </div>
+      <div id="todayList"></div>
+      <div class="prog"><div id="dayProg"></div></div>
+      <div class="chart-wrap" id="chartWrap"></div>
+    </div>
+    <div class="row">
+      <button class="btn btn-ghost" id="editBtn">Edit system</button>
+      <button class="btn btn-ghost" id="resetBtn">Reset</button>
+    </div>
+    <div class="upsell">
+      <h3>Want the full system?</h3>
+      <p>Mental Performance OS packages these protocols into a 30-day Notion dashboard: 12 peer-reviewed protocols, 5 databases, sleep, deep work, reframing, reviews. The daily system, productized.</p>
+      <a class="btn btn-primary" href="mental-performance-os.html">Mental Performance OS →</a>
+    </div>
+    <p class="note">SOME DAYS YOU MISS. The system absorbs it: 66 days is about automaticity, not perfection (Lally et al., 2010). A broken streak is data, not failure. Everything here stays in your browser; nothing is uploaded. This is a planning tool, not a diagnosis, and it is not medical advice.</p>
+  </section>
+
+  <div class="ds-foot">CEREBRALSUBHANKAR · SYSTEMS, NOT GOALS</div>
+</main>
+
+<script>
+/* ---------- preset library: action / cue time / place ---------- */
+const PRESETS = {
+  write: { verb: "write", items: [
+    ["Write 300 words", "6:30 AM", "at your desk"],
+    ["Outline tomorrow's piece", "9:00 PM", "in your notebook"],
+    ["Read 20 pages", "7:00 PM", "on the sofa"],
+    ["Ship one thing", "5:00 PM", "at your desk"] ] },
+  focus: { verb: "do deep work", items: [
+    ["90-minute deep block", "8:00 AM", "phone off, at your desk"],
+    ["Plan the top 3", "7:30 AM", "in your notebook"],
+    ["10-minute review", "9:00 PM", "in your notebook"],
+    ["No phone first 30 minutes", "6:45 AM", "in bed"] ] },
+  fitness: { verb: "train", items: [
+    ["20 minutes of movement", "6:00 PM", "at home or outside"],
+    ["10-minute stretch", "7:00 AM", "on the floor"],
+    ["5,000 steps", "1:00 PM", "after lunch"] ] },
+  sleep: { verb: "protect your sleep", items: [
+    ["Wake at the same time", "6:45 AM", "no snooze"],
+    ["Screens off", "10:00 PM", "in the living room"],
+    ["Bedroom at 18-20 C", "10:30 PM", "in your bedroom"],
+    ["Caffeine off by 2 PM", "2:00 PM", "at work"] ] },
+  mental: { verb: "run your mind", items: [
+    ["10-minute reframe journal", "7:30 AM", "at your desk"],
+    ["6-second save before reacting", "all day", "wherever you are"],
+    ["Name three emotions", "9:00 PM", "in your notebook"],
+    ["No doomscrolling for 30 minutes", "6:45 AM", "before opening apps"] ] },
+  job: { verb: "apply", items: [
+    ["One tailored application", "9:00 AM", "at your desk"],
+    ["30-minute skill build", "11:00 AM", "at your desk"],
+    ["One outreach message", "4:00 PM", "at your desk"],
+    ["Log the outcome", "8:00 PM", "in your tracker"] ] },
+  read: { verb: "read", items: [
+    ["20 pages", "7:30 PM", "on the sofa"],
+    ["Write down one idea", "8:00 PM", "in your notebook"],
+    ["No phone 30 minutes before bed", "10:00 PM", "in your bedroom"] ] }
+};
+const KEY = "dailysystem.v1";
+let S = { outcome: "", identity: "", items: [], log: {}, start: null, preset: null };
+try { const raw = localStorage.getItem(KEY); if (raw) S = JSON.parse(raw); } catch (e) {}
+
+/* ---------- step 1: outcome ---------- */
+const row = document.getElementById("presetRow");
+Object.entries(PRESETS).forEach(([k, p]) => {
+  const el = document.createElement("button");
+  el.className = "preset"; el.textContent = p.label || k;
+  el.onclick = () => { document.getElementById("outcome").value = p.example || k; pickPreset(k); };
+  row.appendChild(el);
+});
+function pickPreset(k) { S.preset = k; document.querySelectorAll(".preset").forEach(e => e.classList.toggle("on", e.textContent === (PRESETS[k].label || k))); }
+function detectPreset(out) {
+  const s = out.toLowerCase();
+  if (/(writ|book|blog|essay|author|novel)/.test(s)) return "write";
+  if (/(focus|deep work|study|learn|exam|concentrat)/.test(s)) return "focus";
+  if (/(fit|gym|run|health|muscle|weight|walk|yoga|exercise)/.test(s)) return "fitness";
+  if (/(sleep|wake|insomnia|bed|rest)/.test(s)) return "sleep";
+  if (/(calm|anxiet|overthink|mental|mind|stress|emotion|mood)/.test(s)) return "mental";
+  if (/(job|apply|interview|career|hire|resume|work)/.test(s)) return "job";
+  if (/(read)/.test(s)) return "read";
+  return null;
+}
+document.getElementById("buildBtn").onclick = () => {
+  const out = document.getElementById("outcome").value.trim();
+  if (!out) { showErr("v1err", "Type an outcome first, or pick a preset."); return; }
+  hideErr("v1err");
+  const preset = S.preset || detectPreset(out) || "default";
+  const lib = PRESETS[preset];
+  S.outcome = out; S.preset = preset;
+  S.items = (lib ? lib.items : [
+    ["One deep-work block", "8:00 AM", "phone off"],
+    ["Plan the top 3", "7:30 AM", "in your notebook"],
+    ["10-minute review", "9:00 PM", "in your notebook"],
+    ["One hard thing done", "5:00 PM", "at your desk"]
+  ]).map(([a, t, p]) => ({ a, t, p }));
+  S.identity = (lib ? lib.verb : "show up") + " every day";
+  renderV2();
+  document.getElementById("v1").classList.add("hidden");
+  document.getElementById("v2").classList.remove("hidden");
+  window.scrollTo(0, 0);
+};
+function showErr(id, m) { const e = document.getElementById(id); e.textContent = m; e.classList.remove("hidden"); }
+function hideErr(id) { document.getElementById(id).classList.add("hidden"); }
+
+/* ---------- step 2: system editor ---------- */
+function renderV2() {
+  const box = document.getElementById("items");
+  box.innerHTML = "";
+  S.items.forEach((it, i) => {
+    const d = document.createElement("div");
+    d.className = "item";
+    d.innerHTML = `<input type="text" value="${esc(it.a)}" data-f="a" placeholder="action">
+      <input type="text" value="${esc(it.t)}" data-f="t" placeholder="time">
+      <input type="text" value="${esc(it.p)}" data-f="p" placeholder="place">
+      <button class="rm" title="remove">✕</button>`;
+    d.querySelectorAll("input").forEach(inp => inp.oninput = () => { S.items[i][inp.dataset.f] = inp.value; save(); });
+    d.querySelector(".rm").onclick = () => { S.items.splice(i, 1); renderV2(); save(); };
+    const ft = document.createElement("div");
+    ft.className = "ifthen"; ft.innerHTML = `If <b>${esc(it.t)}</b>, then I <b>${esc(it.a)}</b> ${esc(it.p)}.`;
+    box.appendChild(d); box.appendChild(ft);
+  });
+  document.getElementById("identity").value = S.identity || "";
+}
+document.getElementById("identity").oninput = (e) => { S.identity = e.target.value; save(); };
+document.getElementById("addBtn").onclick = () => { S.items.push({ a: "New non-negotiable", t: "8:00 AM", p: "at your desk" }); renderV2(); save(); };
+document.getElementById("startBtn").onclick = () => {
+  if (!S.items.length) return;
+  if (!S.start) S.start = todayStr();
+  save(); renderV3();
+  document.getElementById("v2").classList.add("hidden");
+  document.getElementById("v3").classList.remove("hidden");
+  window.scrollTo(0, 0);
+};
+
+/* ---------- step 3: tracker ---------- */
+function todayStr() { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+function dayNum() { if (!S.start) return 1; const a = new Date(S.start), b = new Date(); return Math.max(1, Math.min(66, Math.round((b - a) / 86400000) + 1)); }
+function votes() { return Object.values(S.log).filter(v => Array.isArray(v) && v.length && v.every(Boolean)).length; }
+function streak() {
+  let st = 0; const d = new Date();
+  for (let i = 0; i < 400; i++) {
+    const key = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    const v = S.log[key];
+    if (v && v.length && v.every(Boolean)) { st++; d.setDate(d.getDate() - 1); } else break;
+  }
+  return st;
+}
+function renderV3() {
+  const dn = dayNum();
+  document.getElementById("todayTitle").textContent = S.outcome ? "Day " + dn + " of 66 · " + S.outcome : "Day " + dn + " of 66";
+  const today = S.log[todayStr()] || [];
+  document.getElementById("stStreak").textContent = streak();
+  document.getElementById("stDays").textContent = dn;
+  document.getElementById("stVotes").textContent = votes();
+  const doneToday = today.filter(Boolean).length;
+  const pct = S.items.length ? Math.round(doneToday / S.items.length * 100) : 0;
+  document.getElementById("stToday").textContent = pct + "%";
+  document.getElementById("dayProg").style.width = pct + "%";
+  const list = document.getElementById("todayList");
+  list.innerHTML = "";
+  S.items.forEach((it, i) => {
+    const c = document.createElement("label");
+    c.className = "check" + (today[i] ? " done" : "");
+    c.innerHTML = `<input type="checkbox" ${today[i] ? "checked" : ""}><span><span class="tt">${esc(it.a)}</span><br><span class="tc">${esc(it.t)} · ${esc(it.p)}</span></span>`;
+    c.querySelector("input").onchange = (e) => {
+      const t = S.log[todayStr()] || [];
+      t[i] = e.target.checked; S.log[todayStr()] = t; save(); renderV3();
+    };
+    list.appendChild(c);
+  });
+  chart();
+}
+function chart() {
+  const wrap = document.getElementById("chartWrap");
+  const dn = dayNum();
+  const W = 620, H = 200, pad = 34;
+  const xs = (d) => pad + (d - 1) * ((W - pad * 2) / 65);
+  const ymax = Math.max(dn, 5);
+  const ys = (v) => H - pad - (v / ymax) * (H - pad * 2);
+  let cum = 0; let pts = "";
+  for (let d = 1; d <= dn; d++) {
+    const key = new Date(new Date(S.start).getTime() + (d - 1) * 86400000);
+    const k = key.getFullYear() + "-" + String(key.getMonth() + 1).padStart(2, "0") + "-" + String(key.getDate()).padStart(2, "0");
+    const v = S.log[k];
+    if (v && v.length && v.every(Boolean)) cum++;
+    pts += xs(d).toFixed(1) + "," + ys(cum).toFixed(1) + " ";
+  }
+  const rate = dn > 1 ? cum / (dn - 1) : 1;
+  let proj = "";
+  for (let d = dn; d <= 66; d++) {
+    const pv = Math.min(cum + rate * (d - dn), 66);
+    proj += xs(d).toFixed(1) + "," + ys(pv).toFixed(1) + " ";
+  }
+  wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Compounding curve: identity votes per day">
+    <line x1="${pad}" y1="${H - pad}" x2="${W - pad}" y2="${H - pad}" stroke="rgba(255,255,255,0.15)"/>
+    <line x1="${pad}" y1="${H - pad}" x2="${pad}" y2="${pad}" stroke="rgba(255,255,255,0.15)"/>
+    <polyline points="${proj.trim()}" fill="none" stroke="rgba(34,211,238,0.4)" stroke-width="2" stroke-dasharray="5 5"/>
+    <polyline points="${pts.trim()}" fill="none" stroke="#00ff9d" stroke-width="3"/>
+    <text x="${W - pad}" y="${H - pad + 18}" fill="rgba(255,255,255,0.4)" font-size="10" text-anchor="end" font-family="JetBrains Mono, monospace">day 66</text>
+    <text x="${pad}" y="${pad - 8}" fill="rgba(255,255,255,0.4)" font-size="10" font-family="JetBrains Mono, monospace">identity votes</text>
+    <text x="${pad}" y="${H - pad + 18}" fill="rgba(255,255,255,0.4)" font-size="10" font-family="JetBrains Mono, monospace">day 1</text>
+  </svg>
+  <p class="note" style="margin-top:6px">Solid line: your votes so far. Dashed: the projected rate to day 66. A vote is a day where every non-negotiable got done. Missed days slow the slope; they do not reset it.</p>`;
+}
+document.getElementById("editBtn").onclick = () => {
+  renderV2();
+  document.getElementById("v3").classList.add("hidden");
+  document.getElementById("v2").classList.remove("hidden");
+  window.scrollTo(0, 0);
+};
+document.getElementById("resetBtn").onclick = () => {
+  if (!confirm("Reset the system and all tracked days?")) return;
+  localStorage.removeItem(KEY);
+  S = { outcome: "", identity: "", items: [], log: {}, start: null, preset: null };
+  location.reload();
+};
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+/* ---------- boot ---------- */
+if (S.start) { renderV3(); document.getElementById("v3").classList.remove("hidden"); }
+else if (S.items.length) { renderV2(); document.getElementById("v2").classList.remove("hidden"); }
+else { document.getElementById("v1").classList.remove("hidden"); }
+</script>
+</body>
+</html>
