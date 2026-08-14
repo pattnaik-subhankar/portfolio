@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loop Detector · Privacy Policy</title>
+  <style>
+    :root { --bg: #0b1220; --card: #111a2e; --line: #223052; --text: #e6ecf7; --dim: #93a3c0; --gold: #fbbf24; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font: 15px/1.7 "Segoe UI", system-ui, sans-serif; padding: 40px 20px; }
+    main { max-width: 720px; margin: 0 auto; }
+    .logo { color: var(--gold); font-size: 28px; }
+    h1 { font-size: 26px; margin: 10px 0 4px; }
+    .sub { color: var(--dim); margin-bottom: 24px; }
+    h2 { font-size: 16px; color: var(--gold); margin: 26px 0 8px; }
+    p, li { color: var(--text); }
+    ul { padding-left: 20px; margin: 8px 0; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; margin: 14px 0; }
+    .card b { color: var(--gold); }
+    .muted { color: var(--dim); font-size: 13px; margin-top: 28px; }
+    a { color: var(--gold); }
+  </style>
+</head>
+<body>
+  <main>
+    <span class="logo">◎</span>
+    <h1>Loop Detector · Privacy Policy</h1>
+    <p class="sub">Chrome extension · Effective 2026-08-14</p>
+
+    <div class="card">
+      <p><b>The short version: everything runs on your device.</b> Loop Detector
+      never uploads, transmits, or stores your conversations anywhere. There is
+      no server, no account, no telemetry, and no analytics.</p>
+    </div>
+
+    <h2>What the extension reads</h2>
+    <ul>
+      <li>When you open the side panel on a supported chat site (ChatGPT, Claude, Gemini, Grok), the extension reads the <b>visible conversation text</b> in that tab to score it against the SIM-VAIL rubric (Weilnhammer et al., Nature Medicine 2026).</li>
+      <li>In paste mode, it reads only the text you paste into the panel.</li>
+      <li>The extension does <b>not</b> read pages on other sites and does <b>not</b> read your browsing history.</li>
+    </ul>
+
+    <h2>What happens to the data</h2>
+    <ul>
+      <li>The conversation text is processed <b>in your browser's memory</b> by the local scoring engine.</li>
+      <li>Nothing is written to disk except a risk badge count and panel UI state via <b>chrome.storage (local only, never synced)</b>.</li>
+      <li><b>No network requests are made for analysis.</b> The only outbound link is the optional "Open Loop Detector" button, which opens the web app in a new tab when you click it.</li>
+    </ul>
+
+    <h2>Crisis handling</h2>
+    <p>If the on-device analysis detects self-harm or harm-to-others content, the panel shows crisis helpline numbers (Tele-MANAS 14416, Kiran 1800-599-0019, iCall). This is displayed locally; no alert is sent anywhere.</p>
+
+    <h2>Data retention</h2>
+    <p>None. Close the panel and the analysis is gone.</p>
+
+    <h2>Contact</h2>
+    <p>Project maintained by Subhankar (CerebralSubhankar).</p>
+
+    <p class="muted">This policy covers the Loop Detector Chrome extension. The web app at
+    <a href="https://subhankarcloud.in/loop-detector.html">subhankarcloud.in/loop-detector.html</a>
+    is client-side too: all answers are scored in your browser and nothing is stored.</p>
+  </main>
+</body>
+</html>
