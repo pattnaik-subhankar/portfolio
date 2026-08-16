@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Hive · Agent Command Center 2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --shell:#0e1013; --shell2:#12151a; --panel:#171a20; --panel2:#1c2027; --line:#262b34;
+    --ink:#e8eaed; --soft:#9aa0a8; --dim:#6b7280;
+    --gold:#fbbf24; --gold2:#f59e0b; --terra:#d4895f; --terra2:#c07840;
+    --green:#34d399; --red:#f87171; --cyan:#38bdf8; --purple:#a78bfa;
+    --mono:'JetBrains Mono',Consolas,monospace; --sans:'Space Grotesk',Segoe UI,sans-serif;
+  }
+  html,body { height:100%; }
+  body { background:var(--shell); color:var(--ink); font-family:var(--sans); overflow:hidden;
+    background-image:radial-gradient(rgba(255,255,255,.028) 1px, transparent 1px); background-size:26px 26px; }
+  ::-webkit-scrollbar { width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb { background:#2c313b; border-radius:4px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+
+  /* ── browser chrome (nod to the sample) ── */
+  #chrome { height:44px; background:#14161a; border-bottom:1px solid #23272e; display:flex; align-items:center; gap:10px; padding:0 14px; }
+  #chrome .lock { width:22px; height:22px; border-radius:50%; background:#1e242c; display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--green); border:1px solid #2b323c; }
+  #chrome .url { flex:1; max-width:560px; margin:0 auto; background:#1e2127; border:1px solid #2b323c; border-radius:20px; font-family:var(--mono); font-size:12px; color:var(--soft); padding:6px 18px; text-align:center; letter-spacing:.3px; }
+  #chrome .nav { display:flex; gap:6px; }
+  #chrome .nav i { width:26px; height:26px; border-radius:50%; background:#1e2127; border:1px solid #2b323c; display:flex; align-items:center; justify-content:center; font-style:normal; font-size:12px; color:var(--dim); }
+
+  /* ── topbar ── */
+  #topbar { height:56px; display:flex; align-items:center; gap:16px; padding:0 18px; background:linear-gradient(180deg,#12151a,#0f1115); border-bottom:1px solid var(--line); position:relative; z-index:40; }
+  #topbar .logo { display:flex; align-items:center; gap:12px; }
+  #topbar .logo .bee { font-size:24px; filter:drop-shadow(0 0 10px rgba(251,191,36,.55)); }
+  #topbar .logo .t1 { font-weight:700; font-size:17px; letter-spacing:2px; }
+  #topbar .logo .t2 { font-family:var(--mono); font-size:10px; color:var(--gold); letter-spacing:4px; }
+  .pill { font-family:var(--mono); font-size:11px; padding:5px 12px; border-radius:20px; border:1px solid var(--line); background:var(--shell2); color:var(--soft); display:flex; gap:7px; align-items:center; white-space:nowrap; }
+  .pill b { color:var(--gold); font-weight:600; }
+  .dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .dot.green { background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+  #topbar .status { display:flex; gap:8px; margin-left:auto; }
+  #clock { font-family:var(--mono); font-size:12.5px; color:var(--soft); }
+
+  /* ── main layout ── */
+  #main { display:grid; grid-template-columns:1fr 430px; grid-template-rows:1fr 112px; gap:12px; padding:12px; height:calc(100% - 44px - 56px); }
+
+  /* ── left: the office ── */
+  #office { position:relative; background:var(--shell2); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:inset 0 0 80px rgba(0,0,0,.35); }
+  #office .officeLabel { position:absolute; top:12px; left:14px; z-index:5; font-family:var(--mono); font-size:10px; letter-spacing:3px; color:var(--dim); display:flex; gap:8px; align-items:center; }
+  #office .officeLabel .live { color:var(--green); display:flex; gap:5px; align-items:center; }
+  #office svg.floor { position:absolute; inset:0; width:100%; height:100%; }
+  #avatars { position:absolute; inset:0; z-index:4; }
+  .av { position:absolute; transform:translate(-50%,-50%); text-align:center; cursor:pointer; }
+  .av .pin { position:relative; width:46px; height:46px; margin:0 auto; border-radius:50%; background:linear-gradient(145deg,#232933,#1a1e26); border:2.5px solid #fff; box-shadow:0 4px 14px rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; font-size:21px; transition:box-shadow .3s, transform .15s; }
+  .av:hover .pin { transform:scale(1.08); }
+  .av .pin .sd { position:absolute; bottom:-2px; right:-2px; width:12px; height:12px; border-radius:50%; background:#3a4150; border:2px solid #fff; }
+  .av .name { font-size:10.5px; font-weight:600; color:var(--ink); background:rgba(10,12,15,.82); border:1px solid rgba(255,255,255,.14); padding:3px 8px; border-radius:8px; margin-top:5px; display:inline-block; white-space:nowrap; backdrop-filter:blur(4px); }
+  .av .role { font-family:var(--mono); font-size:8px; color:var(--dim); margin-top:1px; }
+  .av.work .pin { box-shadow:0 0 0 3px rgba(251,191,36,.28), 0 4px 18px rgba(0,0,0,.5), 0 0 22px rgba(251,191,36,.55); }
+  .av.work .sd { background:var(--gold); animation:pulse 1.1s infinite; }
+  .av.done .sd { background:var(--green); }
+  .av .bubble { position:absolute; top:-30px; left:50%; transform:translate(-50%,6px); opacity:0; transition:all .3s; background:#1c2027; border:1px solid var(--gold); color:var(--gold); font-family:var(--mono); font-size:9px; padding:4px 8px; border-radius:8px; white-space:nowrap; z-index:10; pointer-events:none; }
+  .av .bubble:after { content:''; position:absolute; top:100%; left:50%; margin-left:-4px; border:4px solid transparent; border-top-color:var(--gold); }
+  .av.bubble .bubble { opacity:1; transform:translate(-50%,0); }
+
+  /* ── floating white overview card ── */
+  #overview { position:absolute; right:16px; bottom:16px; z-index:6; width:368px; background:#fff; color:#202124; border-radius:14px; box-shadow:0 18px 44px rgba(0,0,0,.55); padding:16px 18px; animation:rise .6s ease; }
+  @keyframes rise { from { opacity:0; transform:translateY(16px);} to { opacity:1; transform:none;} }
+  #overview .ovHead { display:flex; align-items:center; justify-content:space-between; }
+  #overview .ovHead .t { font-size:12.5px; font-weight:700; letter-spacing:1.5px; color:#202124; text-transform:uppercase; }
+  #overview .ovHead .tag { font-family:var(--mono); font-size:9px; color:var(--terra2); background:#f5ece5; padding:3px 8px; border-radius:20px; font-weight:600; }
+  #kpis { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  .kpi { background:#faf7f4; border:1px solid #f0e9e2; border-radius:10px; padding:10px 12px; }
+  .kpi .v { font-size:22px; font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:-.5px; color:#202124; }
+  .kpi .v em { font-style:normal; font-size:12px; color:var(--terra2); font-weight:600; margin-left:2px; }
+  .kpi .k { font-size:10px; color:#7d7d7d; text-transform:uppercase; letter-spacing:1px; margin-top:2px; }
+  #chartHead { font-size:10px; color:#7d7d7d; text-transform:uppercase; letter-spacing:1px; margin:16px 0 8px; display:flex; justify-content:space-between; }
+  #chartHead b { color:#202124; }
+  #bars { display:flex; align-items:flex-end; gap:5px; height:74px; }
+  #bars .bar { flex:1; background:linear-gradient(180deg,var(--terra),var(--terra2)); border-radius:4px 4px 2px 2px; min-height:3px; transition:height .8s cubic-bezier(.2,.7,.2,1); position:relative; }
+  #bars .bar:nth-child(odd) { background:linear-gradient(180deg,var(--gold),var(--gold2)); }
+  #bars .bar:hover { filter:brightness(1.1); }
+  #bars .bar span { position:absolute; top:-14px; left:50%; transform:translateX(-50%); font-size:8px; color:#b0b0b0; font-family:var(--mono); }
+  #agentsTable { margin-top:14px; border-top:1px solid #f0e9e2; padding-top:8px; }
+  .rowAgent { display:flex; align-items:center; gap:9px; padding:6px 2px; border-bottom:1px solid #f6f1ec; }
+  .rowAgent:last-child { border-bottom:0; }
+  .rowAgent .adot { width:22px; height:22px; border-radius:50%; background:#efe9e2; display:flex; align-items:center; justify-content:center; font-size:11px; }
+  .rowAgent .an { font-size:12px; font-weight:600; color:#202124; }
+  .rowAgent .ar { margin-left:auto; font-family:var(--mono); font-size:11px; font-weight:700; color:var(--terra2); font-variant-numeric:tabular-nums; }
+
+  /* ── right column ── */
+  #right { display:flex; flex-direction:column; gap:12px; min-height:0; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:16px; display:flex; flex-direction:column; min-height:0; }
+  .card h3 { font-size:10.5px; font-family:var(--mono); letter-spacing:3px; color:var(--dim); padding:12px 14px 10px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:8px; }
+  .card h3 .ct { color:var(--gold); }
+  .card h3 .right { margin-left:auto; color:var(--dim); letter-spacing:1px; }
+
+  /* mission board */
+  #boardCard { flex:1.15; }
+  #dispatch { display:flex; gap:8px; padding:10px 12px; border-bottom:1px solid var(--line); }
+  #dispatch input { flex:1; background:var(--shell2); border:1px solid var(--line); border-radius:10px; padding:9px 13px; color:var(--ink); font-family:var(--sans); font-size:13px; outline:none; }
+  #dispatch input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(251,191,36,.12); }
+  #dispatch button { background:linear-gradient(135deg,var(--gold),var(--gold2)); border:0; color:#141008; font-weight:700; font-size:12.5px; padding:9px 16px; border-radius:10px; cursor:pointer; letter-spacing:1px; box-shadow:0 4px 14px rgba(251,191,36,.25); }
+  #dispatch button:hover { filter:brightness(1.08); }
+  #examples { display:flex; gap:6px; padding:0 12px 10px; flex-wrap:wrap; }
+  #examples .chip { font-family:var(--mono); font-size:10px; color:var(--soft); border:1px solid var(--line); border-radius:20px; padding:4px 10px; cursor:pointer; background:var(--shell2); }
+  #examples .chip:hover { color:var(--gold); border-color:var(--gold); }
+  #board { padding:10px 12px 12px; overflow-y:auto; display:flex; flex-direction:column; gap:9px; }
+  .task { background:#fff; color:#202124; border-radius:12px; padding:11px 13px; box-shadow:0 6px 18px rgba(0,0,0,.28); animation:rise .35s ease; }
+  .task .thead { display:flex; align-items:center; gap:8px; }
+  .task .tid { font-family:var(--mono); font-size:9.5px; color:var(--terra2); font-weight:700; }
+  .task .ttitle { font-size:13px; font-weight:700; letter-spacing:-.2px; }
+  .task .tmeta { font-family:var(--mono); font-size:9.5px; color:#8a8a8a; margin-top:2px; }
+  .task .tagents { display:flex; gap:5px; margin-top:8px; flex-wrap:wrap; }
+  .task .tag { font-family:var(--mono); font-size:9.5px; padding:3px 8px; border-radius:6px; background:#f5f1ec; color:#5f5f5f; }
+  .task .tag.act { color:var(--terra2); background:#f7e9dd; font-weight:700; animation:pulse 1.3s infinite; }
+  .task .phases { display:flex; gap:4px; margin-top:9px; }
+  .task .ph { flex:1; height:4px; border-radius:2px; background:#ece5dd; transition:background .4s; }
+  .task .ph.on { background:var(--gold); }
+  .task .ph.done { background:var(--green); }
+  .task.delivered { opacity:.6; }
+
+  /* terminal */
+  #termCard { flex:1; }
+  #term { background:#0a0c0f; font-family:var(--mono); font-size:11.5px; line-height:1.6; padding:10px 14px; overflow-y:auto; flex:1; }
+  #term .l { white-space:pre-wrap; word-break:break-word; }
+  #term .cmd { color:#e2e8f0; }
+  #term .cmd .ps { color:var(--gold); }
+  #term .out { color:#7c8490; }
+  #term .ok { color:var(--green); }
+  #term .err { color:var(--red); }
+  #term .info { color:var(--cyan); }
+  #term .cursor { display:inline-block; width:7px; height:13px; background:var(--gold); vertical-align:middle; animation:blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity:0; } }
+
+  /* feed */
+  #feedwrap { grid-column:1 / -1; background:var(--panel); border:1px solid var(--line); border-radius:16px; display:flex; flex-direction:column; overflow:hidden; }
+  #feedwrap h3 { font-size:10.5px; font-family:var(--mono); letter-spacing:3px; color:var(--dim); padding:8px 14px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:8px; }
+  #feedwrap h3 .ct { color:var(--gold); }
+  #feed { flex:1; overflow:hidden; padding:6px 14px; font-family:var(--mono); font-size:10.5px; line-height:1.8; }
+  #feed .fe { color:var(--soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #feed .fe .ts { color:var(--gold); }
+  #feed .fe .ag { color:var(--cyan); }
+
+  /* toasts */
+  #toasts { position:fixed; top:108px; right:16px; z-index:100; display:flex; flex-direction:column; gap:8px; }
+  .toast { background:#fff; color:#202124; border-radius:12px; padding:10px 14px; font-size:12.5px; font-weight:600; box-shadow:0 14px 34px rgba(0,0,0,.5); animation:rise .3s ease; max-width:300px; border-left:3px solid var(--gold); }
+  .toast .sub { font-family:var(--mono); font-size:10px; color:#8a8a8a; font-weight:400; margin-top:3px; }
+
+  @media (max-width:1180px) {
+    #main { grid-template-columns:1fr; grid-template-rows:520px 1fr 112px; }
+    #overview { width:320px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="chrome">
+  <div class="lock">🔒</div>
+  <div class="url">subhankarcloud.in/hive-command-center</div>
+  <div class="nav"><i>‹</i><i>›</i><i>⋯</i></div>
+</div>
+
+<div id="topbar">
+  <div class="logo">
+    <span class="bee">🐝</span>
+    <div>
+      <div class="t1">THE HIVE</div>
+      <div class="t2">AGENT COMMAND CENTER · 2.0</div>
+    </div>
+  </div>
+  <div class="status">
+    <span class="pill"><span class="dot green"></span> <b id="st-agents">12</b> AGENTS ONLINE</span>
+    <span class="pill">MISSIONS <b id="st-tasks">0</b></span>
+    <span class="pill">COMMANDS <b id="st-cmds">0</b></span>
+    <span class="pill" id="clock">--:--:--</span>
+  </div>
+</div>
+
+<div id="main">
+  <!-- OFFICE -->
+  <div id="office">
+    <div class="officeLabel"><span>▦ OFFICE FLOOR · SUBHANKARCLOUD HQ</span><span class="live"><span class="dot green"></span>LIVE</span></div>
+    <svg class="floor" viewBox="0 0 1000 860" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="tile" width="56" height="56" patternUnits="userSpaceOnUse">
+          <path d="M28 0 L56 28 L28 56 L0 28 Z" fill="none" stroke="#22262e" stroke-width="1.5"/>
+        </pattern>
+        <g id="desk">
+          <rect x="-34" y="-22" width="68" height="44" rx="6" fill="#6e4a2c"/>
+          <rect x="-34" y="-22" width="68" height="10" rx="5" fill="#8a5c3b"/>
+          <rect x="-10" y="-16" width="20" height="14" rx="2" fill="#15181d"/>
+          <rect x="-8" y="-14" width="16" height="10" rx="1" fill="#1f3b5c"/>
+          <rect x="-8" y="-14" width="16" height="10" rx="1" fill="#2f6fae" opacity=".35"/>
+          <circle cx="0" cy="16" r="11" fill="#3a4049"/>
+          <circle cx="0" cy="16" r="7" fill="#2a2f37"/>
+        </g>
+        <g id="plant">
+          <rect x="-6" y="8" width="12" height="10" rx="3" fill="#a44a2a"/>
+          <circle cx="-8" cy="0" r="8" fill="#3e7d4e"/>
+          <circle cx="0" cy="-6" r="9" fill="#4c9a5e"/>
+          <circle cx="8" cy="0" r="8" fill="#3e7d4e"/>
+          <circle cx="-4" cy="-12" r="6" fill="#57ab68"/>
+        </g>
+        <g id="partition">
+          <rect x="-30" y="-2" width="60" height="4" rx="2" fill="#2e3542"/>
+          <rect x="-30" y="-2" width="60" height="4" rx="2" fill="#3a4354" opacity=".5"/>
+        </g>
+      </defs>
+      <rect width="1000" height="860" fill="#16181d"/>
+      <rect width="1000" height="860" fill="url(#tile)"/>
+      <rect x="8" y="8" width="984" height="844" rx="18" fill="none" stroke="#22262e" stroke-width="2"/>
+      <!-- zones -->
+      <g font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="3" fill="#4a515e">
+        <text x="34" y="52">C-SUITE</text>
+        <text x="470" y="52">ENGINEERING</text>
+        <text x="34" y="330">CREATIVE</text>
+        <text x="470" y="330">MEDIA LAB</text>
+        <text x="34" y="620">TRADING DESK</text>
+        <text x="470" y="620">OPERATIONS</text>
+      </g>
+      <g stroke="#232833" stroke-width="1.5" opacity=".8">
+        <line x1="460" y1="30" x2="460" y2="830"/>
+        <line x1="20" y1="180" x2="980" y2="180"/>
+        <line x1="20" y1="470" x2="980" y2="470"/>
+        <line x1="20" y1="720" x2="980" y2="720"/>
+      </g>
+      <!-- desks -->
+      <use href="#desk" x="180" y="110"/>
+      <use href="#desk" x="690" y="100"/>
+      <use href="#desk" x="840" y="100"/>
+      <use href="#desk" x="840" y="240"/>
+      <use href="#desk" x="180" y="290"/>
+      <use href="#desk" x="330" y="290"/>
+      <use href="#desk" x="690" y="290"/>
+      <use href="#desk" x="330" y="560"/>
+      <use href="#desk" x="180" y="570"/>
+      <use href="#desk" x="690" y="560"/>
+      <use href="#desk" x="840" y="560"/>
+      <use href="#desk" x="840" y="700"/>
+      <use href="#plant" x="90" y="150"/>
+      <use href="#plant" x="920" y="430"/>
+      <use href="#plant" x="70" y="700"/>
+      <use href="#partition" x="540" y="150"/>
+      <use href="#partition" x="540" y="600"/>
+      <use href="#partition" x="60" y="330"/>
+    </svg>
+    <div id="avatars"></div>
+    <div id="overview">
+      <div class="ovHead"><span class="t">Live Overview</span><span class="tag">HQ · IST</span></div>
+      <div id="kpis">
+        <div class="kpi"><div class="v"><span id="k-agents">12</span><em>/12</em></div><div class="k">Agents online</div></div>
+        <div class="kpi"><div class="v"><span id="k-missions">0</span><em>live</em></div><div class="k">Active missions</div></div>
+        <div class="kpi"><div class="v"><span id="k-cmds">0</span><em>run</em></div><div class="k">Commands</div></div>
+        <div class="kpi"><div class="v"><span id="k-done">0</span><em>done</em></div><div class="k">Delivered</div></div>
+      </div>
+      <div id="chartHead"><span>Agent activity · last 10 min</span><b id="chartTotal">0</b></div>
+      <div id="bars"></div>
+      <div id="agentsTable"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div id="right">
+    <div class="card" id="boardCard">
+      <h3><span class="ct">◈</span> MISSION BOARD <span class="right" id="boardStatus">LIVE</span></h3>
+      <div id="dispatch">
+        <input id="taskInput" placeholder="Dispatch a task… e.g. build a reel on dopamine" spellcheck="false">
+        <button id="dispatchBtn">DISPATCH ▸</button>
+      </div>
+      <div id="examples"></div>
+      <div id="board"></div>
+    </div>
+    <div class="card" id="termCard">
+      <h3><span class="ct">⬢</span> CMD · SANDBOX <span class="right">TRAFFIC <b id="termLines">0</b></span></h3>
+      <div id="term"></div>
+    </div>
+  </div>
+
+  <div id="feedwrap">
+    <h3><span class="ct">≋</span> LIVE TRAFFIC</h3>
+    <div id="feed"></div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+/* ═══════════════ AGENTS ═══════════════ */
+const AGENTS = [
+  { id:'hive-001',  name:'Hive 001',  role:'Orchestrator', emoji:'🐝', x:180,  y:72  },
+  { id:'codegen',   name:'CodeGen',   role:'Engineer',     emoji:'👨‍💻', x:690,  y:62  },
+  { id:'review',    name:'Review',    role:'QA · Tester',  emoji:'🔍', x:840,  y:62  },
+  { id:'guardian',  name:'Guardian',  role:'Loop Monitor', emoji:'🛡️', x:840,  y:200 },
+  { id:'content',   name:'Content',   role:'Writer',       emoji:'✍️', x:180,  y:252 },
+  { id:'design',    name:'Design',    role:'Creative',     emoji:'🎨', x:330,  y:252 },
+  { id:'voice',     name:'Voice',     role:'TTS',          emoji:'🎙️', x:690,  y:252 },
+  { id:'reel',      name:'Reel',      role:'Motion',       emoji:'🎬', x:330,  y:522 },
+  { id:'trader',    name:'Trader',    role:'Markets',      emoji:'📈', x:180,  y:532 },
+  { id:'applyos',   name:'ApplyOS',   role:'Recruiter',    emoji:'🧾', x:690,  y:522 },
+  { id:'readyhome', name:'ReadyHome', role:'Ops',          emoji:'🏠', x:840,  y:522 },
+  { id:'research',  name:'Research',  role:'Analyst',      emoji:'📚', x:840,  y:662 }
+];
+const agentMap = Object.fromEntries(AGENTS.map(a => [a.id, a]));
+const agentStats = Object.fromEntries(AGENTS.map(a => [a.id, 0]));
+
+/* ═══════════════ PIPELINES ═══════════════ */
+const PHASES = ['QUEUED','PLANNING','EXECUTING','REVIEWING','DELIVERED'];
+const PIPELINES = {
+  reel: { label:'reel', agents:['hive-001','reel','voice','design','content'], speech:'Rendering frames… 🎬', cmds:[
+    { t:'cmd', s:'node gen_scenes.cjs --theme dopamine' },
+    { t:'out', s:'scenes written: hook, t1, t2, t3, t4, close' },
+    { t:'cmd', s:'node tts.cjs --voice en-IN-PrabhatNeural --rate=+18%' },
+    { t:'ok',  s:'AUDIO TOTAL: 43.02s · narration ready' },
+    { t:'cmd', s:'node capture_scenes.cjs (1080×1920 @ 30fps)' },
+    { t:'out', s:'1,481 frames captured · 6 scenes' },
+    { t:'cmd', s:'ffmpeg -f concat -safe 0 -i list.txt -c copy dopamine-reel.mp4' },
+    { t:'ok',  s:'REEL WRITTEN · 43.0s · H.264+AAC · 1.07MB' },
+    { t:'cmd', s:'ffprobe -show_entries format=duration' },
+    { t:'ok',  s:'QA: 4 frames CLEAN · zero clipping' }
+  ]},
+  research: { label:'research', agents:['hive-001','research','content'], speech:'Parsing transcripts… 📚', cmds:[
+    { t:'cmd', s:'yt-dlp --write-auto-subs --skip-download <video-id>' },
+    { t:'out', s:'4 transcripts downloaded (VTT → text)' },
+    { t:'cmd', s:'node unscroll_vtt.py --clean' },
+    { t:'out', s:'v1-monsters.txt · 10.1K words' },
+    { t:'out', s:'v4-lockingin.txt · 19.7K words' },
+    { t:'cmd', s:'write cerebralsubhankar/unscroll-4-video-prep.md' },
+    { t:'ok',  s:'18.5KB · 4 topics · synthesis + repurposing plan' },
+    { t:'cmd', s:'grep -c "Lucifer" v1-monsters.txt' },
+    { t:'ok',  s:'QA: 16 references verified · no em dashes ✔' }
+  ]},
+  cards: { label:'cards', agents:['hive-001','design','content'], speech:'Laying out cards… 🎨', cmds:[
+    { t:'cmd', s:'node gen_full_set.cjs --set sleep-protocol' },
+    { t:'out', s:'11 styles · 33 cards · 1080×1350' },
+    { t:'cmd', s:'node render_cards.cjs --ratio 4:5 --font SpaceGrotesk' },
+    { t:'out', s:'sticky-notes ✔ · isometric ✔ · polaroid ✔' },
+    { t:'cmd', s:'node check_overflow.cjs --geometry' },
+    { t:'ok',  s:'0 overlaps · 0 out-of-bounds' },
+    { t:'cmd', s:'Copy-Item cards\\* ~\\Desktop\\Practice-Cards' },
+    { t:'ok',  s:'33 cards delivered to Desktop + README' }
+  ]},
+  code: { label:'code', agents:['hive-001','codegen','review'], speech:'Writing code… 👨‍💻', cmds:[
+    { t:'cmd', s:'git status --short' },
+    { t:'out', s:'2 modified · 1 untracked (manifest.json)' },
+    { t:'cmd', s:'node test/unit.test.cjs --all' },
+    { t:'ok',  s:'14 passed · 0 failed' },
+    { t:'cmd', s:'node lint.js --strict' },
+    { t:'ok',  s:'no errors · style clean' },
+    { t:'cmd', s:'git add . && git commit -m "feat: fix citecheck parser"' },
+    { t:'ok',  s:'commit a287fe8 · pushed · live 200 OK' },
+    { t:'cmd', s:'openclaw status' },
+    { t:'ok',  s:'gateway healthy · 12 agents online' }
+  ]},
+  voice: { label:'voice', agents:['hive-001','voice','reel'], speech:'Narrating… 🎙️', cmds:[
+    { t:'cmd', s:'edge-tts --voice en-IN-PrabhatNeural --rate=+18%' },
+    { t:'out', s:'hook 7.20s · t1 8.14s · t2 7.01s' },
+    { t:'out', s:'t3 7.85s · t4 7.56s · close 5.23s' },
+    { t:'ok',  s:'AUDIO TOTAL: 42.98s · natural pacing' },
+    { t:'cmd', s:'ffprobe -show_entries format=duration close.mp3' },
+    { t:'ok',  s:'5.23s · voice track ready for mux' }
+  ]},
+  trade: { label:'trade', agents:['hive-001','trader','guardian'], speech:'Scanning markets… 📈', cmds:[
+    { t:'cmd', s:'python signal_scan.py --pair BTCUSDT --tf 1h' },
+    { t:'out', s:'scan 2026-08-16 12:53 IST · 24 candles' },
+    { t:'info',s:'signal: NEUTRAL · RSI 54.2 · no entry' },
+    { t:'cmd', s:'python portfolio.py --risk-check' },
+    { t:'ok',  s:'exposure within limits · 3 positions' },
+    { t:'cmd', s:'openclaw cron list --kind trader' },
+    { t:'ok',  s:'heartbeat OK · next scan in 58m' }
+  ]},
+  apply: { label:'apply', agents:['hive-001','applyos','review'], speech:'Scoring roles… 🧾', cmds:[
+    { t:'cmd', s:'node scrape_rank.js --board linkedin --limit 10' },
+    { t:'out', s:'10 roles scored · 3 high-fit' },
+    { t:'cmd', s:'node generate_cover.js --role senior-engineer' },
+    { t:'ok',  s:'cover letter ready · 210 words' },
+    { t:'cmd', s:'python tracker/dashboard.py --sync' },
+    { t:'ok',  s:'tracker updated · 2 applications sent' }
+  ]},
+  monitor: { label:'monitor', agents:['hive-001','guardian','readyhome','review'], speech:'Running health checks… 🛡️', cmds:[
+    { t:'cmd', s:'openclaw status --all' },
+    { t:'ok',  s:'gateway healthy · 12 agents · 0 stuck' },
+    { t:'cmd', s:'openclaw cron list --enabled' },
+    { t:'out', s:'3 jobs · next fire in 12m' },
+    { t:'cmd', s:'node health_check.cjs --loops' },
+    { t:'info',s:'loop-detector: 0 infinite loops · 0 runaway' },
+    { t:'cmd', s:'curl -s -o /dev/null -w "%{http_code}" subhankarcloud.in' },
+    { t:'ok',  s:'200 OK · site live' }
+  ]},
+  content: { label:'content', agents:['hive-001','content','design'], speech:'Drafting copy… ✍️', cmds:[
+    { t:'cmd', s:'node post_writer.cjs --topic "you are not lazy"' },
+    { t:'ok',  s:'post drafted · 440 chars · hook-first' },
+    { t:'cmd', s:'node post_scorer.cjs --draft' },
+    { t:'ok',  s:'score 8.7/10 · strong hook · clear CTA' },
+    { t:'cmd', s:'node carousel.cjs --cards 4 --ratio 4:5' },
+    { t:'out', s:'card-1..4.png rendered · geometry CLEAN' },
+    { t:'cmd', s:'node scheduler.cjs --queue friday' },
+    { t:'ok',  s:'queued · posting order set' }
+  ]}
+};
+const DEMO_POOL = [
+  'build a reel on dopamine','research the lucifer effect','design 4-card carousel',
+  'fix citecheck parser bug','voice narration for reel','scan BTC signal',
+  'apply to 10 linkedin roles','full health check','draft 5 threads posts',
+  'transcript of 4 youtube videos','render 33 practice cards','17-slide ppt deck'
+];
+
+/* ═══════════════ STATE ═══════════════ */
+let taskCounter = 0, cmdCounter = 0, lineCounter = 0, deliveredCount = 0;
+const activeTasks = [];
+const feedEl = document.getElementById('feed');
+const termEl = document.getElementById('term');
+const boardEl = document.getElementById('board');
+
+/* ═══════════════ FLOOR AVATARS ═══════════════ */
+function renderAvatars() {
+  const wrap = document.getElementById('avatars');
+  AGENTS.forEach(a => {
+    const d = document.createElement('div');
+    d.className = 'av'; d.id = 'av-' + a.id;
+    d.style.left = (a.x / 1000 * 100) + '%';
+    d.style.top = (a.y / 860 * 100) + '%';
+    d.innerHTML = `<div class="bubble"></div><div class="pin"><span>${a.emoji}</span><span class="sd"></span></div>
+      <div class="name">${a.name}</div><div class="role">${a.role}</div>`;
+    d.onclick = () => toast(`<b>${a.name}</b> · ${a.role}`, 'Station online · awaiting orders');
+    wrap.appendChild(d);
+  });
+}
+function setAgentState(id, state, bubble) {
+  const d = document.getElementById('av-' + id);
+  if (!d) return;
+  d.classList.remove('work','done','bubble');
+  if (state) d.classList.add(state);
+  if (bubble !== undefined) {
+    d.querySelector('.bubble').textContent = bubble;
+    d.classList.toggle('bubble', !!bubble);
+  }
+}
+
+/* ═══════════════ TERMINAL ═══════════════ */
+function termLine(cls, text) {
+  const l = document.createElement('div'); l.className = 'l ' + cls;
+  if (cls === 'cmd') l.innerHTML = `<span class="ps">hive@agent-001:~$</span> ${escapeHtml(text)}`;
+  else l.textContent = text;
+  termEl.appendChild(l); termEl.scrollTop = termEl.scrollHeight;
+  lineCounter++; document.getElementById('termLines').textContent = lineCounter;
+}
+function termCursor() {
+  const c = document.createElement('span'); c.className = 'cursor'; termEl.appendChild(c);
+  termEl.scrollTop = termEl.scrollHeight; return c;
+}
+function typeText(el, text, speed, done) {
+  let i = 0;
+  const iv = setInterval(() => {
+    el.textContent = text.slice(0, ++i);
+    termEl.scrollTop = termEl.scrollHeight;
+    if (i >= text.length) { clearInterval(iv); done && done(); }
+  }, speed);
+}
+function streamCommand(line, done) {
+  const cursor = termCursor();
+  const tmp = document.createElement('span'); tmp.style.color = '#e2e8f0';
+  cursor.replaceWith(tmp);
+  typeText(tmp, `hive@agent-001:~$ ${line.s}`, 6, () => {
+    setTimeout(() => {
+      termLine(line.t === 'cmd' ? 'cmd' : line.t, line.s);
+      cmdCounter++; document.getElementById('st-cmds').textContent = cmdCounter;
+      document.getElementById('k-cmds').textContent = cmdCounter;
+      done && done();
+    }, 120);
+  });
+}
+function runPipeline(cmds, execAgent, done) {
+  const steps = cmds.map((c, i) => () => {
+    agentStats[execAgent]++; renderChart();
+    streamCommand(c, () => {
+      setTimeout(() => { if (i < steps.length - 1) steps[i+1](); else done && done(); }, 220);
+    });
+  });
+  steps[0]();
+}
+
+/* ═══════════════ FEED ═══════════════ */
+function feed(agentId, text) {
+  const fe = document.createElement('div'); fe.className = 'fe';
+  const ts = new Date().toLocaleTimeString('en-IN', { hour12:false, timeZone:'Asia/Kolkata' });
+  fe.innerHTML = `<span class="ts">${ts}</span> <span class="ag">${agentMap[agentId]?.name || agentId}</span> ${escapeHtml(text)}`;
+  feedEl.prepend(fe);
+  while (feedEl.children.length > 60) feedEl.removeChild(feedEl.lastChild);
+}
+
+/* ═══════════════ CHART / TABLE ═══════════════ */
+function renderChart() {
+  const total = Object.values(agentStats).reduce((a,b)=>a+b,0);
+  document.getElementById('chartTotal').textContent = total + ' cmds';
+  const max = Math.max(1, ...Object.values(agentStats));
+  const bars = document.getElementById('bars');
+  bars.innerHTML = '';
+  AGENTS.forEach(a => {
+    const b = document.createElement('div'); b.className = 'bar';
+    const h = Math.max(4, Math.round(agentStats[a.id] / max * 70));
+    b.style.height = h + 'px';
+    b.title = a.name + ': ' + agentStats[a.id] + ' commands';
+    bars.appendChild(b);
+  });
+  const rows = [...AGENTS].sort((a,b) => agentStats[b.id] - agentStats[a.id]).slice(0,4);
+  document.getElementById('agentsTable').innerHTML = rows.map(a =>
+    `<div class="rowAgent"><span class="adot">${a.emoji}</span><span class="an">${a.name}</span><span class="ar">${agentStats[a.id]} cmds</span></div>`
+  ).join('');
+}
+
+/* ═══════════════ TASKS ═══════════════ */
+function classify(text) {
+  const t = text.toLowerCase();
+  if (/reel|video|motion|scene|ffmpeg/.test(t)) return 'reel';
+  if (/research|arxiv|paper|transcript|youtube|analyse|analysis|prep|video/.test(t)) return 'research';
+  if (/card|carousel|design|deck|ppt|slide|poster/.test(t)) return 'cards';
+  if (/code|bug|fix|build|app|script|extension|test|commit|refactor/.test(t)) return 'code';
+  if (/voice|tts|narrat|speak/.test(t)) return 'voice';
+  if (/trade|market|signal|btc|stock|crypto|scan/.test(t)) return 'trade';
+  if (/apply|job|resume|linkedin|hire|interview/.test(t)) return 'apply';
+  if (/health|check|audit|monitor|status|cron|verify/.test(t)) return 'monitor';
+  if (/post|thread|content|copy|caption|write|newsletter/.test(t)) return 'content';
+  return 'research';
+}
+function dispatch(text) {
+  const type = classify(text);
+  const pipe = PIPELINES[type] || PIPELINES.research;
+  const id = ++taskCounter;
+  const task = { id, title: text.trim() || pipe.label, type, agents: pipe.agents, phase: 0, el: null };
+  activeTasks.push(task);
+  feed('hive-001', `dispatched task #${id} · "${task.title}" → ${pipe.agents.join(', ')}`);
+  toast(`NEW MISSION #${id}`, `"${task.title}" · ${pipe.agents.length} agents assigned`);
+  renderTask(task);
+  document.getElementById('st-tasks').textContent = activeTasks.length;
+  document.getElementById('k-missions').textContent = activeTasks.length;
+  runTask(task, pipe);
+}
+function renderTask(task) {
+  const el = document.createElement('div'); el.className = 'task'; task.el = el;
+  el.innerHTML = `
+    <div class="thead"><span class="tid">#${String(task.id).padStart(3,'0')}</span>
+      <span class="ttitle">${escapeHtml(task.title)}</span></div>
+    <div class="tmeta">${task.type.toUpperCase()} · ${PHASES[0]}</div>
+    <div class="tagents">${task.agents.map(a => `<span class="tag" data-ag="${a}">${agentMap[a].emoji} ${agentMap[a].name}</span>`).join('')}</div>
+    <div class="phases">${PHASES.map(() => '<div class="ph"></div>').join('')}</div>`;
+  boardEl.prepend(el);
+}
+function setPhase(task, idx) {
+  task.phase = idx;
+  task.el.querySelector('.tmeta').textContent = `${task.type.toUpperCase()} · ${PHASES[idx]}`;
+  task.el.querySelectorAll('.ph').forEach((p, i) => {
+    p.className = 'ph' + (i < idx ? ' done' : i === idx ? ' on' : '');
+  });
+  const tags = task.el.querySelectorAll('.tag');
+  tags.forEach(t => t.classList.remove('act'));
+  if (idx >= 1) tags[Math.min(idx - 1, task.agents.length - 1)].classList.add('act');
+}
+function runTask(task, pipe) {
+  const agents = pipe.agents;
+  setTimeout(() => {
+    setPhase(task, 1);
+    agents.forEach((a, i) => setTimeout(() => {
+      setAgentState(a, 'work', i === 0 ? pipe.speech : undefined);
+      feed(a, `picked up task #${task.id} · ${PHASES[1]}`);
+    }, i * 450));
+  }, 800);
+  setTimeout(() => {
+    setPhase(task, 2);
+    const exec = agents[1] || agents[0];
+    feed(exec, `executing task #${task.id} · streaming to sandbox`);
+    runPipeline(pipe.cmds, exec, () => {
+      setTimeout(() => {
+        setPhase(task, 3);
+        const reviewer = agents.includes('review') ? 'review' : agents[agents.length-1];
+        setAgentState(reviewer, 'work', 'Verifying… 🔍');
+        feed(reviewer, `reviewing task #${task.id} · QA pass`);
+      }, 500);
+      setTimeout(() => {
+        setPhase(task, 4);
+        task.el.classList.add('delivered');
+        agents.forEach(a => setAgentState(a, 'done', a === agents[0] ? 'Delivered ✔' : undefined));
+        setTimeout(() => agents.forEach(a => setAgentState(a, null)), 2600);
+        feed('hive-001', `task #${task.id} delivered · archived`);
+        deliveredCount++;
+        document.getElementById('k-done').textContent = deliveredCount;
+        document.getElementById('st-tasks').textContent = activeTasks.filter(t => t.phase < 4).length;
+        document.getElementById('k-missions').textContent = activeTasks.filter(t => t.phase < 4).length;
+      }, 1800);
+    });
+  }, 2400 + agents.length * 450);
+}
+
+/* ═══════════════ MISC ═══════════════ */
+function toast(title, sub) {
+  const t = document.createElement('div'); t.className = 'toast';
+  t.innerHTML = `${title}<div class="sub">${sub}</div>`;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .4s'; setTimeout(() => t.remove(), 400); }, 5200);
+}
+function tickClock() {
+  document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-IN', { hour12:false, timeZone:'Asia/Kolkata' });
+}
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ═══════════════ BOOT ═══════════════ */
+renderAvatars(); renderChart();
+setInterval(tickClock, 1000); tickClock();
+
+const chips = ['research the lucifer effect','build a reel on dopamine','render 33 practice cards','fix citecheck bug','full health check','draft 5 threads posts','scan BTC signal','apply to 10 linkedin roles'];
+const exEl = document.getElementById('examples');
+chips.forEach(c => {
+  const chip = document.createElement('span'); chip.className = 'chip'; chip.textContent = c;
+  chip.onclick = () => { document.getElementById('taskInput').value = c; dispatch(c); };
+  exEl.appendChild(chip);
+});
+document.getElementById('dispatchBtn').onclick = () => {
+  const v = document.getElementById('taskInput').value.trim();
+  if (v) { dispatch(v); document.getElementById('taskInput').value = ''; }
+};
+document.getElementById('taskInput').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('dispatchBtn').click(); });
+
+termLine('info', '═ THE HIVE COMMAND CENTER 2.0 ═ live agent playground');
+termLine('out', '12 agents online · office floor · analytics overlay attached');
+termLine('out', 'type a task above, or let the demo run. traces are real pipeline logs.');
+termLine('cmd', 'openclaw status --all');
+setTimeout(() => termLine('ok', 'gateway healthy · 12 agents · 0 stuck'), 900);
+setTimeout(() => termLine('out', 'demo loop armed · next auto-mission in ~10s'), 1800);
+
+setInterval(() => { dispatch(DEMO_POOL[Math.floor(Math.random() * DEMO_POOL.length)]); }, 14000);
+
+setInterval(() => {
+  const done = [...activeTasks].filter(t => t.phase >= 4);
+  done.forEach(t => {
+    if (t.el.parentNode && Date.now() - (t._archived || 0) > 30000) {
+      t.el.remove(); activeTasks.splice(activeTasks.indexOf(t), 1);
+      if (!t._archived) { t._archived = Date.now(); document.getElementById('st-tasks').textContent = activeTasks.filter(x => x.phase < 4).length; }
+    }
+  });
+}, 5000);
+</script>
+</body>
+</html>
