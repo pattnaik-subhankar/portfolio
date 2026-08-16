@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Hive · Agent Command Center 2.0</title>
+<title>The Hive · Agent Command Center 2.1</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -21,14 +21,12 @@
   ::-webkit-scrollbar-thumb { background:#2c313b; border-radius:4px; }
   ::-webkit-scrollbar-track { background:transparent; }
 
-  /* ── browser chrome (nod to the sample) ── */
   #chrome { height:44px; background:#14161a; border-bottom:1px solid #23272e; display:flex; align-items:center; gap:10px; padding:0 14px; }
   #chrome .lock { width:22px; height:22px; border-radius:50%; background:#1e242c; display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--green); border:1px solid #2b323c; }
   #chrome .url { flex:1; max-width:560px; margin:0 auto; background:#1e2127; border:1px solid #2b323c; border-radius:20px; font-family:var(--mono); font-size:12px; color:var(--soft); padding:6px 18px; text-align:center; letter-spacing:.3px; }
   #chrome .nav { display:flex; gap:6px; }
   #chrome .nav i { width:26px; height:26px; border-radius:50%; background:#1e2127; border:1px solid #2b323c; display:flex; align-items:center; justify-content:center; font-style:normal; font-size:12px; color:var(--dim); }
 
-  /* ── topbar ── */
   #topbar { height:56px; display:flex; align-items:center; gap:16px; padding:0 18px; background:linear-gradient(180deg,#12151a,#0f1115); border-bottom:1px solid var(--line); position:relative; z-index:40; }
   #topbar .logo { display:flex; align-items:center; gap:12px; }
   #topbar .logo .bee { font-size:24px; filter:drop-shadow(0 0 10px rgba(251,191,36,.55)); }
@@ -42,51 +40,75 @@
   #topbar .status { display:flex; gap:8px; margin-left:auto; }
   #clock { font-family:var(--mono); font-size:12.5px; color:var(--soft); }
 
-  /* ── main layout ── */
   #main { display:grid; grid-template-columns:1fr 430px; grid-template-rows:1fr 112px; gap:12px; padding:12px; height:calc(100% - 44px - 56px); }
 
-  /* ── left: the office ── */
+  /* ── office ── */
   #office { position:relative; background:var(--shell2); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:inset 0 0 80px rgba(0,0,0,.35); }
-  #office .officeLabel { position:absolute; top:12px; left:14px; z-index:5; font-family:var(--mono); font-size:10px; letter-spacing:3px; color:var(--dim); display:flex; gap:8px; align-items:center; }
-  #office .officeLabel .live { color:var(--green); display:flex; gap:5px; align-items:center; }
-  #office svg.floor { position:absolute; inset:0; width:100%; height:100%; }
+  .officeLabel { position:absolute; top:12px; left:14px; z-index:5; font-family:var(--mono); font-size:10px; letter-spacing:3px; color:var(--dim); display:flex; gap:8px; align-items:center; }
+  .officeLabel .live { color:var(--green); display:flex; gap:5px; align-items:center; }
+  #ovToggle { position:absolute; top:12px; right:14px; z-index:30; font-family:var(--mono); font-size:10.5px; letter-spacing:1.5px; color:var(--gold);
+    background:rgba(15,17,22,.9); border:1px solid rgba(251,191,36,.5); border-radius:20px; padding:7px 14px; cursor:pointer; display:flex; gap:7px; align-items:center; backdrop-filter:blur(4px); transition:all .25s; }
+  #ovToggle:hover { background:var(--gold); color:#141008; box-shadow:0 0 18px rgba(251,191,36,.5); }
+  .sweep { position:absolute; inset:0; z-index:1; pointer-events:none; background:conic-gradient(from 0deg, transparent 0 300deg, rgba(251,191,36,.07) 340deg, transparent 360deg); animation:spin 14s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  svg.floor { position:absolute; inset:0; width:100%; height:100%; z-index:2; }
   #avatars { position:absolute; inset:0; z-index:4; }
-  .av { position:absolute; transform:translate(-50%,-50%); text-align:center; cursor:pointer; }
-  .av .pin { position:relative; width:46px; height:46px; margin:0 auto; border-radius:50%; background:linear-gradient(145deg,#232933,#1a1e26); border:2.5px solid #fff; box-shadow:0 4px 14px rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; font-size:21px; transition:box-shadow .3s, transform .15s; }
-  .av:hover .pin { transform:scale(1.08); }
-  .av .pin .sd { position:absolute; bottom:-2px; right:-2px; width:12px; height:12px; border-radius:50%; background:#3a4150; border:2px solid #fff; }
-  .av .name { font-size:10.5px; font-weight:600; color:var(--ink); background:rgba(10,12,15,.82); border:1px solid rgba(255,255,255,.14); padding:3px 8px; border-radius:8px; margin-top:5px; display:inline-block; white-space:nowrap; backdrop-filter:blur(4px); }
+
+  .av { position:absolute; transform:translate(-50%,-50%); text-align:center; cursor:pointer; transition:left 1.25s cubic-bezier(.35,.75,.3,1), top 1.25s cubic-bezier(.35,.75,.3,1); }
+  .av .charwrap { position:relative; width:58px; height:78px; margin:0 auto; }
+  .av .char { width:58px; height:78px; display:block; animation:bob 2.8s ease-in-out infinite; filter:drop-shadow(0 6px 6px rgba(0,0,0,.5)); }
+  .av .char .legL,.av .char .legR { transform-origin:50% 0%; }
+  .av .char .armL,.av .char .armR { transform-origin:50% 0%; }
+  .av .char .headB { transform-origin:50% 100%; }
+  .av.walk .char { animation:walkbob .5s ease-in-out infinite; }
+  .av.walk .char .legL { animation:swing .5s ease-in-out infinite; }
+  .av.walk .char .legR { animation:swing .5s ease-in-out infinite reverse; }
+  .av.walk .char .armL { animation:swing .5s ease-in-out infinite reverse; }
+  .av.walk .char .armR { animation:swing .5s ease-in-out infinite; }
+  .av.work .char { animation-duration:.85s; filter:drop-shadow(0 0 12px rgba(251,191,36,.6)); }
+  @keyframes bob { 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-2.5px);} }
+  @keyframes walkbob { 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-3.5px);} }
+  @keyframes swing { 0%,100%{ transform:rotate(-11deg);} 50%{ transform:rotate(11deg);} }
+  .av .shadow { width:36px; height:8px; border-radius:50%; background:rgba(0,0,0,.5); filter:blur(2px); margin:-4px auto 0; }
+  .av .sd { position:absolute; top:-2px; right:-2px; width:13px; height:13px; border-radius:50%; background:#3a4150; border:2px solid #fff; z-index:3; }
+  .av.work .sd { background:var(--gold); box-shadow:0 0 9px var(--gold); animation:pulse 1.1s infinite; }
+  .av.done .sd { background:var(--green); box-shadow:0 0 9px var(--green); }
+  .av .name { font-size:10.5px; font-weight:600; color:var(--ink); background:rgba(10,12,15,.85); border:1px solid rgba(255,255,255,.14); padding:3px 9px; border-radius:8px; margin-top:4px; display:inline-block; white-space:nowrap; backdrop-filter:blur(4px); }
   .av .role { font-family:var(--mono); font-size:8px; color:var(--dim); margin-top:1px; }
-  .av.work .pin { box-shadow:0 0 0 3px rgba(251,191,36,.28), 0 4px 18px rgba(0,0,0,.5), 0 0 22px rgba(251,191,36,.55); }
-  .av.work .sd { background:var(--gold); animation:pulse 1.1s infinite; }
-  .av.done .sd { background:var(--green); }
-  .av .bubble { position:absolute; top:-30px; left:50%; transform:translate(-50%,6px); opacity:0; transition:all .3s; background:#1c2027; border:1px solid var(--gold); color:var(--gold); font-family:var(--mono); font-size:9px; padding:4px 8px; border-radius:8px; white-space:nowrap; z-index:10; pointer-events:none; }
+  .av .typing { display:none; justify-content:center; gap:4px; margin-top:4px; height:8px; }
+  .av.work .typing { display:flex; }
+  .av .typing i { width:5px; height:5px; border-radius:50%; background:var(--gold); animation:tdot 1s ease-in-out infinite; }
+  .av .typing i:nth-child(2) { animation-delay:.18s; } .av .typing i:nth-child(3) { animation-delay:.36s; }
+  @keyframes tdot { 0%,100%{ transform:translateY(0); opacity:.5;} 50%{ transform:translateY(-4px); opacity:1;} }
+  .av .bubble { position:absolute; top:-30px; left:50%; transform:translate(-50%,6px); opacity:0; transition:all .3s; background:#1c2027; border:1px solid var(--gold); color:var(--gold); font-family:var(--mono); font-size:9px; padding:4px 8px; border-radius:8px; white-space:nowrap; z-index:12; pointer-events:none; }
   .av .bubble:after { content:''; position:absolute; top:100%; left:50%; margin-left:-4px; border:4px solid transparent; border-top-color:var(--gold); }
   .av.bubble .bubble { opacity:1; transform:translate(-50%,0); }
+  .av:hover .name { color:var(--gold); }
 
-  /* ── floating white overview card ── */
-  #overview { position:absolute; right:16px; bottom:16px; z-index:6; width:368px; background:#fff; color:#202124; border-radius:14px; box-shadow:0 18px 44px rgba(0,0,0,.55); padding:16px 18px; animation:rise .6s ease; }
+  /* ── overview card (hidden by default, toggled) ── */
+  #overview { position:absolute; right:16px; bottom:16px; z-index:20; width:360px; background:#fff; color:#202124; border-radius:14px; box-shadow:0 18px 44px rgba(0,0,0,.55); padding:14px 16px; display:none; animation:rise .45s ease; }
+  #overview.open { display:block; }
   @keyframes rise { from { opacity:0; transform:translateY(16px);} to { opacity:1; transform:none;} }
   #overview .ovHead { display:flex; align-items:center; justify-content:space-between; }
-  #overview .ovHead .t { font-size:12.5px; font-weight:700; letter-spacing:1.5px; color:#202124; text-transform:uppercase; }
+  #overview .ovHead .t { font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; }
   #overview .ovHead .tag { font-family:var(--mono); font-size:9px; color:var(--terra2); background:#f5ece5; padding:3px 8px; border-radius:20px; font-weight:600; }
-  #kpis { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
-  .kpi { background:#faf7f4; border:1px solid #f0e9e2; border-radius:10px; padding:10px 12px; }
-  .kpi .v { font-size:22px; font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:-.5px; color:#202124; }
-  .kpi .v em { font-style:normal; font-size:12px; color:var(--terra2); font-weight:600; margin-left:2px; }
-  .kpi .k { font-size:10px; color:#7d7d7d; text-transform:uppercase; letter-spacing:1px; margin-top:2px; }
-  #chartHead { font-size:10px; color:#7d7d7d; text-transform:uppercase; letter-spacing:1px; margin:16px 0 8px; display:flex; justify-content:space-between; }
+  #overview .ovClose { width:22px; height:22px; border-radius:50%; background:#f0e9e2; border:0; color:#7d7d7d; font-size:12px; cursor:pointer; font-weight:700; line-height:1; }
+  #overview .ovClose:hover { background:#e5d9cf; color:#202124; }
+  #kpis { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+  .kpi { background:#faf7f4; border:1px solid #f0e9e2; border-radius:10px; padding:9px 12px; }
+  .kpi .v { font-size:21px; font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:-.5px; }
+  .kpi .v em { font-style:normal; font-size:11px; color:var(--terra2); font-weight:600; margin-left:2px; }
+  .kpi .k { font-size:9.5px; color:#7d7d7d; text-transform:uppercase; letter-spacing:1px; margin-top:2px; }
+  #chartHead { font-size:9.5px; color:#7d7d7d; text-transform:uppercase; letter-spacing:1px; margin:14px 0 7px; display:flex; justify-content:space-between; }
   #chartHead b { color:#202124; }
-  #bars { display:flex; align-items:flex-end; gap:5px; height:74px; }
-  #bars .bar { flex:1; background:linear-gradient(180deg,var(--terra),var(--terra2)); border-radius:4px 4px 2px 2px; min-height:3px; transition:height .8s cubic-bezier(.2,.7,.2,1); position:relative; }
+  #bars { display:flex; align-items:flex-end; gap:5px; height:64px; }
+  #bars .bar { flex:1; background:linear-gradient(180deg,var(--terra),var(--terra2)); border-radius:4px 4px 2px 2px; min-height:3px; transition:height .8s cubic-bezier(.2,.7,.2,1); }
   #bars .bar:nth-child(odd) { background:linear-gradient(180deg,var(--gold),var(--gold2)); }
-  #bars .bar:hover { filter:brightness(1.1); }
-  #bars .bar span { position:absolute; top:-14px; left:50%; transform:translateX(-50%); font-size:8px; color:#b0b0b0; font-family:var(--mono); }
-  #agentsTable { margin-top:14px; border-top:1px solid #f0e9e2; padding-top:8px; }
-  .rowAgent { display:flex; align-items:center; gap:9px; padding:6px 2px; border-bottom:1px solid #f6f1ec; }
+  #agentsTable { margin-top:12px; border-top:1px solid #f0e9e2; padding-top:7px; }
+  .rowAgent { display:flex; align-items:center; gap:9px; padding:5px 2px; border-bottom:1px solid #f6f1ec; }
   .rowAgent:last-child { border-bottom:0; }
   .rowAgent .adot { width:22px; height:22px; border-radius:50%; background:#efe9e2; display:flex; align-items:center; justify-content:center; font-size:11px; }
-  .rowAgent .an { font-size:12px; font-weight:600; color:#202124; }
+  .rowAgent .an { font-size:12px; font-weight:600; }
   .rowAgent .ar { margin-left:auto; font-family:var(--mono); font-size:11px; font-weight:700; color:var(--terra2); font-variant-numeric:tabular-nums; }
 
   /* ── right column ── */
@@ -95,8 +117,6 @@
   .card h3 { font-size:10.5px; font-family:var(--mono); letter-spacing:3px; color:var(--dim); padding:12px 14px 10px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:8px; }
   .card h3 .ct { color:var(--gold); }
   .card h3 .right { margin-left:auto; color:var(--dim); letter-spacing:1px; }
-
-  /* mission board */
   #boardCard { flex:1.15; }
   #dispatch { display:flex; gap:8px; padding:10px 12px; border-bottom:1px solid var(--line); }
   #dispatch input { flex:1; background:var(--shell2); border:1px solid var(--line); border-radius:10px; padding:9px 13px; color:var(--ink); font-family:var(--sans); font-size:13px; outline:none; }
@@ -120,30 +140,19 @@
   .task .ph.on { background:var(--gold); }
   .task .ph.done { background:var(--green); }
   .task.delivered { opacity:.6; }
-
-  /* terminal */
   #termCard { flex:1; }
   #term { background:#0a0c0f; font-family:var(--mono); font-size:11.5px; line-height:1.6; padding:10px 14px; overflow-y:auto; flex:1; }
   #term .l { white-space:pre-wrap; word-break:break-word; }
-  #term .cmd { color:#e2e8f0; }
-  #term .cmd .ps { color:var(--gold); }
-  #term .out { color:#7c8490; }
-  #term .ok { color:var(--green); }
-  #term .err { color:var(--red); }
-  #term .info { color:var(--cyan); }
+  #term .cmd { color:#e2e8f0; } #term .cmd .ps { color:var(--gold); }
+  #term .out { color:#7c8490; } #term .ok { color:var(--green); } #term .err { color:var(--red); } #term .info { color:var(--cyan); }
   #term .cursor { display:inline-block; width:7px; height:13px; background:var(--gold); vertical-align:middle; animation:blink 1s steps(1) infinite; }
   @keyframes blink { 50% { opacity:0; } }
-
-  /* feed */
   #feedwrap { grid-column:1 / -1; background:var(--panel); border:1px solid var(--line); border-radius:16px; display:flex; flex-direction:column; overflow:hidden; }
   #feedwrap h3 { font-size:10.5px; font-family:var(--mono); letter-spacing:3px; color:var(--dim); padding:8px 14px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:8px; }
   #feedwrap h3 .ct { color:var(--gold); }
   #feed { flex:1; overflow:hidden; padding:6px 14px; font-family:var(--mono); font-size:10.5px; line-height:1.8; }
   #feed .fe { color:var(--soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  #feed .fe .ts { color:var(--gold); }
-  #feed .fe .ag { color:var(--cyan); }
-
-  /* toasts */
+  #feed .fe .ts { color:var(--gold); } #feed .fe .ag { color:var(--cyan); }
   #toasts { position:fixed; top:108px; right:16px; z-index:100; display:flex; flex-direction:column; gap:8px; }
   .toast { background:#fff; color:#202124; border-radius:12px; padding:10px 14px; font-size:12.5px; font-weight:600; box-shadow:0 14px 34px rgba(0,0,0,.5); animation:rise .3s ease; max-width:300px; border-left:3px solid var(--gold); }
   .toast .sub { font-family:var(--mono); font-size:10px; color:#8a8a8a; font-weight:400; margin-top:3px; }
@@ -151,6 +160,10 @@
   @media (max-width:1180px) {
     #main { grid-template-columns:1fr; grid-template-rows:520px 1fr 112px; }
     #overview { width:320px; }
+    .av .name { font-size:9px; padding:2px 6px; }
+    .av .role { display:none; }
+    .av .charwrap { width:48px; height:64px; }
+    .av .char { width:48px; height:64px; }
   }
 </style>
 </head>
@@ -167,7 +180,7 @@
     <span class="bee">🐝</span>
     <div>
       <div class="t1">THE HIVE</div>
-      <div class="t2">AGENT COMMAND CENTER · 2.0</div>
+      <div class="t2">AGENT COMMAND CENTER · 2.1</div>
     </div>
   </div>
   <div class="status">
@@ -179,9 +192,10 @@
 </div>
 
 <div id="main">
-  <!-- OFFICE -->
   <div id="office">
     <div class="officeLabel"><span>▦ OFFICE FLOOR · SUBHANKARCLOUD HQ</span><span class="live"><span class="dot green"></span>LIVE</span></div>
+    <button id="ovToggle">◈ LIVE OVERVIEW</button>
+    <div class="sweep"></div>
     <svg class="floor" viewBox="0 0 1000 860" preserveAspectRatio="xMidYMid slice">
       <defs>
         <pattern id="tile" width="56" height="56" patternUnits="userSpaceOnUse">
@@ -203,52 +217,38 @@
           <circle cx="8" cy="0" r="8" fill="#3e7d4e"/>
           <circle cx="-4" cy="-12" r="6" fill="#57ab68"/>
         </g>
-        <g id="partition">
-          <rect x="-30" y="-2" width="60" height="4" rx="2" fill="#2e3542"/>
-          <rect x="-30" y="-2" width="60" height="4" rx="2" fill="#3a4354" opacity=".5"/>
-        </g>
       </defs>
       <rect width="1000" height="860" fill="#16181d"/>
       <rect width="1000" height="860" fill="url(#tile)"/>
       <rect x="8" y="8" width="984" height="844" rx="18" fill="none" stroke="#22262e" stroke-width="2"/>
-      <!-- zones -->
-      <g font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="3" fill="#4a515e">
-        <text x="34" y="52">C-SUITE</text>
-        <text x="470" y="52">ENGINEERING</text>
-        <text x="34" y="330">CREATIVE</text>
-        <text x="470" y="330">MEDIA LAB</text>
-        <text x="34" y="620">TRADING DESK</text>
-        <text x="470" y="620">OPERATIONS</text>
-      </g>
       <g stroke="#232833" stroke-width="1.5" opacity=".8">
+        <line x1="20" y1="300" x2="980" y2="300"/>
+        <line x1="20" y1="510" x2="980" y2="510"/>
         <line x1="460" y1="30" x2="460" y2="830"/>
-        <line x1="20" y1="180" x2="980" y2="180"/>
-        <line x1="20" y1="470" x2="980" y2="470"/>
-        <line x1="20" y1="720" x2="980" y2="720"/>
       </g>
-      <!-- desks -->
-      <use href="#desk" x="180" y="110"/>
-      <use href="#desk" x="690" y="100"/>
-      <use href="#desk" x="840" y="100"/>
-      <use href="#desk" x="840" y="240"/>
-      <use href="#desk" x="180" y="290"/>
-      <use href="#desk" x="330" y="290"/>
-      <use href="#desk" x="690" y="290"/>
-      <use href="#desk" x="330" y="560"/>
-      <use href="#desk" x="180" y="570"/>
-      <use href="#desk" x="690" y="560"/>
-      <use href="#desk" x="840" y="560"/>
-      <use href="#desk" x="840" y="700"/>
-      <use href="#plant" x="90" y="150"/>
-      <use href="#plant" x="920" y="430"/>
-      <use href="#plant" x="70" y="700"/>
-      <use href="#partition" x="540" y="150"/>
-      <use href="#partition" x="540" y="600"/>
-      <use href="#partition" x="60" y="330"/>
+      <g font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="3" fill="#4a515e">
+        <text x="34" y="178">C-SUITE</text>
+        <text x="480" y="178">ENGINEERING</text>
+        <text x="34" y="388">CREATIVE</text>
+        <text x="480" y="388">MEDIA LAB</text>
+        <text x="34" y="568">TRADING DESK</text>
+        <text x="480" y="568">OPERATIONS</text>
+      </g>
+      <!-- war room -->
+      <g id="warroom">
+        <circle cx="500" cy="400" r="42" fill="#333a44" stroke="#454e5c" stroke-width="2"/>
+        <circle cx="500" cy="400" r="24" fill="#232830" stroke="#3a4150" stroke-width="1.5"/>
+        <text x="500" y="462" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="3" fill="#5b6472">WAR ROOM</text>
+      </g>
+      <use href="#plant" x="90" y="240"/>
+      <use href="#plant" x="930" y="240"/>
+      <use href="#plant" x="90" y="640"/>
+      <use href="#plant" x="930" y="640"/>
+      <g id="deskLayer"></g>
     </svg>
     <div id="avatars"></div>
     <div id="overview">
-      <div class="ovHead"><span class="t">Live Overview</span><span class="tag">HQ · IST</span></div>
+      <div class="ovHead"><span class="t">Live Overview</span><span><span class="tag">HQ · IST</span> <button class="ovClose" id="ovClose">✕</button></span></div>
       <div id="kpis">
         <div class="kpi"><div class="v"><span id="k-agents">12</span><em>/12</em></div><div class="k">Agents online</div></div>
         <div class="kpi"><div class="v"><span id="k-missions">0</span><em>live</em></div><div class="k">Active missions</div></div>
@@ -261,7 +261,6 @@
     </div>
   </div>
 
-  <!-- RIGHT -->
   <div id="right">
     <div class="card" id="boardCard">
       <h3><span class="ct">◈</span> MISSION BOARD <span class="right" id="boardStatus">LIVE</span></h3>
@@ -287,23 +286,118 @@
 <div id="toasts"></div>
 
 <script>
-/* ═══════════════ AGENTS ═══════════════ */
+/* ═══════════════ AGENTS (viewBox coords: x,y = character standing spot) ═══════════════ */
 const AGENTS = [
-  { id:'hive-001',  name:'Hive 001',  role:'Orchestrator', emoji:'🐝', x:180,  y:72  },
-  { id:'codegen',   name:'CodeGen',   role:'Engineer',     emoji:'👨‍💻', x:690,  y:62  },
-  { id:'review',    name:'Review',    role:'QA · Tester',  emoji:'🔍', x:840,  y:62  },
-  { id:'guardian',  name:'Guardian',  role:'Loop Monitor', emoji:'🛡️', x:840,  y:200 },
-  { id:'content',   name:'Content',   role:'Writer',       emoji:'✍️', x:180,  y:252 },
-  { id:'design',    name:'Design',    role:'Creative',     emoji:'🎨', x:330,  y:252 },
-  { id:'voice',     name:'Voice',     role:'TTS',          emoji:'🎙️', x:690,  y:252 },
-  { id:'reel',      name:'Reel',      role:'Motion',       emoji:'🎬', x:330,  y:522 },
-  { id:'trader',    name:'Trader',    role:'Markets',      emoji:'📈', x:180,  y:532 },
-  { id:'applyos',   name:'ApplyOS',   role:'Recruiter',    emoji:'🧾', x:690,  y:522 },
-  { id:'readyhome', name:'ReadyHome', role:'Ops',          emoji:'🏠', x:840,  y:522 },
-  { id:'research',  name:'Research',  role:'Analyst',      emoji:'📚', x:840,  y:662 }
+  { id:'hive-001',  name:'Hive 001',  role:'Orchestrator', emoji:'🐝', x:210, y:210, pal:{ skin:'#f2c9a0', hair:'#3f3f46', top:'#fbbf24', bot:'#1f2937', acc:'#f59e0b' }, acc:'headband' },
+  { id:'research',  name:'Research',  role:'Analyst',      emoji:'📚', x:380, y:210, pal:{ skin:'#e8b48c', hair:'#111827', top:'#a78bfa', bot:'#312e81', acc:'#8b5cf6' }, acc:'glasses' },
+  { id:'codegen',   name:'CodeGen',   role:'Engineer',     emoji:'👨‍💻', x:640, y:210, pal:{ skin:'#e8b48c', hair:'#1e293b', top:'#22d3ee', bot:'#0f172a', acc:'#0891b2' }, acc:'cap' },
+  { id:'review',    name:'Review',    role:'QA · Tester',  emoji:'🔍', x:790, y:210, pal:{ skin:'#f2c9a0', hair:'#78350f', top:'#34d399', bot:'#064e3b', acc:'#10b981' }, acc:'glasses' },
+  { id:'content',   name:'Content',   role:'Writer',       emoji:'✍️', x:210, y:420, pal:{ skin:'#f2c9a0', hair:'#4a044e', top:'#f472b6', bot:'#831843', acc:'#db2777' }, acc:'headband' },
+  { id:'design',    name:'Design',    role:'Creative',     emoji:'🎨', x:380, y:420, pal:{ skin:'#e8b48c', hair:'#2e1065', top:'#c084fc', bot:'#4c1d95', acc:'#a855f7' }, acc:'headband' },
+  { id:'voice',     name:'Voice',     role:'TTS',          emoji:'🎙️', x:640, y:420, pal:{ skin:'#f2c9a0', hair:'#111827', top:'#f87171', bot:'#7f1d1d', acc:'#ef4444' }, acc:'headset' },
+  { id:'reel',      name:'Reel',      role:'Motion',       emoji:'🎬', x:790, y:420, pal:{ skin:'#e8b48c', hair:'#1c1917', top:'#fb923c', bot:'#7c2d12', acc:'#ea580c' }, acc:'cap' },
+  { id:'trader',    name:'Trader',    role:'Markets',      emoji:'📈', x:210, y:600, pal:{ skin:'#f2c9a0', hair:'#1e293b', top:'#4ade80', bot:'#14532d', acc:'#22c55e' }, acc:'tie' },
+  { id:'guardian',  name:'Guardian',  role:'Loop Monitor', emoji:'🛡️', x:380, y:600, pal:{ skin:'#e8b48c', hair:'#0f172a', top:'#38bdf8', bot:'#0c4a6e', acc:'#0ea5e9' }, acc:'headset' },
+  { id:'applyos',   name:'ApplyOS',   role:'Recruiter',    emoji:'🧾', x:640, y:600, pal:{ skin:'#e8b48c', hair:'#111827', top:'#facc15', bot:'#713f12', acc:'#eab308' }, acc:'tie' },
+  { id:'readyhome', name:'ReadyHome', role:'Ops',          emoji:'🏠', x:790, y:600, pal:{ skin:'#f2c9a0', hair:'#3f3f46', top:'#f59e0b', bot:'#78350f', acc:'#d97706' }, acc:'cap' }
 ];
 const agentMap = Object.fromEntries(AGENTS.map(a => [a.id, a]));
 const agentStats = Object.fromEntries(AGENTS.map(a => [a.id, 0]));
+const WAR = { x:500, y:400 };
+
+/* ═══════════════ VOXEL CHARACTER BUILDER ═══════════════ */
+function voxelChar(p, acc) {
+  const h = (x,y,w,h,c) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2.5" fill="${c}"/>`;
+  let extra = '';
+  if (acc === 'cap') extra = h(11,1,26,7,p.hair) + h(11,7,28,3,p.acc);
+  if (acc === 'headband') extra = h(11,7,26,4,p.acc);
+  if (acc === 'glasses') extra = `<rect x="14" y="10" width="8" height="5" fill="none" stroke="#111" stroke-width="1.6"/><rect x="27" y="10" width="8" height="5" fill="none" stroke="#111" stroke-width="1.6"/>`;
+  if (acc === 'headset') extra = `<path d="M13 12 Q24 0 36 12" fill="none" stroke="#1f2937" stroke-width="3"/><rect x="10" y="11" width="5" height="8" rx="2" fill="#1f2937"/><rect x="34" y="11" width="5" height="8" rx="2" fill="#1f2937"/>`;
+  if (acc === 'tie') extra = `<path d="M23 26 L26 26 L24 34 Z" fill="#b91c1c"/>`;
+  return `
+  <g class="charG">
+    <g class="headB">${h(11,0,26,26,p.skin)}${extra}${h(14,12,5,4,'#1c1917')}${h(30,12,5,4,'#1c1917')}${h(20,19,9,4,'#7c4a2d')}</g>
+    <g class="armL">${h(6,24,7,17,p.top)}${h(6,39,7,5,p.skin)}</g>
+    <g class="armR">${h(36,24,7,17,p.top)}${h(36,39,7,5,p.skin)}</g>
+    <g class="bodyG">${h(12,24,25,21,p.top)}${h(12,42,25,4,p.acc)}</g>
+    <g class="legL">${h(14,45,9,15,p.bot)}${h(13,58,11,4,'#1c1917')}</g>
+    <g class="legR">${h(26,45,9,15,p.bot)}${h(25,58,11,4,'#1c1917')}</g>
+  </g>`;
+}
+function buildAvatars() {
+  const wrap = document.getElementById('avatars');
+  AGENTS.forEach(a => {
+    const d = document.createElement('div');
+    d.className = 'av'; d.id = 'av-' + a.id;
+    d.innerHTML = `<div class="bubble"></div>
+      <div class="charwrap"><svg class="char" viewBox="0 0 48 64">${voxelChar(a.pal, a.acc)}</svg><span class="sd"></span></div>
+      <div class="shadow"></div>
+      <div class="name">${a.name}</div><div class="role">${a.role}</div>
+      <div class="typing"><i></i><i></i><i></i></div>`;
+    d.onclick = () => toast(`<b>${a.name}</b> · ${a.role}`, 'Station online · awaiting orders');
+    wrap.appendChild(d);
+  });
+}
+function buildDesks() {
+  const layer = document.getElementById('deskLayer');
+  AGENTS.forEach(a => {
+    const u = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    u.setAttribute('href', '#desk'); u.setAttribute('x', a.x); u.setAttribute('y', a.y + 30);
+    layer.appendChild(u);
+  });
+}
+
+/* ═══════════════ FLOOR MAPPING (avatars exactly on desks, any screen size) ═══════════════ */
+let scale = 1, offX = 0, offY = 0;
+function computeMap() {
+  const r = document.getElementById('office').getBoundingClientRect();
+  const W = r.width, H = r.height;
+  scale = Math.max(W / 1000, H / 860);
+  offX = (W - 1000 * scale) / 2;
+  offY = (H - 860 * scale) / 2;
+}
+const toPx = (x, y) => ({ left: x * scale + offX, top: y * scale + offY });
+function layoutAll() {
+  computeMap();
+  AGENTS.forEach(a => {
+    const el = document.getElementById('av-' + a.id);
+    if (!el) return;
+    const target = el.dataset.war === '1' ? warPos(a.id) : { x: a.x, y: a.y };
+    const p = toPx(target.x, target.y);
+    el.style.left = p.left + 'px'; el.style.top = p.top + 'px';
+  });
+}
+function warPos(id) {
+  const i = AGENTS.findIndex(a => a.id === id);
+  const ang = (i / AGENTS.length) * Math.PI * 2 - Math.PI / 2;
+  return { x: WAR.x + Math.cos(ang) * 100, y: WAR.y + Math.sin(ang) * 66 };
+}
+
+/* ═══════════════ AGENT STATE / MOTION ═══════════════ */
+function setAgentState(id, state, bubble) {
+  const d = document.getElementById('av-' + id);
+  if (!d) return;
+  d.classList.remove('work', 'done', 'bubble', 'walk');
+  if (state) d.classList.add(state);
+  if (state === 'work') {
+    if (d.dataset.war !== '1') {
+      d.dataset.war = '1'; d.classList.add('walk');
+      const p = toPx(warPos(id).x, warPos(id).y);
+      d.style.left = p.left + 'px'; d.style.top = p.top + 'px';
+      setTimeout(() => d.classList.remove('walk'), 1350);
+    }
+  } else if (state !== 'work' && d.dataset.war === '1') {
+    const a = agentMap[id];
+    d.dataset.war = '0'; d.classList.add('walk');
+    const p = toPx(a.x, a.y);
+    d.style.left = p.left + 'px'; d.style.top = p.top + 'px';
+    setTimeout(() => d.classList.remove('walk'), 1350);
+  }
+  if (bubble !== undefined) {
+    d.querySelector('.bubble').textContent = bubble;
+    d.classList.toggle('bubble', !!bubble);
+  }
+}
 
 /* ═══════════════ PIPELINES ═══════════════ */
 const PHASES = ['QUEUED','PLANNING','EXECUTING','REVIEWING','DELIVERED'];
@@ -413,31 +507,6 @@ const feedEl = document.getElementById('feed');
 const termEl = document.getElementById('term');
 const boardEl = document.getElementById('board');
 
-/* ═══════════════ FLOOR AVATARS ═══════════════ */
-function renderAvatars() {
-  const wrap = document.getElementById('avatars');
-  AGENTS.forEach(a => {
-    const d = document.createElement('div');
-    d.className = 'av'; d.id = 'av-' + a.id;
-    d.style.left = (a.x / 1000 * 100) + '%';
-    d.style.top = (a.y / 860 * 100) + '%';
-    d.innerHTML = `<div class="bubble"></div><div class="pin"><span>${a.emoji}</span><span class="sd"></span></div>
-      <div class="name">${a.name}</div><div class="role">${a.role}</div>`;
-    d.onclick = () => toast(`<b>${a.name}</b> · ${a.role}`, 'Station online · awaiting orders');
-    wrap.appendChild(d);
-  });
-}
-function setAgentState(id, state, bubble) {
-  const d = document.getElementById('av-' + id);
-  if (!d) return;
-  d.classList.remove('work','done','bubble');
-  if (state) d.classList.add(state);
-  if (bubble !== undefined) {
-    d.querySelector('.bubble').textContent = bubble;
-    d.classList.toggle('bubble', !!bubble);
-  }
-}
-
 /* ═══════════════ TERMINAL ═══════════════ */
 function termLine(cls, text) {
   const l = document.createElement('div'); l.className = 'l ' + cls;
@@ -499,8 +568,7 @@ function renderChart() {
   bars.innerHTML = '';
   AGENTS.forEach(a => {
     const b = document.createElement('div'); b.className = 'bar';
-    const h = Math.max(4, Math.round(agentStats[a.id] / max * 70));
-    b.style.height = h + 'px';
+    b.style.height = Math.max(4, Math.round(agentStats[a.id] / max * 58)) + 'px';
     b.title = a.name + ': ' + agentStats[a.id] + ' commands';
     bars.appendChild(b);
   });
@@ -607,8 +675,17 @@ function escapeHtml(s) {
 }
 
 /* ═══════════════ BOOT ═══════════════ */
-renderAvatars(); renderChart();
+buildAvatars(); buildDesks(); layoutAll(); renderChart();
+new ResizeObserver(layoutAll).observe(document.getElementById('office'));
 setInterval(tickClock, 1000); tickClock();
+
+const toggle = document.getElementById('ovToggle');
+const ov = document.getElementById('overview');
+toggle.onclick = () => {
+  ov.classList.toggle('open');
+  toggle.innerHTML = ov.classList.contains('open') ? '✕ HIDE OVERVIEW' : '◈ LIVE OVERVIEW';
+};
+document.getElementById('ovClose').onclick = () => { ov.classList.remove('open'); toggle.innerHTML = '◈ LIVE OVERVIEW'; };
 
 const chips = ['research the lucifer effect','build a reel on dopamine','render 33 practice cards','fix citecheck bug','full health check','draft 5 threads posts','scan BTC signal','apply to 10 linkedin roles'];
 const exEl = document.getElementById('examples');
@@ -623,9 +700,9 @@ document.getElementById('dispatchBtn').onclick = () => {
 };
 document.getElementById('taskInput').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('dispatchBtn').click(); });
 
-termLine('info', '═ THE HIVE COMMAND CENTER 2.0 ═ live agent playground');
-termLine('out', '12 agents online · office floor · analytics overlay attached');
-termLine('out', 'type a task above, or let the demo run. traces are real pipeline logs.');
+termLine('info', '═ THE HIVE COMMAND CENTER 2.1 ═ voxel agents · live motion');
+termLine('out', '12 agents online · watch them walk to the war room on a mission');
+termLine('out', 'overview card hidden: tap "◈ LIVE OVERVIEW" top-right of the floor to open it');
 termLine('cmd', 'openclaw status --all');
 setTimeout(() => termLine('ok', 'gateway healthy · 12 agents · 0 stuck'), 900);
 setTimeout(() => termLine('out', 'demo loop armed · next auto-mission in ~10s'), 1800);
