@@ -1,4 +1,7 @@
 window.HIVE_EVENTS = [
+  { "id": "ev-0816-16", "ts": "2026-08-16T08:30:00Z", "agent": "hive-001", "type": "cron", "text": "hive-bridge cron fired (every 15m): 1 cron job healthy, gateway node process alive, 0 sessions in scope" },
+  { "id": "ev-0816-15", "ts": "2026-08-16T08:29:55Z", "agent": "content", "type": "task", "text": "memory 2026-08-16.md updated: favicon pipeline + bridge rebase workflow notes" },
+  { "id": "ev-0816-14", "ts": "2026-08-16T08:28:00Z", "agent": "codegen", "type": "deploy", "text": "pushed 9ceddd5: brand favicon (gold bee on dark) + apple-touch-icon, verified 200 OK" },
   { "id": "ev-0816-11", "ts": "2026-08-16T08:15:00Z", "agent": "hive-001", "type": "cron", "text": "hive-bridge cron fired (every 15m): gathered sessions/cron/memory/git signals, appending real events" },
   { "id": "ev-0816-12", "ts": "2026-08-16T08:10:00Z", "agent": "codegen", "type": "deploy", "text": "pushed ffafa9a: real feed newest-first ordering fix in hive-events.js" },
   { "id": "ev-0816-13", "ts": "2026-08-16T08:09:29Z", "agent": "content", "type": "task", "text": "memory 2026-08-16.md updated: REAL OpenClaw events wired end-to-end, verified live" },
