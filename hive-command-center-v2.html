@@ -735,9 +735,7 @@ function escapeHtml(s) {
 /* ═══════════════ REAL EVENT FEED (polls hive-events.js) ═══════════════ */
 let realSeen = new Set(), realCount = 0, realActive = false;
 function loadRealEvents() {
-  const s = document.createElement('script');
-  s.src = 'hive-events.js?v=' + Date.now();
-  s.onload = () => {
+  const onload = () => {
     const evs = (window.HIVE_EVENTS || []).filter(e => e && e.id);
     const fresh = evs.filter(e => !realSeen.has(e.id));
     [...fresh].reverse().forEach(e => { realSeen.add(e.id); realCount++; feedReal(e); });
@@ -749,9 +747,19 @@ function loadRealEvents() {
     fm.classList.toggle('real', realActive);
     document.getElementById('realCount').textContent = realCount;
   };
-  s.onerror = () => {
+  const fail = () => {
     const fm = document.getElementById('feedMode');
     fm.textContent = 'SIM'; fm.classList.remove('real');
+  };
+  const s = document.createElement('script');
+  s.src = 'https://raw.githubusercontent.com/pattnaik-subhankar/portfolio/master/hive-events.js?t=' + Date.now();
+  s.onload = onload;
+  s.onerror = () => {
+    const s2 = document.createElement('script');
+    s2.src = 'hive-events.js?v=' + Date.now();
+    s2.onload = onload; s2.onerror = fail;
+    document.head.appendChild(s2);
+    setTimeout(() => s2.remove(), 5000);
   };
   document.head.appendChild(s);
   setTimeout(() => s.remove(), 5000);
