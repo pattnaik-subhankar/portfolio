@@ -736,7 +736,7 @@ function loadRealEvents() {
   s.onload = () => {
     const evs = (window.HIVE_EVENTS || []).filter(e => e && e.id);
     const fresh = evs.filter(e => !realSeen.has(e.id));
-    fresh.forEach(e => { realSeen.add(e.id); realCount++; feedReal(e); });
+    [...fresh].reverse().forEach(e => { realSeen.add(e.id); realCount++; feedReal(e); });
     const newest = evs[0];
     const stale = !newest || (Date.now() - new Date(newest.ts).getTime()) > 45 * 60 * 1000;
     realActive = !stale && evs.length > 0;
