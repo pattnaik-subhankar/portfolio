@@ -83,6 +83,7 @@
   .av .bubble { position:absolute; top:-30px; left:50%; transform:translate(-50%,6px); opacity:0; transition:all .3s; background:#1c2027; border:1px solid var(--gold); color:var(--gold); font-family:var(--mono); font-size:9px; padding:4px 8px; border-radius:8px; white-space:nowrap; z-index:12; pointer-events:none; }
   .av .bubble:after { content:''; position:absolute; top:100%; left:50%; margin-left:-4px; border:4px solid transparent; border-top-color:var(--gold); }
   .av.bubble .bubble { opacity:1; transform:translate(-50%,0); }
+  .av.bubble { z-index:40; }
   .av:hover .name { color:var(--gold); }
 
   /* ── overview card (hidden by default, toggled) ── */
@@ -113,6 +114,9 @@
 
   /* ── right column ── */
   #right { display:flex; flex-direction:column; gap:12px; min-height:0; }
+  #tabbar { display:none; gap:6px; }
+  #tabbar button { flex:1; background:var(--shell2); border:1px solid var(--line); border-radius:10px; padding:9px 0; font-family:var(--mono); font-size:11px; letter-spacing:1.5px; color:var(--soft); cursor:pointer; }
+  #tabbar button.active { background:linear-gradient(135deg,var(--gold),var(--gold2)); color:#141008; font-weight:700; border-color:transparent; }
   .card { background:var(--panel); border:1px solid var(--line); border-radius:16px; display:flex; flex-direction:column; min-height:0; }
   .card h3 { font-size:10.5px; font-family:var(--mono); letter-spacing:3px; color:var(--dim); padding:12px 14px 10px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:8px; }
   .card h3 .ct { color:var(--gold); }
@@ -141,7 +145,7 @@
   .task .ph.done { background:var(--green); }
   .task.delivered { opacity:.6; }
   #termCard { flex:1; }
-  #term { background:#0a0c0f; font-family:var(--mono); font-size:11.5px; line-height:1.6; padding:10px 14px; overflow-y:auto; flex:1; }
+  #term { background:#0a0c0f; font-family:var(--mono); font-size:11.5px; line-height:1.6; padding:10px 14px 30px; overflow-y:auto; flex:1; }
   #term .l { white-space:pre-wrap; word-break:break-word; }
   #term .cmd { color:#e2e8f0; } #term .cmd .ps { color:var(--gold); }
   #term .out { color:#7c8490; } #term .ok { color:var(--green); } #term .err { color:var(--red); } #term .info { color:var(--cyan); }
@@ -158,12 +162,50 @@
   .toast .sub { font-family:var(--mono); font-size:10px; color:#8a8a8a; font-weight:400; margin-top:3px; }
 
   @media (max-width:1180px) {
-    #main { grid-template-columns:1fr; grid-template-rows:520px 1fr 112px; }
-    #overview { width:320px; }
+    #main { grid-template-columns:1fr; grid-template-rows:minmax(400px,52vh) 1fr 96px; }
+    #overview { width:min(340px, calc(100% - 24px)); }
     .av .name { font-size:9px; padding:2px 6px; }
     .av .role { display:none; }
     .av .charwrap { width:48px; height:64px; }
     .av .char { width:48px; height:64px; }
+  }
+  @media (max-width:760px) {
+    body { height:100dvh; }
+    #chrome { display:none; }
+    #topbar { height:52px; padding:0 12px; gap:10px; }
+    #topbar .logo .t2 { display:none; }
+    #topbar .logo .t1 { font-size:15px; letter-spacing:1.5px; }
+    #topbar .logo .bee { font-size:20px; }
+    .pill { padding:4px 9px; font-size:10px; }
+    .pill.hide-m { display:none; }
+    #main { padding:8px; gap:8px; grid-template-rows:minmax(360px,50vh) 1fr 92px; height:calc(100dvh - 52px); }
+    .off-full { display:none; }
+    #ovToggle { top:10px; right:10px; padding:6px 11px; font-size:9.5px; }
+    #overview { right:10px; bottom:10px; padding:12px; }
+    #kpis { gap:8px; }
+    .kpi .v { font-size:18px; }
+    #bars { height:54px; }
+    #tabbar { display:flex; }
+    #right { gap:8px; }
+    #boardCard, #termCard { display:none; }
+    #boardCard.active, #termCard.active { display:flex; }
+    #dispatch { padding:8px 10px; }
+    #dispatch button { padding:9px 13px; font-size:12px; }
+    #board { padding:8px 10px 10px; }
+    .task { padding:10px 11px; }
+    #term { font-size:10px; padding:8px 10px; }
+    #feedwrap h3 { padding:6px 12px; }
+    #feed { padding:4px 12px; font-size:9.5px; line-height:1.7; }
+    #feedwrap { padding-bottom:env(safe-area-inset-bottom); }
+    #toasts { top:60px; right:10px; left:10px; }
+    .toast { max-width:none; font-size:12px; }
+    .av .charwrap { width:44px; height:58px; }
+    .av .char { width:44px; height:58px; }
+    .av .name { font-size:8.5px; padding:2px 5px; max-width:80px; }
+    .av[data-war="1"] .name { display:none; }
+    .av .bubble { font-size:8px; top:-26px; }
+    .av .sd { width:11px; height:11px; }
+    .sweep { animation-duration:18s; }
   }
 </style>
 </head>
@@ -185,15 +227,15 @@
   </div>
   <div class="status">
     <span class="pill"><span class="dot green"></span> <b id="st-agents">12</b> AGENTS ONLINE</span>
-    <span class="pill">MISSIONS <b id="st-tasks">0</b></span>
-    <span class="pill">COMMANDS <b id="st-cmds">0</b></span>
+    <span class="pill hide-m">MISSIONS <b id="st-tasks">0</b></span>
+    <span class="pill hide-m">COMMANDS <b id="st-cmds">0</b></span>
     <span class="pill" id="clock">--:--:--</span>
   </div>
 </div>
 
 <div id="main">
   <div id="office">
-    <div class="officeLabel"><span>▦ OFFICE FLOOR · SUBHANKARCLOUD HQ</span><span class="live"><span class="dot green"></span>LIVE</span></div>
+    <div class="officeLabel"><span>▦ OFFICE FLOOR<span class="off-full"> · SUBHANKARCLOUD HQ</span></span><span class="live"><span class="dot green"></span>LIVE</span></div>
     <button id="ovToggle">◈ LIVE OVERVIEW</button>
     <div class="sweep"></div>
     <svg class="floor" viewBox="0 0 1000 860" preserveAspectRatio="xMidYMid slice">
@@ -218,8 +260,8 @@
           <circle cx="-4" cy="-12" r="6" fill="#57ab68"/>
         </g>
       </defs>
-      <rect width="1000" height="860" fill="#16181d"/>
-      <rect width="1000" height="860" fill="url(#tile)"/>
+      <rect x="-400" y="-400" width="1800" height="1660" fill="#16181d"/>
+      <rect x="-400" y="-400" width="1800" height="1660" fill="url(#tile)"/>
       <rect x="8" y="8" width="984" height="844" rx="18" fill="none" stroke="#22262e" stroke-width="2"/>
       <g stroke="#232833" stroke-width="1.5" opacity=".8">
         <line x1="20" y1="300" x2="980" y2="300"/>
@@ -262,7 +304,8 @@
   </div>
 
   <div id="right">
-    <div class="card" id="boardCard">
+    <div id="tabbar"><button id="tabBoard" class="active">◈ MISSIONS</button><button id="tabTerm">⬢ CMD</button></div>
+    <div class="card active" id="boardCard">
       <h3><span class="ct">◈</span> MISSION BOARD <span class="right" id="boardStatus">LIVE</span></h3>
       <div id="dispatch">
         <input id="taskInput" placeholder="Dispatch a task… e.g. build a reel on dopamine" spellcheck="false">
@@ -348,11 +391,16 @@ function buildDesks() {
 }
 
 /* ═══════════════ FLOOR MAPPING (avatars exactly on desks, any screen size) ═══════════════ */
-let scale = 1, offX = 0, offY = 0;
+let scale = 1, offX = 0, offY = 0, officeW = 1200;
 function computeMap() {
   const r = document.getElementById('office').getBoundingClientRect();
   const W = r.width, H = r.height;
-  scale = Math.max(W / 1000, H / 860);
+  officeW = W;
+  if (W < 760) {
+    scale = Math.min(W / 1000, H / 860) * 0.94;
+  } else {
+    scale = Math.max(W / 1000, H / 860);
+  }
   offX = (W - 1000 * scale) / 2;
   offY = (H - 860 * scale) / 2;
 }
@@ -370,7 +418,9 @@ function layoutAll() {
 function warPos(id) {
   const i = AGENTS.findIndex(a => a.id === id);
   const ang = (i / AGENTS.length) * Math.PI * 2 - Math.PI / 2;
-  return { x: WAR.x + Math.cos(ang) * 100, y: WAR.y + Math.sin(ang) * 66 };
+  const rx = officeW < 760 ? 84 : 100;
+  const ry = officeW < 760 ? 52 : 66;
+  return { x: WAR.x + Math.cos(ang) * rx, y: WAR.y + Math.sin(ang) * ry };
 }
 
 /* ═══════════════ AGENT STATE / MOTION ═══════════════ */
@@ -686,6 +736,21 @@ toggle.onclick = () => {
   toggle.innerHTML = ov.classList.contains('open') ? '✕ HIDE OVERVIEW' : '◈ LIVE OVERVIEW';
 };
 document.getElementById('ovClose').onclick = () => { ov.classList.remove('open'); toggle.innerHTML = '◈ LIVE OVERVIEW'; };
+
+const tabBoard = document.getElementById('tabBoard');
+const tabTerm = document.getElementById('tabTerm');
+if (tabBoard) {
+  tabBoard.onclick = () => {
+    tabBoard.classList.add('active'); tabTerm.classList.remove('active');
+    document.getElementById('boardCard').classList.add('active');
+    document.getElementById('termCard').classList.remove('active');
+  };
+  tabTerm.onclick = () => {
+    tabTerm.classList.add('active'); tabBoard.classList.remove('active');
+    document.getElementById('termCard').classList.add('active');
+    document.getElementById('boardCard').classList.remove('active');
+  };
+}
 
 const chips = ['research the lucifer effect','build a reel on dopamine','render 33 practice cards','fix citecheck bug','full health check','draft 5 threads posts','scan BTC signal','apply to 10 linkedin roles'];
 const exEl = document.getElementById('examples');
