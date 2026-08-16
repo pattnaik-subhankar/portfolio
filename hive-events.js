@@ -1,5 +1,12 @@
 window.HIVE_EVENTS = [
   {
+    "id": "ev-live-1786910593316",
+    "ts": "2026-08-16T20:03:13.316Z",
+    "agent": "hive-001",
+    "type": "task",
+    "text": "New task: \"did you. reate ppts for each topics or how did you present them for coouself type or memor…\""
+  },
+  {
     "id": "ev-live-1786906904461",
     "ts": "2026-08-16T19:01:44.461Z",
     "agent": "hive-001",
