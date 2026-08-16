@@ -157,6 +157,9 @@
   #feed { flex:1; overflow:hidden; padding:6px 14px; font-family:var(--mono); font-size:10.5px; line-height:1.8; }
   #feed .fe { color:var(--soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   #feed .fe .ts { color:var(--gold); } #feed .fe .ag { color:var(--cyan); }
+  #feed .fe.real { color:#b9c7b8; }
+  #feed .fe.real .ag { color:var(--green); }
+  #feedMode.real { color:var(--green); }
   #toasts { position:fixed; top:108px; right:16px; z-index:100; display:flex; flex-direction:column; gap:8px; }
   .toast { background:#fff; color:#202124; border-radius:12px; padding:10px 14px; font-size:12.5px; font-weight:600; box-shadow:0 14px 34px rgba(0,0,0,.5); animation:rise .3s ease; max-width:300px; border-left:3px solid var(--gold); }
   .toast .sub { font-family:var(--mono); font-size:10px; color:#8a8a8a; font-weight:400; margin-top:3px; }
@@ -230,6 +233,7 @@
     <span class="pill hide-m">MISSIONS <b id="st-tasks">0</b></span>
     <span class="pill hide-m">COMMANDS <b id="st-cmds">0</b></span>
     <span class="pill" id="clock">--:--:--</span>
+    <span class="pill" id="feedPill">FEED <b id="feedMode">SIM</b></span>
   </div>
 </div>
 
@@ -321,7 +325,7 @@
   </div>
 
   <div id="feedwrap">
-    <h3><span class="ct">≋</span> LIVE TRAFFIC</h3>
+    <h3><span class="ct">≋</span> LIVE TRAFFIC <span class="right">REAL <b id="realCount">0</b></span></h3>
     <div id="feed"></div>
   </div>
 </div>
@@ -724,6 +728,41 @@ function escapeHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+/* ═══════════════ REAL EVENT FEED (polls hive-events.js) ═══════════════ */
+let realSeen = new Set(), realCount = 0, realActive = false;
+function loadRealEvents() {
+  const s = document.createElement('script');
+  s.src = 'hive-events.js?v=' + Date.now();
+  s.onload = () => {
+    const evs = (window.HIVE_EVENTS || []).filter(e => e && e.id);
+    const fresh = evs.filter(e => !realSeen.has(e.id));
+    fresh.forEach(e => { realSeen.add(e.id); realCount++; feedReal(e); });
+    const newest = evs[0];
+    const stale = !newest || (Date.now() - new Date(newest.ts).getTime()) > 45 * 60 * 1000;
+    realActive = !stale && evs.length > 0;
+    const fm = document.getElementById('feedMode');
+    fm.textContent = realActive ? 'REAL' : 'SIM';
+    fm.classList.toggle('real', realActive);
+    document.getElementById('realCount').textContent = realCount;
+  };
+  s.onerror = () => {
+    const fm = document.getElementById('feedMode');
+    fm.textContent = 'SIM'; fm.classList.remove('real');
+  };
+  document.head.appendChild(s);
+  setTimeout(() => s.remove(), 5000);
+}
+function feedReal(e) {
+  const fe = document.createElement('div'); fe.className = 'fe real';
+  const ts = new Date(e.ts).toLocaleTimeString('en-IN', { hour12:false, timeZone:'Asia/Kolkata' });
+  fe.innerHTML = `<span class="ts">${ts}</span> <span class="ag">● ${escapeHtml(agentMap[e.agent] ? agentMap[e.agent].name : e.agent)}</span> ${escapeHtml(e.text)}`;
+  feedEl.prepend(fe);
+  while (feedEl.children.length > 60) feedEl.removeChild(feedEl.lastChild);
+  const a = agentMap[e.agent];
+  if (a) { const el = document.getElementById('av-' + e.agent); if (el) { el.classList.add('work'); setTimeout(() => el.classList.remove('work'), 4000); } }
+}
+setInterval(loadRealEvents, 12000); loadRealEvents();
+
 /* ═══════════════ BOOT ═══════════════ */
 buildAvatars(); buildDesks(); layoutAll(); renderChart();
 new ResizeObserver(layoutAll).observe(document.getElementById('office'));
@@ -772,7 +811,10 @@ termLine('cmd', 'openclaw status --all');
 setTimeout(() => termLine('ok', 'gateway healthy · 12 agents · 0 stuck'), 900);
 setTimeout(() => termLine('out', 'demo loop armed · next auto-mission in ~10s'), 1800);
 
-setInterval(() => { dispatch(DEMO_POOL[Math.floor(Math.random() * DEMO_POOL.length)]); }, 14000);
+setInterval(() => {
+  if (realActive && Math.random() < 0.5) return; // real traffic is showing, demo backs off
+  dispatch(DEMO_POOL[Math.floor(Math.random() * DEMO_POOL.length)]);
+}, 14000);
 
 setInterval(() => {
   const done = [...activeTasks].filter(t => t.phase >= 4);
