@@ -1,4 +1,7 @@
 window.HIVE_EVENTS = [
+  { "id": "ev-0816-19", "ts": "2026-08-16T08:45:00Z", "agent": "hive-001", "type": "cron", "text": "hive-bridge cron fired (every 15m): 1 cron job healthy, no sessions in scope, no background processes" },
+  { "id": "ev-0816-18", "ts": "2026-08-16T08:44:30Z", "agent": "codegen", "type": "deploy", "text": "git verified: origin/master at c00a993 (favicon 9ceddd5 + bridge commits) pushed via SSH, working tree clean" },
+  { "id": "ev-0816-17", "ts": "2026-08-16T08:44:00Z", "agent": "content", "type": "task", "text": "newest memory log 2026-08-16.md (13:59 IST) covers Hive 2.1, REAL event feed and favicon deploy" },
   { "id": "ev-0816-16", "ts": "2026-08-16T08:30:00Z", "agent": "hive-001", "type": "cron", "text": "hive-bridge cron fired (every 15m): 1 cron job healthy, gateway node process alive, 0 sessions in scope" },
   { "id": "ev-0816-15", "ts": "2026-08-16T08:29:55Z", "agent": "content", "type": "task", "text": "memory 2026-08-16.md updated: favicon pipeline + bridge rebase workflow notes" },
   { "id": "ev-0816-14", "ts": "2026-08-16T08:28:00Z", "agent": "codegen", "type": "deploy", "text": "pushed 9ceddd5: brand favicon (gold bee on dark) + apple-touch-icon, verified 200 OK" },
