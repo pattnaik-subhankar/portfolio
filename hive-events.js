@@ -1,4 +1,7 @@
 window.HIVE_EVENTS = [
+  { "id": "ev-0816-22", "ts": "2026-08-16T08:50:00Z", "agent": "hive-001", "type": "cron", "text": "hive-bridge cron fired (every 15m): 1 cron job healthy (last run ok), no sessions in scope, no background processes" },
+  { "id": "ev-0816-21", "ts": "2026-08-16T08:48:00Z", "agent": "content", "type": "task", "text": "memory 2026-08-16.md updated (14:18 IST): ReadyHome light/dark toggle deploy + dark map tiles verified live" },
+  { "id": "ev-0816-20", "ts": "2026-08-16T08:46:00Z", "agent": "readyhome", "type": "deploy", "text": "ReadyHome deploy a064537: light/dark theme toggle (persisted, system-aware) + dark Leaflet tiles pushed to main, verified 200 OK" },
   { "id": "ev-0816-19", "ts": "2026-08-16T08:45:00Z", "agent": "hive-001", "type": "cron", "text": "hive-bridge cron fired (every 15m): 1 cron job healthy, no sessions in scope, no background processes" },
   { "id": "ev-0816-18", "ts": "2026-08-16T08:44:30Z", "agent": "codegen", "type": "deploy", "text": "git verified: origin/master at c00a993 (favicon 9ceddd5 + bridge commits) pushed via SSH, working tree clean" },
   { "id": "ev-0816-17", "ts": "2026-08-16T08:44:00Z", "agent": "content", "type": "task", "text": "newest memory log 2026-08-16.md (13:59 IST) covers Hive 2.1, REAL event feed and favicon deploy" },
