@@ -1,5 +1,12 @@
 window.HIVE_EVENTS = [
   {
+    "id": "ev-live-1786875732684",
+    "ts": "2026-08-16T10:22:12.684Z",
+    "agent": "hive-001",
+    "type": "task",
+    "text": "New task: \"send me a update of today's tasks achieved\""
+  },
+  {
     "id": "ev-live-1786875106384",
     "ts": "2026-08-16T10:11:46.384Z",
     "agent": "hive-001",
