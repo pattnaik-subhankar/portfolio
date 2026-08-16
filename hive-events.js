@@ -1,5 +1,12 @@
 window.HIVE_EVENTS = [
   {
+    "id": "ev-live-1786905649445",
+    "ts": "2026-08-16T18:40:49.445Z",
+    "agent": "hive-001",
+    "type": "task",
+    "text": "New task: \"is it done\""
+  },
+  {
     "id": "ev-live-1786904617837",
     "ts": "2026-08-16T18:23:37.837Z",
     "agent": "hive-001",
