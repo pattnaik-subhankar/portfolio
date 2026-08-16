@@ -1,5 +1,12 @@
 window.HIVE_EVENTS = [
   {
+    "id": "ev-live-1786904064069",
+    "ts": "2026-08-16T18:14:24.069Z",
+    "agent": "hive-001",
+    "type": "task",
+    "text": "New task: \"review all these and let me know which which you can install and setup : https://www.threa…\""
+  },
+  {
     "id": "ev-live-1786875732684",
     "ts": "2026-08-16T10:22:12.684Z",
     "agent": "hive-001",
