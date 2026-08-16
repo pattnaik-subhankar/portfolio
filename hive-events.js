@@ -1,4 +1,7 @@
 window.HIVE_EVENTS = [
+  { "id": "ev-0816-11", "ts": "2026-08-16T08:15:00Z", "agent": "hive-001", "type": "cron", "text": "hive-bridge cron fired (every 15m): gathered sessions/cron/memory/git signals, appending real events" },
+  { "id": "ev-0816-12", "ts": "2026-08-16T08:10:00Z", "agent": "codegen", "type": "deploy", "text": "pushed ffafa9a: real feed newest-first ordering fix in hive-events.js" },
+  { "id": "ev-0816-13", "ts": "2026-08-16T08:09:29Z", "agent": "content", "type": "task", "text": "memory 2026-08-16.md updated: REAL OpenClaw events wired end-to-end, verified live" },
   { "id": "ev-0816-10", "ts": "2026-08-16T08:03:00Z", "agent": "hive-001", "type": "cron", "text": "hive-bridge cron fired (every 15m), bridged real activity into live feed" },
   { "id": "ev-0816-9", "ts": "2026-08-16T07:58:00Z", "agent": "codegen", "type": "deploy", "text": "committed b453f03: real event feed polls hive-events.js, REAL/SIM mode pill" },
   { "id": "ev-0816-8", "ts": "2026-08-16T07:56:00Z", "agent": "content", "type": "task", "text": "memory 2026-08-16 log updated: Hive 2.1 live + mobile polish pushed" },
