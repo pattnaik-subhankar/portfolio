@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Hive · Agent Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#05070d; --panel:#0a0f1a; --panel2:#0d1424; --line:#1a2337;
+    --txt:#e5e7eb; --dim:#64748b; --soft:#94a3b8; --gold:#fbbf24; --gold2:#f59e0b;
+    --green:#34d399; --amber:#fbbf24; --red:#f87171; --purple:#a78bfa; --cyan:#22d3ee;
+    --mono:'JetBrains Mono',Consolas,monospace; --sans:'Space Grotesk',Segoe UI,sans-serif;
+  }
+  html,body { height:100%; }
+  body { background:var(--bg); color:var(--txt); font-family:var(--sans); overflow:hidden;
+    background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+    background-size:56px 56px; }
+  ::-webkit-scrollbar { width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb { background:#1e293b; border-radius:4px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+
+  /* ── top bar ── */
+  #topbar { height:60px; display:flex; align-items:center; gap:18px; padding:0 20px;
+    background:linear-gradient(180deg,#0b1120,#080d18); border-bottom:1px solid var(--line); position:relative; z-index:50; }
+  #topbar .logo { display:flex; align-items:center; gap:12px; }
+  #topbar .logo .bee { font-size:26px; filter:drop-shadow(0 0 8px rgba(251,191,36,.6)); }
+  #topbar .logo .t1 { font-weight:700; font-size:19px; letter-spacing:2px; }
+  #topbar .logo .t2 { font-family:var(--mono); font-size:11px; color:var(--gold); letter-spacing:4px; }
+  #topbar .status { display:flex; gap:10px; margin-left:auto; align-items:center; }
+  .pill { font-family:var(--mono); font-size:11.5px; padding:5px 12px; border-radius:20px; border:1px solid var(--line); background:#0a0f1a; color:var(--soft); display:flex; gap:7px; align-items:center; white-space:nowrap; }
+  .pill b { color:var(--gold); font-weight:600; }
+  .dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .dot.green { background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+  #clock { font-family:var(--mono); font-size:13px; color:var(--soft); }
+
+  /* ── layout ── */
+  #main { display:grid; grid-template-columns:330px 1fr 450px; gap:14px; padding:14px; height:calc(100% - 60px - 132px); }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; }
+  .panel h2 { font-size:11.5px; font-family:var(--mono); letter-spacing:3px; color:var(--dim); padding:12px 16px 10px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:8px; }
+  .panel h2 .ct { color:var(--gold); }
+  .panel h2 .right { margin-left:auto; color:var(--dim); letter-spacing:1px; }
+
+  /* ── floor ── */
+  #floor { padding:14px; overflow-y:auto; }
+  #floor .row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:12px; }
+  .desk { position:relative; background:var(--panel2); border:1px solid var(--line); border-radius:12px; padding:12px 6px 8px; text-align:center; cursor:pointer; transition:border-color .25s, transform .15s; }
+  .desk:hover { border-color:var(--gold); transform:translateY(-2px); }
+  .desk .avatar { position:relative; width:54px; height:54px; margin:0 auto 6px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:26px; background:#111a2e; border:1px solid var(--line); transition:box-shadow .3s; }
+  .desk .avatar .ring { position:absolute; inset:-3px; border-radius:17px; border:2px solid transparent; transition:border-color .3s; }
+  .desk .name { font-size:11px; font-weight:600; color:var(--txt); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .desk .role { font-size:9px; color:var(--dim); font-family:var(--mono); letter-spacing:.5px; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .desk .statusdot { position:absolute; top:8px; right:8px; width:9px; height:9px; border-radius:50%; background:#334155; }
+  .desk.work .statusdot { background:var(--amber); box-shadow:0 0 8px var(--amber); animation:pulse 1.2s infinite; }
+  .desk.done .statusdot { background:var(--green); box-shadow:0 0 8px var(--green); }
+  .desk.work .avatar { box-shadow:0 0 18px rgba(251,191,36,.35); }
+  .desk.work .ring { border-color:var(--gold); }
+  .desk.bubble .bubble { opacity:1; transform:translateY(0); }
+  .bubble { position:absolute; top:-34px; left:50%; transform:translate(-50%,6px); opacity:0; transition:all .3s; background:#111a2e; border:1px solid var(--gold); color:var(--gold); font-family:var(--mono); font-size:9.5px; padding:4px 8px; border-radius:8px; white-space:nowrap; z-index:10; pointer-events:none; }
+  .bubble:after { content:''; position:absolute; top:100%; left:50%; margin-left:-4px; border:4px solid transparent; border-top-color:var(--gold); }
+
+  /* ── mission board ── */
+  #board { padding:12px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; }
+  #dispatch { display:flex; gap:8px; padding:12px; border-bottom:1px solid var(--line); background:#080d18; }
+  #dispatch input { flex:1; background:#0a0f1a; border:1px solid var(--line); border-radius:10px; padding:10px 14px; color:var(--txt); font-family:var(--sans); font-size:13.5px; outline:none; }
+  #dispatch input:focus { border-color:var(--gold); }
+  #dispatch button { background:linear-gradient(135deg,var(--gold),var(--gold2)); border:0; color:#0b0a06; font-weight:700; font-size:13px; padding:10px 18px; border-radius:10px; cursor:pointer; font-family:var(--sans); letter-spacing:1px; }
+  #dispatch button:hover { filter:brightness(1.1); }
+  #examples { display:flex; gap:6px; padding:0 12px 10px; flex-wrap:wrap; }
+  #examples .chip { font-family:var(--mono); font-size:10.5px; color:var(--soft); border:1px solid var(--line); border-radius:20px; padding:4px 10px; cursor:pointer; background:#0a0f1a; }
+  #examples .chip:hover { color:var(--gold); border-color:var(--gold); }
+  .task { background:var(--panel2); border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:10px; padding:11px 13px; animation:slidein .35s ease; }
+  @keyframes slidein { from { opacity:0; transform:translateY(8px);} to { opacity:1; transform:none;} }
+  .task .thead { display:flex; align-items:center; gap:8px; }
+  .task .tid { font-family:var(--mono); font-size:10px; color:var(--gold); }
+  .task .ttitle { font-size:13.5px; font-weight:600; }
+  .task .tmeta { font-family:var(--mono); font-size:10.5px; color:var(--dim); margin-top:3px; }
+  .task .tagents { display:flex; gap:5px; margin-top:8px; flex-wrap:wrap; }
+  .task .tag { font-family:var(--mono); font-size:10px; padding:3px 8px; border-radius:6px; background:#111a2e; color:var(--soft); border:1px solid var(--line); }
+  .task .tag.act { color:var(--gold); border-color:var(--gold); animation:pulse 1.4s infinite; }
+  .task .phases { display:flex; gap:4px; margin-top:9px; }
+  .task .ph { flex:1; height:4px; border-radius:2px; background:#1e293b; transition:background .4s; }
+  .task .ph.on { background:var(--gold); }
+  .task .ph.done { background:var(--green); }
+  .task.delivered { opacity:.55; }
+  .task.delivered .ph.on,.task.delivered .ph.done { background:var(--green); }
+
+  /* ── terminal ── */
+  #term { background:#020409; font-family:var(--mono); font-size:12px; line-height:1.55; padding:12px 14px; overflow-y:auto; flex:1; }
+  #term .l { white-space:pre-wrap; word-break:break-word; }
+  #term .cmd { color:#e2e8f0; }
+  #term .cmd .ps { color:var(--gold); }
+  #term .out { color:#64748b; }
+  #term .ok { color:var(--green); }
+  #term .err { color:var(--red); }
+  #term .info { color:var(--cyan); }
+  #term .cursor { display:inline-block; width:8px; height:14px; background:var(--gold); vertical-align:middle; animation:blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity:0; } }
+  #termbar { display:flex; align-items:center; gap:8px; padding:9px 14px; background:#070b13; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:11px; color:var(--dim); }
+  #termbar .traffic { margin-left:auto; color:var(--soft); }
+  #termbar .traffic b { color:var(--cyan); }
+
+  /* ── feed ── */
+  #feedwrap { position:fixed; left:14px; right:14px; bottom:14px; height:118px; background:var(--panel); border:1px solid var(--line); border-radius:14px; display:flex; flex-direction:column; }
+  #feed { flex:1; overflow:hidden; padding:8px 14px; font-family:var(--mono); font-size:11px; line-height:1.7; }
+  #feed .fe { color:var(--soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #feed .fe .ts { color:var(--gold); }
+  #feed .fe .ag { color:var(--cyan); }
+
+  /* ── toasts ── */
+  #toasts { position:fixed; top:70px; right:16px; z-index:100; display:flex; flex-direction:column; gap:8px; }
+  .toast { background:var(--panel2); border:1px solid var(--gold); border-radius:10px; padding:10px 14px; font-size:12.5px; box-shadow:0 8px 24px rgba(0,0,0,.5); animation:slidein .3s ease; max-width:320px; }
+  .toast b { color:var(--gold); }
+  .toast .sub { font-family:var(--mono); font-size:10.5px; color:var(--dim); margin-top:3px; }
+
+  @media (max-width:1200px) {
+    #main { grid-template-columns:280px 1fr; grid-template-rows:1fr 380px; }
+    #termcol { grid-column:1 / -1; }
+  }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="logo">
+    <span class="bee">🐝</span>
+    <div>
+      <div class="t1">THE HIVE</div>
+      <div class="t2">AGENT COMMAND CENTER</div>
+    </div>
+  </div>
+  <div class="status">
+    <span class="pill"><span class="dot green"></span> <b id="st-agents">12</b> AGENTS ONLINE</span>
+    <span class="pill">MISSIONS <b id="st-tasks">0</b></span>
+    <span class="pill">COMMANDS <b id="st-cmds">0</b></span>
+    <span class="pill" id="clock">--:--:--</span>
+  </div>
+</div>
+
+<div id="main">
+  <div class="panel">
+    <h2><span class="ct">▦</span> OFFICE FLOOR <span class="right" id="floorStatus">12 STATIONS</span></h2>
+    <div id="floor"></div>
+  </div>
+
+  <div class="panel">
+    <h2><span class="ct">◈</span> MISSION BOARD <span class="right" id="boardStatus">LIVE</span></h2>
+    <div id="dispatch">
+      <input id="taskInput" placeholder="Dispatch a task... e.g. build a reel on dopamine" spellcheck="false">
+      <button id="dispatchBtn">DISPATCH ▸</button>
+    </div>
+    <div id="examples"></div>
+    <div id="board"></div>
+  </div>
+
+  <div class="panel" id="termcol">
+    <div id="termbar">
+      <span>⬢ CMD · SANDBOX</span>
+      <span class="traffic">TRAFFIC <b id="termLines">0</b> LINES</span>
+    </div>
+    <div id="term"></div>
+  </div>
+</div>
+
+<div id="feedwrap">
+  <h2 style="padding:8px 14px;"><span class="ct">≋</span> LIVE TRAFFIC</h2>
+  <div id="feed"></div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+/* ═══════════════ AGENT ROSTER ═══════════════ */
+const AGENTS = [
+  { id:'hive-001',   name:'Hive 001',   role:'Orchestrator', emoji:'🐝', color:'#fbbf24' },
+  { id:'codegen',    name:'CodeGen',    role:'Engineer',     emoji:'👨‍💻', color:'#22d3ee' },
+  { id:'review',     name:'Review',     role:'QA · Tester',  emoji:'🔍', color:'#34d399' },
+  { id:'research',   name:'Research',   role:'Analyst',      emoji:'📚', color:'#a78bfa' },
+  { id:'content',    name:'Content',    role:'Writer',       emoji:'✍️', color:'#f472b6' },
+  { id:'reel',       name:'Reel',       role:'Motion',       emoji:'🎬', color:'#fb923c' },
+  { id:'voice',      name:'Voice',      role:'TTS',          emoji:'🎙️', color:'#f87171' },
+  { id:'design',     name:'Design',     role:'Creative',     emoji:'🎨', color:'#c084fc' },
+  { id:'trader',     name:'Trader',     role:'Markets',      emoji:'📈', color:'#4ade80' },
+  { id:'applyos',    name:'ApplyOS',    role:'Recruiter',    emoji:'🧾', color:'#facc15' },
+  { id:'guardian',   name:'Guardian',   role:'Loop Monitor', emoji:'🛡️', color:'#38bdf8' },
+  { id:'readyhome',  name:'ReadyHome',  role:'Ops · Ops',    emoji:'🏠', color:'#fbbf24' }
+];
+const agentMap = Object.fromEntries(AGENTS.map(a => [a.id, a]));
+
+/* ═══════════════ TASK PIPELINES (real command traces) ═══════════════ */
+const PHASES = ['QUEUED','PLANNING','EXECUTING','REVIEWING','DELIVERED'];
+
+const PIPELINES = {
+  reel: {
+    label:'reel', agents:['hive-001','reel','voice','design','content'],
+    cmds:[
+      { t:'cmd',  s:'node gen_scenes.cjs --theme dopamine' },
+      { t:'out',  s:'scenes written: hook, t1, t2, t3, t4, close' },
+      { t:'cmd',  s:'node tts.cjs --voice en-IN-PrabhatNeural --rate=+18%' },
+      { t:'ok',   s:'AUDIO TOTAL: 43.02s | narration ready' },
+      { t:'cmd',  s:'node capture_scenes.cjs (1080×1920 @ 30fps)' },
+      { t:'out',  s:'1,481 frames captured · 6 scenes' },
+      { t:'cmd',  s:'ffmpeg -f concat -safe 0 -i list.txt -c copy dopamine-reel.mp4' },
+      { t:'ok',   s:'REEL WRITTEN · 43.0s · H.264+AAC · 1.07MB' },
+      { t:'cmd',  s:'ffprobe -show_entries format=duration' },
+      { t:'ok',   s:'QA: 4 frames CLEAN · zero clipping' }
+    ], speech:'Rendering frames… 🎬'
+  },
+  research: {
+    label:'research', agents:['hive-001','research','content'],
+    cmds:[
+      { t:'cmd',  s:'yt-dlp --write-auto-subs --skip-download <video-id>' },
+      { t:'out',  s:'4 transcripts downloaded (VTT → text)' },
+      { t:'cmd',  s:'node unscroll_vtt.py --clean' },
+      { t:'out',  s:'v1-monsters.txt · 10.1K words' },
+      { t:'out',  s:'v4-lockingin.txt · 19.7K words' },
+      { t:'cmd',  s:'write cerebralsubhankar/unscroll-4-video-prep.md' },
+      { t:'ok',   s:'18.5KB · 4 topics · synthesis + repurposing plan' },
+      { t:'cmd',  s:'grep -c "Lucifer" v1-monsters.txt' },
+      { t:'ok',   s:'QA: 16 references verified · no em dashes ✔' }
+    ], speech:'Parsing transcripts… 📚'
+  },
+  cards: {
+    label:'cards', agents:['hive-001','design','content'],
+    cmds:[
+      { t:'cmd',  s:'node gen_full_set.cjs --set sleep-protocol' },
+      { t:'out',  s:'11 styles · 33 cards · 1080×1350' },
+      { t:'cmd',  s:'node render_cards.cjs --ratio 4:5 --font SpaceGrotesk' },
+      { t:'out',  s:'sticky-notes ✔ · isometric ✔ · polaroid ✔' },
+      { t:'cmd',  s:'node check_overflow.cjs --geometry' },
+      { t:'ok',   s:'0 overlaps · 0 out-of-bounds' },
+      { t:'cmd',  s:'Copy-Item cards\\* ~\\Desktop\\Practice-Cards' },
+      { t:'ok',   s:'33 cards delivered to Desktop + README' }
+    ], speech:'Laying out cards… 🎨'
+  },
+  code: {
+    label:'code', agents:['hive-001','codegen','review'],
+    cmds:[
+      { t:'cmd',  s:'git status --short' },
+      { t:'out',  s:'2 modified · 1 untracked (manifest.json)' },
+      { t:'cmd',  s:'node test/unit.test.cjs --all' },
+      { t:'ok',   s:'14 passed · 0 failed' },
+      { t:'cmd',  s:'node lint.js --strict' },
+      { t:'ok',   s:'no errors · style clean' },
+      { t:'cmd',  s:'git add . && git commit -m "feat: fix citecheck parser"' },
+      { t:'ok',   s:'commit a287fe8 · pushed · live 200 OK' },
+      { t:'cmd',  s:'openclaw status' },
+      { t:'ok',   s:'gateway healthy · 12 agents online' }
+    ], speech:'Writing code… 👨‍💻'
+  },
+  voice: {
+    label:'voice', agents:['hive-001','voice','reel'],
+    cmds:[
+      { t:'cmd',  s:'edge-tts --voice en-IN-PrabhatNeural --rate=+18%' },
+      { t:'out',  s:'hook 7.20s · t1 8.14s · t2 7.01s' },
+      { t:'out',  s:'t3 7.85s · t4 7.56s · close 5.23s' },
+      { t:'ok',   s:'AUDIO TOTAL: 42.98s · natural pacing' },
+      { t:'cmd',  s:'ffprobe -show_entries format=duration close.mp3' },
+      { t:'ok',   s:'5.23s · voice track ready for mux' }
+    ], speech:'Narrating… 🎙️'
+  },
+  trade: {
+    label:'trade', agents:['hive-001','trader','guardian'],
+    cmds:[
+      { t:'cmd',  s:'python signal_scan.py --pair BTCUSDT --tf 1h' },
+      { t:'out',  s:'scan 2026-08-16 12:53 IST · 24 candles' },
+      { t:'info', s:'signal: NEUTRAL · RSI 54.2 · no entry' },
+      { t:'cmd',  s:'python portfolio.py --risk-check' },
+      { t:'ok',   s:'exposure within limits · 3 positions' },
+      { t:'cmd',  s:'openclaw cron list --kind trader' },
+      { t:'ok',   s:'heartbeat OK · next scan in 58m' }
+    ], speech:'Scanning markets… 📈'
+  },
+  apply: {
+    label:'apply', agents:['hive-001','applyos','review'],
+    cmds:[
+      { t:'cmd',  s:'node scrape_rank.js --board linkedin --limit 10' },
+      { t:'out',  s:'10 roles scored · 3 high-fit' },
+      { t:'cmd',  s:'node generate_cover.js --role senior-engineer' },
+      { t:'ok',   s:'cover letter ready · 210 words' },
+      { t:'cmd',  s:'python tracker/dashboard.py --sync' },
+      { t:'ok',   s:'tracker updated · 2 applications sent' },
+      { t:'cmd',  s:'node lint.js --profile' },
+      { t:'ok',   s:'profile audit CLEAN' }
+    ], speech:'Scoring roles… 🧾'
+  },
+  monitor: {
+    label:'monitor', agents:['hive-001','guardian','readyhome','review'],
+    cmds:[
+      { t:'cmd',  s:'openclaw status --all' },
+      { t:'ok',   s:'gateway healthy · 12 agents · 0 stuck' },
+      { t:'cmd',  s:'openclaw cron list --enabled' },
+      { t:'out',  s:'3 jobs · next fire in 12m' },
+      { t:'cmd',  s:'node health_check.cjs --loops' },
+      { t:'info', s:'loop-detector: 0 infinite loops · 0 runaway' },
+      { t:'cmd',  s:'curl -s -o /dev/null -w "%{http_code}" subhankarcloud.in' },
+      { t:'ok',   s:'200 OK · site live' },
+      { t:'cmd',  s:'ffprobe -v error -show_entries format=duration reels/*.mp4' },
+      { t:'ok',   s:'all reels valid · no corruption' }
+    ], speech:'Running health checks… 🛡️'
+  },
+  content: {
+    label:'content', agents:['hive-001','content','design'],
+    cmds:[
+      { t:'cmd',  s:'node post_writer.cjs --topic "you are not lazy"' },
+      { t:'ok',   s:'post drafted · 440 chars · hook-first' },
+      { t:'cmd',  s:'node post_scorer.cjs --draft' },
+      { t:'ok',   s:'score 8.7/10 · strong hook · clear CTA' },
+      { t:'cmd',  s:'node carousel.cjs --cards 4 --ratio 4:5' },
+      { t:'out',  s:'card-1..4.png rendered · geometry CLEAN' },
+      { t:'cmd',  s:'node scheduler.cjs --queue friday' },
+      { t:'ok',   s:'queued · posting order set' }
+    ], speech:'Drafting copy… ✍️'
+  }
+};
+
+const DEMO_POOL = [
+  'build a reel on dopamine', 'research the lucifer effect', 'design 4-card carousel',
+  'fix citecheck parser bug', 'voice narration for reel', 'scan BTC signal',
+  'apply to 10 linkedin roles', 'full health check', 'draft 5 threads posts',
+  'transcript of 4 youtube videos', 'render 33 practice cards', '17-slide ppt deck'
+];
+
+/* ═══════════════ STATE ═══════════════ */
+let taskCounter = 0, cmdCounter = 0, lineCounter = 0, deliveredCount = 0;
+const activeTasks = [];
+const feedEl = document.getElementById('feed');
+const termEl = document.getElementById('term');
+const boardEl = document.getElementById('board');
+const floorEl = document.getElementById('floor');
+let termQueue = [], termBusy = false;
+
+/* ═══════════════ RENDER FLOOR ═══════════════ */
+function renderFloor() {
+  floorEl.innerHTML = '';
+  const rows = [AGENTS.slice(0,4), AGENTS.slice(4,8), AGENTS.slice(8,12)];
+  rows.forEach(row => {
+    const r = document.createElement('div'); r.className = 'row';
+    row.forEach(a => {
+      const d = document.createElement('div');
+      d.className = 'desk'; d.id = 'desk-' + a.id;
+      d.innerHTML = `<div class="bubble"></div><div class="avatar"><span>${a.emoji}</span><span class="ring"></span></div>
+        <div class="name">${a.name}</div><div class="role">${a.role}</div><div class="statusdot"></div>`;
+      d.onclick = () => toast(`<b>${a.name}</b> · ${a.role}`, 'Station online · awaiting orders');
+      r.appendChild(d); floorEl.appendChild(r);
+    });
+  });
+}
+
+/* ═══════════════ TERMINAL ═══════════════ */
+function termLine(cls, text) {
+  const l = document.createElement('div'); l.className = 'l ' + cls;
+  if (cls === 'cmd') l.innerHTML = `<span class="ps">hive@agent-001:~$</span> ${escapeHtml(text)}`;
+  else l.textContent = text;
+  termEl.appendChild(l);
+  termEl.scrollTop = termEl.scrollHeight;
+  lineCounter++; document.getElementById('termLines').textContent = lineCounter;
+}
+function termCursor() {
+  const c = document.createElement('span'); c.className = 'cursor'; termEl.appendChild(c);
+  termEl.scrollTop = termEl.scrollHeight;
+  return c;
+}
+function typeText(el, text, speed, done) {
+  let i = 0;
+  const iv = setInterval(() => {
+    el.textContent = text.slice(0, ++i);
+    termEl.scrollTop = termEl.scrollHeight;
+    if (i >= text.length) { clearInterval(iv); done && done(); }
+  }, speed);
+}
+function streamCommand(line, done) {
+  const cursor = termCursor();
+  const tmp = document.createElement('span'); tmp.style.color = '#e2e8f0';
+  cursor.replaceWith(tmp);
+  typeText(tmp, `hive@agent-001:~$ ${line.s}`, 6, () => {
+    setTimeout(() => {
+      termLine(line.t === 'cmd' ? 'cmd' : line.t, line.s);
+      cmdCounter++; document.getElementById('st-cmds').textContent = cmdCounter;
+      done && done();
+    }, 120);
+  });
+}
+function runPipeline(cmds, done) {
+  const steps = cmds.map((c, i) => () => {
+    streamCommand(c, () => {
+      setTimeout(() => { if (i < steps.length - 1) steps[i+1](); else done && done(); }, 220);
+    });
+  });
+  steps[0]();
+}
+
+/* ═══════════════ FEED ═══════════════ */
+function feed(agentId, text) {
+  const fe = document.createElement('div'); fe.className = 'fe';
+  const ts = new Date().toLocaleTimeString('en-IN', { hour12:false, timeZone:'Asia/Kolkata' });
+  fe.innerHTML = `<span class="ts">${ts}</span> <span class="ag">${agentMap[agentId]?.name || agentId}</span> ${escapeHtml(text)}`;
+  feedEl.prepend(fe);
+  while (feedEl.children.length > 60) feedEl.removeChild(feedEl.lastChild);
+}
+
+/* ═══════════════ TASKS ═══════════════ */
+function classify(text) {
+  const t = text.toLowerCase();
+  if (/reel|video|motion|scene|ffmpeg/.test(t)) return 'reel';
+  if (/research|arxiv|paper|transcript|youtube|video|analyse|analysis|prep/.test(t)) return 'research';
+  if (/card|carousel|design|deck|ppt|slide|poster/.test(t)) return t.includes('ppt')||t.includes('deck')||t.includes('slide') ? 'deck' : 'cards';
+  if (/code|bug|fix|build|app|script|extension|test|commit|refactor/.test(t)) return 'code';
+  if (/voice|tts|narrat|speak/.test(t)) return 'voice';
+  if (/trade|market|signal|btc|stock|crypto|scan/.test(t)) return 'trade';
+  if (/apply|job|resume|linkedin|hire|interview/.test(t)) return 'apply';
+  if (/health|check|audit|monitor|status|cron|scan|verify/.test(t)) return 'monitor';
+  if (/post|thread|content|copy|caption|write|newsletter/.test(t)) return 'content';
+  return 'research';
+}
+
+function dispatch(text) {
+  const type = classify(text);
+  const pipe = PIPELINES[type] || PIPELINES.research;
+  const id = ++taskCounter;
+  const task = { id, title: text.trim() || pipe.label, type, agents: pipe.agents, phase: 0, el: null };
+  activeTasks.push(task);
+  feed('hive-001', `dispatched task #${id} · "${task.title}" → ${pipe.agents.join(', ')}`);
+  toast(`NEW MISSION #${id}`, `"${task.title}" · ${pipe.agents.length} agents assigned`, pipe.agents[0]);
+  renderTask(task);
+  document.getElementById('st-tasks').textContent = activeTasks.length;
+  runTask(task, pipe);
+}
+
+function renderTask(task) {
+  const el = document.createElement('div'); el.className = 'task'; task.el = el;
+  el.innerHTML = `
+    <div class="thead"><span class="tid">#${String(task.id).padStart(3,'0')}</span>
+      <span class="ttitle">${escapeHtml(task.title)}</span></div>
+    <div class="tmeta">${task.type.toUpperCase()} · ${PHASES[0]}</div>
+    <div class="tagents">${task.agents.map(a => `<span class="tag" data-ag="${a}">${agentMap[a].emoji} ${agentMap[a].name}</span>`).join('')}</div>
+    <div class="phases">${PHASES.map(() => '<div class="ph"></div>').join('')}</div>`;
+  boardEl.prepend(el);
+}
+
+function setPhase(task, idx) {
+  task.phase = idx;
+  const meta = task.el.querySelector('.tmeta');
+  meta.textContent = `${task.type.toUpperCase()} · ${PHASES[idx]}`;
+  task.el.querySelectorAll('.ph').forEach((p, i) => {
+    p.className = 'ph' + (i < idx ? ' done' : i === idx ? ' on' : '');
+  });
+  const tags = task.el.querySelectorAll('.tag');
+  tags.forEach(t => t.classList.toggle('act', false));
+  if (idx >= 1) tags[Math.min(idx - 1, task.agents.length - 1)].classList.add('act');
+}
+
+function setAgentState(agentId, state, bubble) {
+  const d = document.getElementById('desk-' + agentId);
+  if (!d) return;
+  d.classList.remove('work','done','bubble');
+  if (state) d.classList.add(state);
+  if (bubble !== undefined) {
+    d.querySelector('.bubble').textContent = bubble;
+    d.classList.toggle('bubble', !!bubble);
+  }
+}
+
+function runTask(task, pipe) {
+  const agents = pipe.agents;
+  // QUEUED
+  setTimeout(() => {
+    setPhase(task, 1); // PLANNING
+    agents.forEach((a, i) => setTimeout(() => {
+      setAgentState(a, 'work', i === 0 ? pipe.speech : undefined);
+      feed(a, `picked up task #${task.id} · ${PHASES[1]}`);
+    }, i * 450));
+  }, 800);
+
+  setTimeout(() => {
+    setPhase(task, 2); // EXECUTING
+    feed(agents[1] || 'hive-001', `executing task #${task.id} · streaming to sandbox`);
+    runPipeline(pipe.cmds, () => {
+      setTimeout(() => {
+        setPhase(task, 3); // REVIEWING
+        const reviewer = agents.includes('review') ? 'review' : agents[agents.length-1];
+        setAgentState(reviewer, 'work', 'Verifying… 🔍');
+        feed(reviewer, `reviewing task #${task.id} · QA pass`);
+      }, 500);
+      setTimeout(() => {
+        setPhase(task, 4); // DELIVERED
+        task.el.classList.add('delivered');
+        agents.forEach(a => setAgentState(a, 'done', a === agents[0] ? 'Delivered ✔' : undefined));
+        setTimeout(() => agents.forEach(a => setAgentState(a, null)), 2600);
+        feed('hive-001', `task #${task.id} delivered · archived`);
+        deliveredCount++;
+        document.getElementById('st-tasks').textContent = activeTasks.filter(t => t.phase < 4).length;
+      }, 1800);
+    });
+  }, 2400 + agents.length * 450);
+}
+
+/* ═══════════════ TOASTS / CLOCK / DEMO ═══════════════ */
+function toast(title, sub) {
+  const t = document.createElement('div'); t.className = 'toast';
+  t.innerHTML = `<b>${title}</b><div class="sub">${sub}</div>`;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .4s'; setTimeout(() => t.remove(), 400); }, 5200);
+}
+
+function tickClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent = now.toLocaleTimeString('en-IN', { hour12:false, timeZone:'Asia/Kolkata' });
+}
+setInterval(tickClock, 1000); tickClock();
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ═══════════════ BOOT ═══════════════ */
+renderFloor();
+const exampleChips = ['research the lucifer effect','build a reel on dopamine','render 33 practice cards','fix citecheck bug','full health check','draft 5 threads posts','scan BTC signal','apply to 10 linkedin roles'];
+const exEl = document.getElementById('examples');
+exampleChips.forEach(c => {
+  const chip = document.createElement('span'); chip.className = 'chip'; chip.textContent = c;
+  chip.onclick = () => { document.getElementById('taskInput').value = c; dispatch(c); };
+  exEl.appendChild(chip);
+});
+
+document.getElementById('dispatchBtn').onclick = () => {
+  const v = document.getElementById('taskInput').value.trim();
+  if (v) { dispatch(v); document.getElementById('taskInput').value = ''; }
+};
+document.getElementById('taskInput').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('dispatchBtn').click(); });
+
+// boot banner
+termLine('info', '═ THE HIVE COMMAND CENTER ═ live agent playground · subhankarcloud.in');
+termLine('out', '12 agents online · sandbox attached · traffic feed live');
+termLine('out', 'type a task above, or let the demo run. all command traces are real pipeline logs.');
+termLine('cmd', 'openclaw status --all');
+setTimeout(() => termLine('ok', 'gateway healthy · 12 agents · 0 stuck'), 900);
+setTimeout(() => termLine('out', 'demo loop armed · next auto-mission in ~10s'), 1800);
+
+// auto demo
+let demoOn = true;
+setInterval(() => {
+  if (!demoOn) return;
+  const t = DEMO_POOL[Math.floor(Math.random() * DEMO_POOL.length)];
+  dispatch(t);
+}, 14000);
+
+// keep board tidy
+setInterval(() => {
+  const done = [...activeTasks].filter(t => t.phase >= 4);
+  done.forEach(t => {
+    if (t.el.parentNode && Date.now() - (t._archived || 0) > 30000) {
+      t.el.remove(); activeTasks.splice(activeTasks.indexOf(t), 1);
+      if (!t._archived) { t._archived = Date.now(); document.getElementById('st-tasks').textContent = activeTasks.filter(x => x.phase < 4).length; }
+    }
+  });
+}, 5000);
+</script>
+</body>
+</html>
