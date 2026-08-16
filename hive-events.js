@@ -1,4 +1,7 @@
 window.HIVE_EVENTS = [
+  { "id": "ev-0816-10", "ts": "2026-08-16T08:03:00Z", "agent": "hive-001", "type": "cron", "text": "hive-bridge cron fired (every 15m), bridged real activity into live feed" },
+  { "id": "ev-0816-9", "ts": "2026-08-16T07:58:00Z", "agent": "codegen", "type": "deploy", "text": "committed b453f03: real event feed polls hive-events.js, REAL/SIM mode pill" },
+  { "id": "ev-0816-8", "ts": "2026-08-16T07:56:00Z", "agent": "content", "type": "task", "text": "memory 2026-08-16 log updated: Hive 2.1 live + mobile polish pushed" },
   { "id": "ev-0816-7", "ts": "2026-08-16T07:46:00Z", "agent": "review", "type": "qa", "text": "mobile polish QA passed: tabs switch, zero JS errors, autoglm clean" },
   { "id": "ev-0816-6", "ts": "2026-08-16T07:41:00Z", "agent": "design", "type": "deploy", "text": "v2.1 mobile layout pushed and verified 200 OK (47KB build)" },
   { "id": "ev-0816-5", "ts": "2026-08-16T07:38:00Z", "agent": "codegen", "type": "deploy", "text": "pushed 625edaf..4c0f52e via SSH after switching remote from expired token" },
