@@ -1,50 +1,50 @@
 {
-  "last_updated": "2026-08-10T09:00:00+05:30",
-  "overall_score": 88,
+  "last_updated": "2026-08-17T09:00:00+05:30",
+  "overall_score": 89,
   "layers": {
     "llms": {
-      "score": 88,
+      "score": 89,
       "color": "#38bdf8",
       "concepts": {
         "Prompt Engineering": 97,
-        "Context Engineering": 92,
+        "Context Engineering": 93,
         "RAG": 72,
         "Tokenization & Inference": 55,
         "Fine-tuning & Adaptation": 68
       }
     },
     "agents": {
-      "score": 91,
+      "score": 92,
       "color": "#8b5cf6",
       "concepts": {
         "Multi-Step Tool Chaining": 97,
         "Task Planning & Decomposition": 96,
         "Safe Interruptibility": 88,
-        "Long-term Memory": 78,
+        "Long-term Memory": 80,
         "State Management": 82,
         "Agent Reasoning": 78,
-        "Fail-Safe Design": 60,
+        "Fail-Safe Design": 64,
         "Emergent Behavior Analysis": 32
       }
     },
     "systems": {
-      "score": 86,
+      "score": 88,
       "color": "#00ff9d",
       "concepts": {
         "Hierarchical Planning": 77,
-        "Error Handling & Resilience": 70,
+        "Error Handling & Resilience": 72,
         "Multi-Agent RAG": 58,
-        "Inter-Agent Communication": 79,
+        "Inter-Agent Communication": 81,
         "Messaging Protocols": 80
       }
     },
     "infra": {
-      "score": 87,
+      "score": 88,
       "color": "#fbbf24",
       "concepts": {
         "Routing & Scheduling": 72,
-        "Observability & Monitoring": 69,
-        "Security & Access Control": 60,
+        "Observability & Monitoring": 74,
+        "Security & Access Control": 64,
         "Resource Scaling": 90,
         "Compliance & Governance": 74,
         "Fairness, Bias & Ethics": 88
@@ -93,6 +93,13 @@
       "agents": 91,
       "systems": 86,
       "infra": 87
+    },
+    {
+      "date": "2026-08-17",
+      "llms": 89,
+      "agents": 92,
+      "systems": 88,
+      "infra": 88
     }
   ],
   "agent_count": 150,
@@ -315,7 +322,7 @@
   "weekly_cron": {
     "active": true,
     "schedule": "Every Monday 9:00 AM IST",
-    "next_run": "2026-08-17T09:00:00+05:30"
+    "next_run": "2026-08-24T09:00:00+05:30"
   },
   "weekly_reports": [
     {
@@ -327,6 +334,11 @@
       "date": "2026-08-10",
       "overall": 88,
       "highlights": "Architecture flow diagrams (both repos), design reference board, products hub bento refresh"
+    },
+    {
+      "date": "2026-08-17",
+      "overall": 89,
+      "highlights": "ReadyHome India + CodeFlow ventures, 5 MV3 extensions, ApplyOS framework, 30-lesson knowledge base"
     }
   ]
 }
