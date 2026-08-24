@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-17T09:00:00+05:30",
+  "last_updated": "2026-08-24T09:00:00+05:30",
   "overall_score": 89,
   "layers": {
     "llms": {
@@ -96,6 +96,13 @@
     },
     {
       "date": "2026-08-17",
+      "llms": 89,
+      "agents": 92,
+      "systems": 88,
+      "infra": 88
+    },
+    {
+      "date": "2026-08-24",
       "llms": 89,
       "agents": 92,
       "systems": 88,
@@ -339,6 +346,11 @@
       "date": "2026-08-17",
       "overall": 89,
       "highlights": "ReadyHome India + CodeFlow ventures, 5 MV3 extensions, ApplyOS framework, 30-lesson knowledge base"
+    },
+    {
+      "date": "2026-08-24",
+      "overall": 89,
+      "highlights": "Quiet consolidation week — no new project-agents commits; scores held flat at 89; ReadyHome has uncommitted in-progress changes"
     }
   ]
 }
