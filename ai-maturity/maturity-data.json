@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-24T09:00:00+05:30",
+  "last_updated": "2026-08-31T09:00:00+05:30",
   "overall_score": 89,
   "layers": {
     "llms": {
@@ -103,6 +103,13 @@
     },
     {
       "date": "2026-08-24",
+      "llms": 89,
+      "agents": 92,
+      "systems": 88,
+      "infra": 88
+    },
+    {
+      "date": "2026-08-31",
       "llms": 89,
       "agents": 92,
       "systems": 88,
@@ -329,7 +336,7 @@
   "weekly_cron": {
     "active": true,
     "schedule": "Every Monday 9:00 AM IST",
-    "next_run": "2026-08-24T09:00:00+05:30"
+    "next_run": "2026-09-07T09:00:00+05:30"
   },
   "weekly_reports": [
     {
@@ -351,6 +358,11 @@
       "date": "2026-08-24",
       "overall": 89,
       "highlights": "Quiet consolidation week — no new project-agents commits; scores held flat at 89; ReadyHome has uncommitted in-progress changes"
+    },
+    {
+      "date": "2026-08-31",
+      "overall": 89,
+      "highlights": "Third flat week at 89 — project-agents idle 17 days (last commit Aug 14); ReadyHome WIP still uncommitted; recommendation: Multi-Agent RAG sprint + ReadyHome commit"
     }
   ]
 }
