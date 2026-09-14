@@ -1,6 +1,6 @@
 {
-  "last_updated": "2026-09-07T09:00:00+05:30",
-  "overall_score": 89,
+  "last_updated": "2026-09-14T09:00:00+05:30",
+  "overall_score": 91,
   "layers": {
     "llms": {
       "score": 89,
@@ -14,39 +14,39 @@
       }
     },
     "agents": {
-      "score": 92,
+      "score": 93,
       "color": "#8b5cf6",
       "concepts": {
         "Multi-Step Tool Chaining": 97,
         "Task Planning & Decomposition": 96,
-        "Safe Interruptibility": 88,
-        "Long-term Memory": 80,
-        "State Management": 82,
-        "Agent Reasoning": 78,
-        "Fail-Safe Design": 64,
+        "Safe Interruptibility": 90,
+        "Long-term Memory": 84,
+        "State Management": 86,
+        "Agent Reasoning": 80,
+        "Fail-Safe Design": 72,
         "Emergent Behavior Analysis": 32
       }
     },
     "systems": {
-      "score": 88,
+      "score": 90,
       "color": "#00ff9d",
       "concepts": {
-        "Hierarchical Planning": 77,
-        "Error Handling & Resilience": 72,
+        "Hierarchical Planning": 79,
+        "Error Handling & Resilience": 76,
         "Multi-Agent RAG": 58,
-        "Inter-Agent Communication": 81,
-        "Messaging Protocols": 80
+        "Inter-Agent Communication": 83,
+        "Messaging Protocols": 81
       }
     },
     "infra": {
-      "score": 88,
+      "score": 90,
       "color": "#fbbf24",
       "concepts": {
-        "Routing & Scheduling": 72,
-        "Observability & Monitoring": 74,
-        "Security & Access Control": 64,
+        "Routing & Scheduling": 82,
+        "Observability & Monitoring": 80,
+        "Security & Access Control": 66,
         "Resource Scaling": 90,
-        "Compliance & Governance": 74,
+        "Compliance & Governance": 76,
         "Fairness, Bias & Ethics": 88
       }
     }
@@ -121,6 +121,13 @@
       "agents": 92,
       "systems": 88,
       "infra": 88
+    },
+    {
+      "date": "2026-09-14",
+      "llms": 89,
+      "agents": 93,
+      "systems": 90,
+      "infra": 90
     }
   ],
   "agent_count": 150,
@@ -343,7 +350,7 @@
   "weekly_cron": {
     "active": true,
     "schedule": "Every Monday 9:00 AM IST",
-    "next_run": "2026-09-14T09:00:00+05:30"
+    "next_run": "2026-09-21T09:00:00+05:30"
   },
   "weekly_reports": [
     {
@@ -375,6 +382,11 @@
       "date": "2026-09-07",
       "overall": 89,
       "highlights": "Fourth flat week at 89 — project-agents idle 24 days; ReadyHome WIP uncommitted for 3rd week; last week's Multi-Agent RAG + ReadyHome recommendation unexecuted, carried forward"
+    },
+    {
+      "date": "2026-09-14",
+      "overall": 91,
+      "highlights": "Plateau broken at 91 on non-git evidence: queue restructured 149 to 98 threads with full export first, 4 v6m carousels scheduled, 2 new crons (watchdog, weekly review), Warrior's Ledger 8.7k to 17.1k words, comic pipeline live; project-agents idle 31 days, ReadyHome WIP week 4"
     }
   ]
 }
