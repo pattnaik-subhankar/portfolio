@@ -1,52 +1,52 @@
 {
-  "last_updated": "2026-09-14T09:00:00+05:30",
+  "last_updated": "2026-10-25T16:10:00+05:30",
   "overall_score": 91,
   "layers": {
     "llms": {
-      "score": 89,
+      "score": 90,
       "color": "#38bdf8",
       "concepts": {
         "Prompt Engineering": 97,
-        "Context Engineering": 93,
+        "Context Engineering": 94,
         "RAG": 72,
         "Tokenization & Inference": 55,
         "Fine-tuning & Adaptation": 68
       }
     },
     "agents": {
-      "score": 93,
+      "score": 94,
       "color": "#8b5cf6",
       "concepts": {
         "Multi-Step Tool Chaining": 97,
-        "Task Planning & Decomposition": 96,
+        "Task Planning & Decomposition": 97,
         "Safe Interruptibility": 90,
-        "Long-term Memory": 84,
-        "State Management": 86,
-        "Agent Reasoning": 80,
-        "Fail-Safe Design": 72,
-        "Emergent Behavior Analysis": 32
+        "Long-term Memory": 86,
+        "State Management": 88,
+        "Agent Reasoning": 82,
+        "Fail-Safe Design": 68,
+        "Emergent Behavior Analysis": 34
       }
     },
     "systems": {
-      "score": 90,
+      "score": 91,
       "color": "#00ff9d",
       "concepts": {
-        "Hierarchical Planning": 79,
-        "Error Handling & Resilience": 76,
+        "Hierarchical Planning": 83,
+        "Error Handling & Resilience": 74,
         "Multi-Agent RAG": 58,
-        "Inter-Agent Communication": 83,
-        "Messaging Protocols": 81
+        "Inter-Agent Communication": 86,
+        "Messaging Protocols": 82
       }
     },
     "infra": {
-      "score": 90,
+      "score": 89,
       "color": "#fbbf24",
       "concepts": {
-        "Routing & Scheduling": 82,
-        "Observability & Monitoring": 80,
+        "Routing & Scheduling": 84,
+        "Observability & Monitoring": 72,
         "Security & Access Control": 66,
         "Resource Scaling": 90,
-        "Compliance & Governance": 76,
+        "Compliance & Governance": 74,
         "Fairness, Bias & Ethics": 88
       }
     }
@@ -128,6 +128,13 @@
       "agents": 93,
       "systems": 90,
       "infra": 90
+    },
+    {
+      "date": "2026-10-25",
+      "llms": 90,
+      "agents": 94,
+      "systems": 91,
+      "infra": 89
     }
   ],
   "agent_count": 150,
@@ -350,7 +357,16 @@
   "weekly_cron": {
     "active": true,
     "schedule": "Every Monday 9:00 AM IST",
-    "next_run": "2026-09-21T09:00:00+05:30"
+    "next_run": "2026-11-02T09:00:00+05:30",
+    "last_successful_run": "2026-10-25T16:10:00+05:30",
+    "missed_runs": [
+      "2026-09-21",
+      "2026-09-28",
+      "2026-10-05",
+      "2026-10-12",
+      "2026-10-19"
+    ],
+    "failure_note": "4 consecutive failures on provider errors (HTTP 402 quota on Sep 20, HTTP 403 pay-view from Sep 21). No failure alert configured on the job."
   },
   "weekly_reports": [
     {
@@ -387,6 +403,12 @@
       "date": "2026-09-14",
       "overall": 91,
       "highlights": "Plateau broken at 91 on non-git evidence: queue restructured 149 to 98 threads with full export first, 4 v6m carousels scheduled, 2 new crons (watchdog, weekly review), Warrior's Ledger 8.7k to 17.1k words, comic pipeline live; project-agents idle 31 days, ReadyHome WIP week 4"
+    },
+    {
+      "date": "2026-10-25",
+      "overall": 91,
+      "report": "weekly-reports/2026-10-25.md",
+      "highlights": "First report in 41 days after 4 silent cron failures. Flat at 91 with composition shift: LLMs +1, Agents +1, Systems +1, Infra -1. Eternity Nexus book finished (120 pages, 12/12 episodes, delivered in 3 parts Sep 18-22). Threads queue rebuilt to 120 verified items across Oct/Nov/Dec off a data review (carousels 205 views vs text 18). Reusable monthly content pipeline built: January is now copy-and-run. creator_profile.md written. Cluster mode playbook shipped with hard dispatch gates. Regressions: weekly review cron failed 4x with no alert, dashboard HTML frozen at 78%/29 agents with mojibake while JSON says 91%/150 agents, project-agents idle 72 days, ReadyHome WIP week 10, Multi-Agent RAG still 58."
     }
   ]
 }
