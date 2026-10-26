@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-25T16:10:00+05:30",
+  "last_updated": "2026-10-26T09:00:00+05:30",
   "overall_score": 91,
   "layers": {
     "llms": {
@@ -131,6 +131,13 @@
     },
     {
       "date": "2026-10-25",
+      "llms": 90,
+      "agents": 94,
+      "systems": 91,
+      "infra": 89
+    },
+    {
+      "date": "2026-10-26",
       "llms": 90,
       "agents": 94,
       "systems": 91,
@@ -358,7 +365,7 @@
     "active": true,
     "schedule": "Every Monday 9:00 AM IST",
     "next_run": "2026-11-02T09:00:00+05:30",
-    "last_successful_run": "2026-10-25T16:10:00+05:30",
+    "last_successful_run": "2026-10-26T09:00:00+05:30",
     "missed_runs": [
       "2026-09-21",
       "2026-09-28",
@@ -366,7 +373,9 @@
       "2026-10-12",
       "2026-10-19"
     ],
-    "failure_note": "4 consecutive failures on provider errors (HTTP 402 quota on Sep 20, HTTP 403 pay-view from Sep 21). No failure alert configured on the job."
+    "consecutive_errors": 5,
+    "failure_alert_configured": false,
+    "failure_note": "5 consecutive errors recorded (HTTP 402 quota Sep 20, HTTP 403 pay-view from Sep 21). The Oct 25 16:01 run wrote its report and JSON then errored 21s later on delivery, so the work landed but the announce may not have reached Telegram. No failureAlert on the job after 2 reports recommending it. First on-schedule Monday firing since Sep 14 was 2026-10-26 09:00."
   },
   "weekly_reports": [
     {
@@ -409,6 +418,13 @@
       "overall": 91,
       "report": "weekly-reports/2026-10-25.md",
       "highlights": "First report in 41 days after 4 silent cron failures. Flat at 91 with composition shift: LLMs +1, Agents +1, Systems +1, Infra -1. Eternity Nexus book finished (120 pages, 12/12 episodes, delivered in 3 parts Sep 18-22). Threads queue rebuilt to 120 verified items across Oct/Nov/Dec off a data review (carousels 205 views vs text 18). Reusable monthly content pipeline built: January is now copy-and-run. creator_profile.md written. Cluster mode playbook shipped with hard dispatch gates. Regressions: weekly review cron failed 4x with no alert, dashboard HTML frozen at 78%/29 agents with mojibake while JSON says 91%/150 agents, project-agents idle 72 days, ReadyHome WIP week 10, Multi-Agent RAG still 58."
+    },
+    {
+      "date": "2026-10-26",
+      "overall": 91,
+      "report": "weekly-reports/2026-10-26.md",
+      "window": "17 hours (2026-10-25 16:05 to 2026-10-26 09:00 IST)",
+      "highlights": "Completely flat 91, no layer or concept moved, correct for a 17-hour window. Job fired on schedule Monday 09:00 for the first time since Sep 14. Only real movement: whiteboard batch 15 (5 topics / 25 images, Dec 27-31), ledger now 70 scheduled days Oct 23 to Dec 31 with 0 failures and log-based skip to prevent double-posting; whiteboard library at 85 topics / 425 images. New coverage audit added (bt_wb_coverfull/gapcheck/edgecheck) but has a chunk-boundary off-by-one returning 4 phantom gaps (Nov 10, Nov 25, Dec 10, Dec 25 all present in ledger) and writes only to stdout. All 4 of last week's recommendations unstarted: no failureAlert (now 5 consecutive errors), dashboard still 78%/29 agents/mojibake frozen since Aug 1, ReadyHome WIP week 11 (75 days, 65 insertions uncommitted), Multi-Agent RAG still 58. project-agents 73 days idle. Oct 25 run did write its report and push (260b1cb) before erroring on delivery, so the report may never have reached Telegram."
     }
   ]
 }
